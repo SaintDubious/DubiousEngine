@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Point.h" />
+    <ClInclude Include="src\RotationVector.h" />
     <ClInclude Include="src\Triple.h" />
     <ClInclude Include="src\UnitVector.h" />
     <ClInclude Include="src\Utils.h" />

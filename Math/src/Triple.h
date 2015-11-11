@@ -40,14 +40,13 @@ struct Triple
         , m_Z(Z)
     {}
 
-    /// @brief Destructor
-    ~Triple()
-    {}
-
     /// @brief Default copy constructor
     Triple(const Triple&) = default;
 
-    /// @brief Default equals operator
+    /// @brief Destructor
+    ~Triple() = default;
+
+    /// @brief Default assignment operator
     Triple& operator=(const Triple&) = default;
 
     float               m_X;

@@ -35,7 +35,19 @@ public:
 
         UnitVector U( 1, 2, 3 );
         Vector V( U );
+        Assert::IsTrue(Equals(V.X(), 0.267261237f));
+        Assert::IsTrue(Equals(V.Y(), 0.534522474f));
+        Assert::IsTrue(Equals(V.Z(), 0.801783681f));
+    }
 
+    TEST_METHOD(VectorOperators)
+    {
+        Vector P(1, 2, 3);
+        Vector Q;
+        Q = P;
+        Assert::IsTrue(Equals(Q.X(), 1));
+        Assert::IsTrue(Equals(Q.Y(), 2));
+        Assert::IsTrue(Equals(Q.Z(), 3));
     }
 
     TEST_METHOD(VectorLength)

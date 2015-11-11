@@ -10,6 +10,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MathTest", "Math\test\MathT
 		{F4F941A2-1058-4E28-B424-9BAEA08AB096} = {F4F941A2-1058-4E28-B424-9BAEA08AB096}
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Unit Tests", "Unit Tests", "{88A54D74-37C9-4293-812C-9F90308340CC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -37,5 +39,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A7F7C15D-D13F-43CA-81F8-75E102D4147B} = {88A54D74-37C9-4293-812C-9F90308340CC}
 	EndGlobalSection
 EndGlobal

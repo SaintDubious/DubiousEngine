@@ -24,6 +24,9 @@ public:
     VectorT()
     {}
 
+    /// @brief Default copy constructor
+    VectorT( const VectorT& ) = default;
+
     /// @brief Constructor
     ///
     /// Creates the vector with the given X, Y, and Z
@@ -34,16 +37,19 @@ public:
         : m_Coords(X, Y, Z)
     {}
 
+    /// @brief Construct from Unit Vector
+    ///
+    /// A simple construction from a Unit Vector. Note that
+    /// the template parameter must match, so Local Vectors
+    /// can be constructed from Local Unit Vectors, but not
+    /// Global Unit Vectors
+    /// @param U - [in] Unit Vector to copy
     VectorT( const UnitVectorT<T>& U );
 
     /// @brief Destructor
-    ~VectorT()
-    {}
+    ~VectorT() = default;
 
-    /// @brief Default copy constructor
-    VectorT(const VectorT&) = default;
-
-    /// @brief Default equals operator
+    /// @brief Default assignment operator
     VectorT& operator=(const VectorT&) = default;
 
     /// @brief Length Squared

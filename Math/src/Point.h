@@ -33,14 +33,13 @@ public:
         : m_Coords( X, Y, Z )
     {}
     
-    /// @brief Destructor
-    ~PointT()
-    {}
-
     /// @brief Default copy constructor
-    PointT( const PointT& ) = default;
+    PointT(const PointT&) = default;
 
-    /// @brief Default equals operator
+    /// @brief Destructor
+    ~PointT() = default;
+
+    /// @brief Default assignment operator
     PointT& operator=( const PointT& ) = default;
 
     /// @brief X accessor
