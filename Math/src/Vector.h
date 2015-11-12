@@ -24,9 +24,6 @@ public:
     VectorT()
     {}
 
-    /// @brief Default copy constructor
-    VectorT( const VectorT& ) = default;
-
     /// @brief Constructor
     ///
     /// Creates the vector with the given X, Y, and Z
@@ -45,6 +42,9 @@ public:
     /// Global Unit Vectors
     /// @param U - [in] Unit Vector to copy
     VectorT( const UnitVectorT<T>& U );
+
+    /// @brief Default copy constructor
+    VectorT( const VectorT& ) = default;
 
     /// @brief Destructor
     ~VectorT() = default;

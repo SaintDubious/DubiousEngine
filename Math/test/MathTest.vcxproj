@@ -163,7 +163,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PointTest.cpp" />
-    <ClCompile Include="RotationVectorTest.cpp" />
+    <ClCompile Include="QuaternionTest.cpp" />
     <ClCompile Include="TripleTest.cpp" />
     <ClCompile Include="UnitVectorTest.cpp" />
     <ClCompile Include="VectorTest.cpp" />
