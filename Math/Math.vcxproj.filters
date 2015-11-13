@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="src\Point.h" />
+    <ClInclude Include="src\Utils.h" />
+    <ClInclude Include="src\Triple.h" />
+    <ClInclude Include="src\Vector.h" />
+    <ClInclude Include="src\UnitVector.h" />
+    <ClInclude Include="src\Quaternion.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Utils.cpp" />
+    <ClCompile Include="src\Vector.cpp" />
+    <ClCompile Include="src\UnitVector.cpp" />
+    <ClCompile Include="src\Quaternion.cpp" />
+  </ItemGroup>
+</Project>
