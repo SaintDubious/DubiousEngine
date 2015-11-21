@@ -7,11 +7,13 @@
     <ClInclude Include="src\Vector.h" />
     <ClInclude Include="src\UnitVector.h" />
     <ClInclude Include="src\Quaternion.h" />
+    <ClInclude Include="src\CoordinateSpace.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Utils.cpp" />
     <ClCompile Include="src\Vector.cpp" />
     <ClCompile Include="src\UnitVector.cpp" />
     <ClCompile Include="src\Quaternion.cpp" />
+    <ClCompile Include="src\CoordinateSpace.cpp" />
   </ItemGroup>
 </Project>

@@ -13,7 +13,7 @@ namespace Math {
 /// it is not a direction, it is simply a point in space. It is
 /// a template only so that we can create Points intended for different
 /// uses that the compiler can enforce
-template <int>
+template <int T>
 class PointT
 {
 public:

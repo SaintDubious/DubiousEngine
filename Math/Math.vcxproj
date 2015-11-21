@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\CoordinateSpace.h" />
     <ClInclude Include="src\Point.h" />
     <ClInclude Include="src\Quaternion.h" />
     <ClInclude Include="src\Triple.h" />
@@ -27,6 +28,7 @@
     <ClInclude Include="src\Vector.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\CoordinateSpace.cpp" />
     <ClCompile Include="src\Quaternion.cpp" />
     <ClCompile Include="src\UnitVector.cpp" />
     <ClCompile Include="src\Utils.cpp" />
