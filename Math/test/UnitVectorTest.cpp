@@ -61,7 +61,7 @@ public:
         UnitVector P(1, 2, 3);
         UnitVector Q(1, 1, 1);
 
-        Assert::IsFalse( Q != P );
+        Assert::IsTrue( Q != P );
 
         Q = P;
         Assert::IsTrue(Equals(Q.X(), 0.267261237f));

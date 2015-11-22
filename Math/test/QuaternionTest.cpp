@@ -52,6 +52,14 @@ public:
         Quaternion T = S*R;
         Quaternion U( UnitVector( 0, 1, 0), ToRadians( 80 ) );
         Assert::IsTrue( T == U );
+
+        S = Quaternion( UnitVector( 0, 1, 0 ), ToRadians( 10 ) );
+        T = Quaternion( UnitVector( 0, 1, 0 ), ToRadians( 10 ) );
+        for (int i=2; i<18; ++i) {
+            S = T*S;
+            U = Quaternion( UnitVector( 0, 1, 0 ), ToRadians(i*10) );
+            Assert::IsTrue( S == U );
+        }
     }
 
     TEST_METHOD(QuaternionLength)

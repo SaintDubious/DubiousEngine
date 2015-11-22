@@ -96,6 +96,8 @@ private:
     friend bool operator!= <>( const QuaternionT<T>& A, const QuaternionT<T>& B );
     friend QuaternionT<T> operator* <>( const QuaternionT<T>& A, const QuaternionT<T>& B );
 
+    void                Normalize();
+
     float               m_Real;
     Triple              m_Imaginary;
 };
@@ -104,7 +106,7 @@ private:
 template<int T> 
 bool operator==( const QuaternionT<T>& A, const QuaternionT<T>& B )
 {
-    return A.m_Real      == B.m_Real &&
+    return Equals( A.m_Real, B.m_Real) &&
            A.m_Imaginary == B.m_Imaginary;
 }
 
@@ -112,7 +114,7 @@ bool operator==( const QuaternionT<T>& A, const QuaternionT<T>& B )
 template<int T> 
 bool operator!=( const QuaternionT<T>& A, const QuaternionT<T>& B )
 {
-    return A.m_Real      != B.m_Real ||
+    return !Equals( A.m_Real, B.m_Real) ||
            A.m_Imaginary != B.m_Imaginary;
 }
 
@@ -126,6 +128,9 @@ QuaternionT<T> operator*( const QuaternionT<T>& A, const QuaternionT<T>& B )
     Result.m_Imaginary.m_X = A.m_Real*B.m_Imaginary.m_X + A.m_Imaginary.m_X*B.m_Real          + A.m_Imaginary.m_Y*B.m_Imaginary.m_Z - A.m_Imaginary.m_Z*B.m_Imaginary.m_Y;
     Result.m_Imaginary.m_Y = A.m_Real*B.m_Imaginary.m_Y - A.m_Imaginary.m_X*B.m_Imaginary.m_Z + A.m_Imaginary.m_Y*B.m_Real          + A.m_Imaginary.m_Z*B.m_Imaginary.m_X;
     Result.m_Imaginary.m_Z = A.m_Real*B.m_Imaginary.m_Z + A.m_Imaginary.m_X*B.m_Imaginary.m_Y - A.m_Imaginary.m_Y*B.m_Imaginary.m_X + A.m_Imaginary.m_Z*B.m_Real;
+    // I'm not sure if we need to normalize or not after a multiplication.
+    // Holding the code handy just in case
+ //   Result.Normalize();
 
     return Result;
 }

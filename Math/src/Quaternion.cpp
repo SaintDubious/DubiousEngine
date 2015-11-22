@@ -45,4 +45,22 @@ void QuaternionT<T>::GetMatrix( float Matrix[16] ) const
     Matrix[_44] = 1.0;
 }
 
+////////////////////////////////////////////////////////////////////////////////////
+template <int T>
+void QuaternionT<T>::Normalize()
+{
+    float Magnitude = sqrt( m_Real*m_Real + 
+                            m_Imaginary.m_X*m_Imaginary.m_X +
+                            m_Imaginary.m_Y*m_Imaginary.m_Y +
+                            m_Imaginary.m_Z*m_Imaginary.m_Z );
+    if (Equals(Magnitude, 0)) {
+        throw std::runtime_error( "Quaternion has 0 magnitude" );
+    }
+    m_Real = m_Real/Magnitude;
+    m_Imaginary = Triple( m_Imaginary.m_X/Magnitude, 
+                          m_Imaginary.m_Y/Magnitude, 
+                          m_Imaginary.m_Z/Magnitude );
+}
+
+
 template class QuaternionT<0>;
