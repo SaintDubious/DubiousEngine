@@ -3,6 +3,7 @@
 
 #include "Point.h"
 #include "Quaternion.h"
+#include "UnitVector.h"
 
 //////////////////////////////////////////////////////////////
 namespace Dubious {
@@ -28,13 +29,35 @@ public:
     ///
     /// The default constructor creates a coordinate space centered at 
     /// (0,0,0) with the +Y axis as Up and +Z as Forward, etc etc
-    CoordinateSpaceT() 
-    {}
+    CoordinateSpaceT() = default;
+
+    /// @brief Default copy constructor
+    CoordinateSpaceT( const CoordinateSpaceT& ) = default;
+
+    /// @brief Default Destructor
+    ~CoordinateSpaceT() = default;
+
+    /// @brief Default assignment operator
+    CoordinateSpaceT& operator=( const CoordinateSpaceT& ) = default;
+
+    /// @brief Get 3 axis
+    ///
+    /// It's common to want the X, Y, and Z axis that make up 
+    /// a coordinate system
+    /// @param X - [in] X Axis
+    /// @param Y - [in] Y Axis
+    /// @param Z - [in] Z Axis
+    void                GetAxes( UnitVector& X, UnitVector& Y, UnitVector& Z ) const;
+
+    /// @brief Position accessor
+    const PointT<T>&    Position() const { return m_Position; }
 
 private:
     PointT<T>           m_Position;
     QuaternionT<T>      m_Rotation;
 };
+
+typedef CoordinateSpaceT<0>  CoordinateSpace;
 
 }
 }

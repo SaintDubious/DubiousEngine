@@ -36,7 +36,10 @@ public:
     {
         Point Q( 1, 2, 3 );
         Point P;
+
+        Assert::IsTrue( P != Q );
         P = Q;
+        Assert::IsTrue( P == Q );
         Assert::IsTrue(Equals(P.X(), 1));
         Assert::IsTrue(Equals(P.Y(), 2));
         Assert::IsTrue(Equals(P.Z(), 3));

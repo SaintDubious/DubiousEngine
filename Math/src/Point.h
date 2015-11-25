@@ -7,6 +7,10 @@
 namespace Dubious {
 namespace Math {
 
+template <int T> class PointT;
+template <int T> bool operator==( const PointT<T>& A, const PointT<T>& B );
+template <int T> bool operator!=( const PointT<T>& A, const PointT<T>& B );
+
 /// @brief A 3D Point
 ///
 /// Represents a 3D point. This is different from a Vector in that
@@ -55,8 +59,25 @@ public:
     float               Z() const { return m_Coords.m_Z; }
 
 private:
+    friend bool operator== <>( const PointT<T>& A, const PointT<T>& B );
+    friend bool operator!= <>( const PointT<T>& A, const PointT<T>& B );
+
     Triple              m_Coords;
 };
+
+//////////////////////////////////////////////////////////////
+template<int T> 
+bool operator==( const PointT<T>& A, const PointT<T>& B )
+{
+    return A.m_Coords == B.m_Coords;
+}
+
+//////////////////////////////////////////////////////////////
+template<int T> 
+bool operator!=( const PointT<T>& A, const PointT<T>& B )
+{
+    return A.m_Coords != B.m_Coords;
+}
 
 typedef PointT<0> Point;
 

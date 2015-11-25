@@ -43,7 +43,10 @@ public:
     {
         Quaternion R( UnitVector( 0, 1, 0 ), ToRadians( 60 ) );
         Quaternion Q;
+
+        Assert::IsTrue( Q != R );
         Q = R;
+        Assert::IsTrue( Q == R );
         Assert::IsTrue( Equals(Q.m_Real, cosf(ToRadians(60)/2.0f)) );
         float HalfSin = sinf( ToRadians(60) / 2.0f );
         Assert::IsTrue( Q.m_Imaginary == Triple( 0, HalfSin, 0 ) );

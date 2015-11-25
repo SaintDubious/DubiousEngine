@@ -162,6 +162,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CoordinateSpaceTest.cpp" />
     <ClCompile Include="PointTest.cpp" />
     <ClCompile Include="QuaternionTest.cpp" />
     <ClCompile Include="TripleTest.cpp" />
