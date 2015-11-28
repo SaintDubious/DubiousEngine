@@ -3,44 +3,34 @@
 #include <SDL.h>
 
 //////////////////////////////////////////////////////////////
-namespace Dubious
-{
-namespace Utility
-{
+using Dubious::Utility::Timer;
 
 ////////////////////////////////////////////////////////////////////////////////////
 Timer::Timer()
-	: m_TickCount(0)
+    : m_TickCount(0)
 {
-	Start();
-}
-
-////////////////////////////////////////////////////////////////////////////////////
-Timer::~Timer()
-{
+    Start();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
 void Timer::Start()
 {
-	m_TickCount = SDL_GetTicks();
+    m_TickCount = SDL_GetTicks();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
 unsigned long Timer::Restart()
 {
-	unsigned long CurrentTicks( SDL_GetTicks() );
-	unsigned long RetVal( CurrentTicks - m_TickCount );
-	m_TickCount = CurrentTicks;
+    unsigned long CurrentTicks( SDL_GetTicks() );
+    unsigned long RetVal( CurrentTicks - m_TickCount );
+    m_TickCount = CurrentTicks;
 
-	return RetVal;
+    return RetVal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
 unsigned long Timer::Elapsed() const
 {
-	return SDL_GetTicks() - m_TickCount;
+    return SDL_GetTicks() - m_TickCount;
 }
 
-}
-}

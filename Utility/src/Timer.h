@@ -12,33 +12,35 @@ namespace Utility {
 class Timer
 {
 public:
-	/// @brief Constructor.  Not useful until Start is called
-	Timer();
+    /// @brief Constructor. Calls Start
+    Timer();
 
-	/// @brief Destructor
-	~Timer();
+    Timer( const Timer& ) = delete;
 
-	/// @brief Starts the timer
-	void                Start();
+    /// @brief Destructor
+    ~Timer() = default;
 
-	/// @brief Timer Restart
-	///
-	/// Restarts the timer and returns how much time has elapsed
-	///	since the last call to Start or Restart
-	/// @returns milliseconds since last Start or Restart
-	unsigned long       Restart();
+    Timer& operator=( const Timer& ) = delete;
 
-	/// @brief Elapsed Time
-	/// Gets the number of milliseconds since the last call to
-	///	Start or Restart.  Does not restart the timer.
-	/// @returns elapsed milliseconds since last Stat or Restart
-	unsigned long       Elapsed() const;
+    /// @brief Starts the timer
+    void                Start();
 
-protected:
+    /// @brief Timer Restart
+    ///
+    /// Restarts the timer and returns how much time has elapsed
+    ///	since the last call to Start or Restart
+    /// @returns milliseconds since last Start or Restart
+    unsigned long       Restart();
+
+    /// @brief Elapsed Time
+    ///
+    /// Gets the number of milliseconds since the last call to
+    ///	Start or Restart.  Does not restart the timer.
+    /// @returns elapsed milliseconds since last Start or Restart
+    unsigned long       Elapsed() const;
+
 private:
-	Timer( const Timer& );
-	Timer& operator=( const Timer& );
-	unsigned long       m_TickCount;
+    unsigned long       m_TickCount;
 };
 
 }

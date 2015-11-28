@@ -25,75 +25,76 @@ typedef std::vector<AC3DModelPtr> AC3DModelPtrVector;
 class AC3DModel
 {
 public:
-	/// @brief Constructor.  
-	///
-	/// Creates a model at (0,0,0) that contains
-	///	no points, surfaces, or children
-	AC3DModel() {}
+    /// @brief Default Constructor.  
+    ///
+    /// Creates a model at (0,0,0) that contains
+    ///	no points, surfaces, or children
+    AC3DModel() = default;
 
-	/// @brief Destructor.
-	~AC3DModel() {}
+    AC3DModel( const AC3DModel& ) = delete;
 
-	/// @brief Simple 3 float point.  
-	///
-	/// This is used to represent a 3D position in a AC3D file.
-	struct Point
-	{
-		/// @brief Constructor creates a point at (0,0,0)
-		Point() : X(0), Y(0), Z(0) 
-		{}
+    /// @brief Default Destructor.
+    ~AC3DModel() = default;
 
-		/// @brief Constructor creates a point at specified (x,y,z)
-		Point( float x, float y, float z )
-			: X( x ), Y( y ), Z( z ) 
-		{}
+    AC3DModel& operator=( const AC3DModel& ) = delete;
 
-		float			X, Y, Z;
-	};
-	typedef std::vector<Point> PointVector;
+    /// @brief Simple 3 float point.  
+    ///
+    /// This is used to represent a 3D position in a AC3D file.
+    struct Point
+    {
+        /// @brief Constructor creates a point at (0,0,0)
+        Point() : X(0), Y(0), Z(0) 
+        {}
 
-	/// @brief A Surface
-	///
-	/// An AC3D Surface object contains 3 indices into the Point
-	///	array.  Actually AC3D supports any number of points, but I
-	///	restrict the reader to only accepting a model made of triangles.
-	///	It also contains Material information.
-	struct Surface
-	{
-		unsigned short  p0, p1, p2;
-		int             MaterialIndex;
-	};
-	typedef std::vector<Surface> SurfaceVector;
+        /// @brief Constructor creates a point at specified (x,y,z)
+        Point( float x, float y, float z )
+            : X( x ), Y( y ), Z( z ) 
+        {}
 
-	/// @brief Accessor - the Name, mostly useful for debugging
-	std::string&		Name() { return m_Name; }
+        float			X, Y, Z;
+    };
+    typedef std::vector<Point> PointVector;
 
-	/// @brief Accessor - Offset from the parent model.  If this is
-	///		the parent model then the offset will be (0,0,0)
-	Point&				Offset() { return m_Offset; }
-	const Point&		Offset() const { return m_Offset; }
+    /// @brief A Surface
+    ///
+    /// An AC3D Surface object contains 3 indices into the Point
+    ///	array.  Actually AC3D supports any number of points, but I
+    ///	restrict the reader to only accepting a model made of triangles.
+    ///	It also contains Material information.
+    struct Surface
+    {
+        unsigned short  p0, p1, p2;
+        int             MaterialIndex;
+    };
+    typedef std::vector<Surface> SurfaceVector;
 
-	/// @brief Accessor - the Points that make up the model.
-	PointVector&		Points() { return m_Points; }
-	const PointVector&	Points() const { return m_Points; }
+    /// @brief Accessor - the Name, mostly useful for debugging
+    std::string&		Name() { return m_Name; }
 
-	/// @brief Accessor - the surfaces that make up the model
-	SurfaceVector&		Surfaces() { return m_Surfaces; }
-	const SurfaceVector& Surfaces() const { return m_Surfaces; }
+    /// @brief Accessor - Offset from the parent model.  If this is
+    ///		the parent model then the offset will be (0,0,0)
+    Point&				Offset() { return m_Offset; }
+    const Point&		Offset() const { return m_Offset; }
 
-	/// @brief Accessor - child models
-	AC3DModelPtrVector&	Kids() { return m_Kids; }
-	const AC3DModelPtrVector& Kids() const { return m_Kids; }
+    /// @brief Accessor - the Points that make up the model.
+    PointVector&		Points() { return m_Points; }
+    const PointVector&	Points() const { return m_Points; }
+
+    /// @brief Accessor - the surfaces that make up the model
+    SurfaceVector&		Surfaces() { return m_Surfaces; }
+    const SurfaceVector& Surfaces() const { return m_Surfaces; }
+
+    /// @brief Accessor - child models
+    AC3DModelPtrVector&	Kids() { return m_Kids; }
+    const AC3DModelPtrVector& Kids() const { return m_Kids; }
 
 private:
-	AC3DModel( const AC3DModel& );
-	AC3DModel& operator=( const AC3DModel& );
-
-	std::string			m_Name;
-	Point				m_Offset;
-	PointVector			m_Points;
-	SurfaceVector		m_Surfaces;
-	AC3DModelPtrVector  m_Kids;
+    std::string			m_Name;
+    Point				m_Offset;
+    PointVector			m_Points;
+    SurfaceVector		m_Surfaces;
+    AC3DModelPtrVector  m_Kids;
 };
 
 /// @brief A Material in an AC3D file
@@ -104,32 +105,41 @@ private:
 class AC3DMaterial
 {
 public:
-	/// @brief A simple 3 channel color.  
-	///
-	/// Each channel is described by a number between 0.0 and 1.0
-	struct Color 
-	{
-		/// @brief Constructor - creates the specified RGB color
-		Color( float R, float G, float B )
-			: Red( R ), Green( G ), Blue( B )
-		{
-		}
+    /// @brief A simple 3 channel color.  
+    ///
+    /// Each channel is described by a number between 0.0 and 1.0
+    struct Color 
+    {
+        /// @brief Constructor - creates the specified RGB color
+        Color( float R, float G, float B )
+            : Red( R ), Green( G ), Blue( B )
+        {
+        }
 
-		float Red, Green, Blue;
-	};
+        float Red, Green, Blue;
+    };
 
-	/// @brief Constructor - creates a material from the specified color
-	/// @param MaterialColor - [in] the color of the material
-	AC3DMaterial( Color MaterialColor )
-		: m_MaterialColor( MaterialColor )
-	{
-	}
+    /// @brief Constructor - creates a material from the specified color
+    /// @param MaterialColor - [in] the color of the material
+    AC3DMaterial( const Color& MaterialColor )
+        : m_MaterialColor( MaterialColor )
+    {
+    }
 
-	/// @brief Accessor - the material color
-	const Color&		MaterialColor() const { return m_MaterialColor; }
+    /// @brief Default copy constructor
+    AC3DMaterial( const AC3DMaterial& ) = default;
+
+    /// @brief Default Destructor
+    ~AC3DMaterial() = default;
+
+    /// @brief Default assignment operator
+    AC3DMaterial& operator=( const AC3DMaterial& ) = default;
+
+    /// @brief Accessor - the material color
+    const Color&		MaterialColor() const { return m_MaterialColor; }
 
 private:
-	Color				m_MaterialColor;
+    Color				m_MaterialColor;
 };
 
 typedef std::vector<AC3DMaterial> AC3DMaterialVector;
@@ -142,29 +152,30 @@ typedef std::vector<AC3DMaterial> AC3DMaterialVector;
 class AC3DFile
 {
 public:
-	/// @brief Constructor - saves the specified Model and Materials
-	/// @param Materials - [in] Materials vector
-	/// @param pModel - [in] the model
-	AC3DFile( const AC3DMaterialVector& Materials, AC3DModelPtr pModel )
-		: m_pModel( pModel )
-		, m_Materials( Materials )
-	{}
+    /// @brief Constructor - saves the specified Model and Materials
+    /// @param Materials - [in] Materials vector
+    /// @param pModel - [in] the model
+    AC3DFile( const AC3DMaterialVector& Materials, AC3DModelPtr pModel )
+        : m_pModel( pModel )
+        , m_Materials( Materials )
+    {}
 
-	/// @brief Destructor
-	~AC3DFile() {}
+    AC3DFile( const AC3DFile& ) = delete;
 
-	/// @brief Accessor - the Model itself
-	AC3DModelPtr		Model() const { return m_pModel; }
+    /// @brief Destructor
+    ~AC3DFile() = default;
 
-	/// @brief Accessor - the materials used in the model
-	const AC3DMaterialVector& Materials() const { return m_Materials; }
+    AC3DFile& operator=( const AC3DFile& ) = delete;
+
+    /// @brief Accessor - the Model itself
+    AC3DModelPtr		Model() const { return m_pModel; }
+
+    /// @brief Accessor - the materials used in the model
+    const AC3DMaterialVector& Materials() const { return m_Materials; }
 
 private:
-	AC3DFile( const AC3DFile& );
-	AC3DFile& operator=( const AC3DFile& );
-
-	AC3DModelPtr		m_pModel;
-	AC3DMaterialVector	m_Materials;
+    AC3DModelPtr		m_pModel;
+    AC3DMaterialVector	m_Materials;
 };
 
 typedef std::shared_ptr<AC3DFile> AC3DFilePtr;
@@ -182,17 +193,15 @@ class FilePath;
 class AC3DFileReader
 {
 public:
-	/// @brief Read the specified file and return an AC3DFilePtr
-	/// @param FileName - [in] path and file name of the AC3D file
-	/// @returns a pointer to the file information
-	static AC3DFilePtr ReadFile( const FilePath& FileName );
+    AC3DFileReader() = delete;
+    ~AC3DFileReader() = delete;
+    AC3DFileReader( const AC3DFileReader& ) = delete;
+    AC3DFileReader& operator=( const AC3DFileReader& ) = delete;
 
-private:
-	AC3DFileReader();
-	~AC3DFileReader();
-	AC3DFileReader( const AC3DFileReader& );
-	AC3DFileReader& operator=( const AC3DFileReader& );
-
+    /// @brief Read the specified file and return an AC3DFilePtr
+    /// @param FileName - [in] path and file name of the AC3D file
+    /// @returns a pointer to the file information
+    static AC3DFilePtr ReadFile( const FilePath& FileName );
 };
 
 }
