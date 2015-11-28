@@ -5,5 +5,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FilePathTest.cpp" />
+    <ClCompile Include="TimerTest.cpp" />
   </ItemGroup>
 </Project>

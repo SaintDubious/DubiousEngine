@@ -80,6 +80,7 @@ bool operator!=( const PointT<T>& A, const PointT<T>& B )
 }
 
 typedef PointT<0> Point;
+typedef PointT<1> LocalPoint;
 
 }
 }

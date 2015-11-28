@@ -1,6 +1,8 @@
 #ifndef INCLUDED_UTILITY_AC3DFILEREADER
 #define INCLUDED_UTILITY_AC3DFILEREADER
 
+#include "Point.h"
+
 #include <string>
 #include <memory>
 #include <vector>
@@ -38,23 +40,7 @@ public:
 
     AC3DModel& operator=( const AC3DModel& ) = delete;
 
-    /// @brief Simple 3 float point.  
-    ///
-    /// This is used to represent a 3D position in a AC3D file.
-    struct Point
-    {
-        /// @brief Constructor creates a point at (0,0,0)
-        Point() : X(0), Y(0), Z(0) 
-        {}
-
-        /// @brief Constructor creates a point at specified (x,y,z)
-        Point( float x, float y, float z )
-            : X( x ), Y( y ), Z( z ) 
-        {}
-
-        float			X, Y, Z;
-    };
-    typedef std::vector<Point> PointVector;
+    typedef std::vector<Math::LocalPoint> LocalPointVector;
 
     /// @brief A Surface
     ///
@@ -74,15 +60,15 @@ public:
 
     /// @brief Accessor - Offset from the parent model.  If this is
     ///		the parent model then the offset will be (0,0,0)
-    Point&				Offset() { return m_Offset; }
-    const Point&		Offset() const { return m_Offset; }
+    Math::LocalPoint&	Offset() { return m_Offset; }
+    const Math::LocalPoint&	Offset() const { return m_Offset; }
 
     /// @brief Accessor - the Points that make up the model.
-    PointVector&		Points() { return m_Points; }
-    const PointVector&	Points() const { return m_Points; }
+    LocalPointVector&   Points() { return m_Points; }
+    const LocalPointVector&	Points() const { return m_Points; }
 
     /// @brief Accessor - the surfaces that make up the model
-    SurfaceVector&		Surfaces() { return m_Surfaces; }
+    SurfaceVector&      Surfaces() { return m_Surfaces; }
     const SurfaceVector& Surfaces() const { return m_Surfaces; }
 
     /// @brief Accessor - child models
@@ -90,10 +76,10 @@ public:
     const AC3DModelPtrVector& Kids() const { return m_Kids; }
 
 private:
-    std::string			m_Name;
-    Point				m_Offset;
-    PointVector			m_Points;
-    SurfaceVector		m_Surfaces;
+    std::string         m_Name;
+    Math::LocalPoint    m_Offset;
+    LocalPointVector    m_Points;
+    SurfaceVector       m_Surfaces;
     AC3DModelPtrVector  m_Kids;
 };
 

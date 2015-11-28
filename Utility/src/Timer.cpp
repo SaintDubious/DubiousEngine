@@ -1,13 +1,10 @@
 #include "Timer.h"
 
-#include <SDL.h>
-
 //////////////////////////////////////////////////////////////
 using Dubious::Utility::Timer;
 
 ////////////////////////////////////////////////////////////////////////////////////
 Timer::Timer()
-    : m_TickCount(0)
 {
     Start();
 }
@@ -15,22 +12,21 @@ Timer::Timer()
 ////////////////////////////////////////////////////////////////////////////////////
 void Timer::Start()
 {
-    m_TickCount = SDL_GetTicks();
+    m_StartTime = std::chrono::steady_clock::now();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
-unsigned long Timer::Restart()
+int64_t Timer::Restart()
 {
-    unsigned long CurrentTicks( SDL_GetTicks() );
-    unsigned long RetVal( CurrentTicks - m_TickCount );
-    m_TickCount = CurrentTicks;
-
-    return RetVal;
+    int64_t Milli = Elapsed();
+    Start();
+    return Milli;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
-unsigned long Timer::Elapsed() const
+int64_t Timer::Elapsed() const
 {
-    return SDL_GetTicks() - m_TickCount;
+    std::chrono::steady_clock::time_point EndTime = std::chrono::steady_clock::now();
+    return std::chrono::duration_cast<std::chrono::milliseconds>(EndTime - m_StartTime).count();
 }
 

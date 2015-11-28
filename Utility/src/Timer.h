@@ -1,6 +1,8 @@
 #ifndef INCLUDED_UTILITY_TIMER
 #define INCLUDED_UTILITY_TIMER
 
+#include <chrono>
+
 //////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Utility {
@@ -30,17 +32,17 @@ public:
     /// Restarts the timer and returns how much time has elapsed
     ///	since the last call to Start or Restart
     /// @returns milliseconds since last Start or Restart
-    unsigned long       Restart();
+    int64_t             Restart();
 
     /// @brief Elapsed Time
     ///
     /// Gets the number of milliseconds since the last call to
     ///	Start or Restart.  Does not restart the timer.
     /// @returns elapsed milliseconds since last Start or Restart
-    unsigned long       Elapsed() const;
+    int64_t             Elapsed() const;
 
 private:
-    unsigned long       m_TickCount;
+    std::chrono::steady_clock::time_point m_StartTime;
 };
 
 }

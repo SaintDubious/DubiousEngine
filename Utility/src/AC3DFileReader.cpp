@@ -12,6 +12,8 @@ using Dubious::Utility::AC3DMaterial;
 using Dubious::Utility::AC3DFileReader;
 using Dubious::Utility::FilePath;
 
+using Dubious::Math::LocalPoint;
+
 ////////////////////////////////////////////////////////////////////////////////////
 // info on the file format can be found at:
 // http://www.ac3d.org/
@@ -134,7 +136,7 @@ AC3DModelPtr ReadModel( std::ifstream& Input, bool& LOCPresent )
         } 
         else if (Token == LOC) {
             Input >> x >> y >> z;
-            pModel->Offset() = AC3DModel::Point( x, y, z );
+            pModel->Offset() = LocalPoint( x, y, z );
             LOCPresent = true;
         } 
         else if (Token == URL) {
@@ -145,7 +147,7 @@ AC3DModelPtr ReadModel( std::ifstream& Input, bool& LOCPresent )
             Input >> NumVertices;
             for (i=0; i<NumVertices; i++) {
                 Input >> x >> y >> z;
-                pModel->Points().push_back( AC3DModel::Point( x, y, z ) );
+                pModel->Points().push_back( LocalPoint( x, y, z ) );
             }
         } 
         else if (Token == NUMSURF) {
