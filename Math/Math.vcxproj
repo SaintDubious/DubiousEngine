@@ -26,6 +26,7 @@
     <ClInclude Include="src\UnitVector.h" />
     <ClInclude Include="src\Utils.h" />
     <ClInclude Include="src\Vector.h" />
+    <ClInclude Include="src\VectorMath.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\CoordinateSpace.cpp" />

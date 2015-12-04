@@ -10,5 +10,7 @@
     <ClCompile Include="UnitVectorTest.cpp" />
     <ClCompile Include="QuaternionTest.cpp" />
     <ClCompile Include="CoordinateSpaceTest.cpp" />
+    <ClCompile Include="UtilsTest.cpp" />
+    <ClCompile Include="VectorMathTest.cpp" />
   </ItemGroup>
 </Project>

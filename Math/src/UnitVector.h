@@ -81,6 +81,7 @@ bool operator!=( const UnitVectorT<T>& A, const UnitVectorT<T>& B )
 }
 
 typedef UnitVectorT<0>  UnitVector;
+typedef UnitVectorT<1>  LocalUnitVector;
 }
 }
 

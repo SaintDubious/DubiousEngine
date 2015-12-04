@@ -167,6 +167,8 @@
     <ClCompile Include="QuaternionTest.cpp" />
     <ClCompile Include="TripleTest.cpp" />
     <ClCompile Include="UnitVectorTest.cpp" />
+    <ClCompile Include="UtilsTest.cpp" />
+    <ClCompile Include="VectorMathTest.cpp" />
     <ClCompile Include="VectorTest.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

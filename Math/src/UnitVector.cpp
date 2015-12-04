@@ -28,3 +28,4 @@ UnitVectorT<T>::UnitVectorT(const VectorT<T>& V)
 }
 
 template class UnitVectorT<0>;
+template class UnitVectorT<1>;

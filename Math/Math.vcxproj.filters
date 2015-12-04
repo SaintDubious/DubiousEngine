@@ -8,6 +8,7 @@
     <ClInclude Include="src\UnitVector.h" />
     <ClInclude Include="src\Quaternion.h" />
     <ClInclude Include="src\CoordinateSpace.h" />
+    <ClInclude Include="src\VectorMath.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Utils.cpp" />

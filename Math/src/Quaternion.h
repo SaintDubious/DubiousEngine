@@ -118,7 +118,7 @@ bool operator!=( const QuaternionT<T>& A, const QuaternionT<T>& B )
            A.m_Imaginary != B.m_Imaginary;
 }
 
-////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////
 template <int T> 
 QuaternionT<T> operator*( const QuaternionT<T>& A, const QuaternionT<T>& B )
 {

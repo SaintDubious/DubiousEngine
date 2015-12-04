@@ -1,11 +1,13 @@
 #include "CppUnitTest.h"
 
 #include <Point.h>
+#include <Vector.h>
 #include <Utils.h>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 using Dubious::Math::Point;
+using Dubious::Math::Vector;
 using Dubious::Math::Equals;
 
 namespace MathTest {
@@ -43,6 +45,12 @@ public:
         Assert::IsTrue(Equals(P.X(), 1));
         Assert::IsTrue(Equals(P.Y(), 2));
         Assert::IsTrue(Equals(P.Z(), 3));
+
+        Point R( 10, 20, 30 );
+        Vector Result = R-Q;
+        Assert::IsTrue(Equals(Result.X(), 9));
+        Assert::IsTrue(Equals(Result.Y(), 18));
+        Assert::IsTrue(Equals(Result.Z(), 27));
     }
 
 };

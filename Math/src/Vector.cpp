@@ -27,3 +27,4 @@ float VectorT<T>::Length() const
 }
 
 template class VectorT<0>;
+template class VectorT<1>;

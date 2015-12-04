@@ -2,6 +2,7 @@
 #define INCLUDED_MATH_POINT
 
 #include "Triple.h"
+#include "Vector.h"
 
 //////////////////////////////////////////////////////////////
 namespace Dubious {
@@ -64,6 +65,13 @@ private:
 
     Triple              m_Coords;
 };
+
+//////////////////////////////////////////////////////////////
+template <int T> 
+VectorT<T> operator-( const PointT<T>& A, const PointT<T>& B )
+{
+    return VectorT<T>( A.X()-B.X(), A.Y()-B.Y(), A.Z()-B.Z() );
+}
 
 //////////////////////////////////////////////////////////////
 template<int T> 

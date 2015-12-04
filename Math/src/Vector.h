@@ -84,6 +84,7 @@ private:
 };
 
 typedef VectorT<0>      Vector;
+typedef VectorT<1>      LocalVector;
 }
 }
 

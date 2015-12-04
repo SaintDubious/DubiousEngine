@@ -14,6 +14,7 @@ namespace Utility {
 class AC3DModel;
 typedef std::shared_ptr<AC3DModel> AC3DModelPtr;
 typedef std::vector<AC3DModelPtr> AC3DModelPtrVector;
+typedef std::vector<Math::LocalPoint> LocalPointVector;
 
 /// @brief An AC3D Model
 /// 
@@ -39,8 +40,6 @@ public:
     ~AC3DModel() = default;
 
     AC3DModel& operator=( const AC3DModel& ) = delete;
-
-    typedef std::vector<Math::LocalPoint> LocalPointVector;
 
     /// @brief A Surface
     ///
