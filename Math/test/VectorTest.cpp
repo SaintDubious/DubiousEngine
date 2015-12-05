@@ -48,6 +48,12 @@ public:
         Assert::IsTrue(Equals(Q.X(), 1));
         Assert::IsTrue(Equals(Q.Y(), 2));
         Assert::IsTrue(Equals(Q.Z(), 3));
+
+        Vector R( 10, 20, 30 );
+        Q = R+P;
+        Assert::IsTrue(Equals(Q.X(), 11));
+        Assert::IsTrue(Equals(Q.Y(), 22));
+        Assert::IsTrue(Equals(Q.Z(), 33));
     }
 
     TEST_METHOD(VectorLength)

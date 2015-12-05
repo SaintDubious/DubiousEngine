@@ -39,7 +39,7 @@ public:
         CrossTest( Vector( 0, -1, -1 ), Vector( 0, -1, 0 ), UnitVector( -1, 0, 0 ), 45 );
         CrossTest( Vector( 0, -1.732050807f, -1 ), Vector( 0, -1, -1.732050807f ), UnitVector( 1, 0, 0 ), 30 );
         // Off Plane tests
-        CrossTest( Vector( 1, 1, 1 ), Vector( -1, 1, 1 ), UnitVector( 0, -1, 1 ), 70.5287768017 );
+        CrossTest( Vector( 1, 1, 1 ), Vector( -1, 1, 1 ), UnitVector( 0, -1, 1 ), 70.5287768017f );
     }
 
 private:

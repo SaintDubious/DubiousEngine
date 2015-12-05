@@ -19,6 +19,7 @@
       <Filter>OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Color.cpp" />
+    <ClCompile Include="src\Model.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\OpenGLAttributes.h">
@@ -37,5 +38,6 @@
       <Filter>OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Color.h" />
+    <ClInclude Include="src\Model.h" />
   </ItemGroup>
 </Project>
