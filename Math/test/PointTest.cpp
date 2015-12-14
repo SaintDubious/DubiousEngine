@@ -2,12 +2,14 @@
 
 #include <Point.h>
 #include <Vector.h>
+#include <UnitVector.h>
 #include <Utils.h>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 using Dubious::Math::Point;
 using Dubious::Math::Vector;
+using Dubious::Math::UnitVector;
 using Dubious::Math::Equals;
 
 namespace MathTest {
@@ -51,6 +53,28 @@ public:
         Assert::IsTrue(Equals(Result.X(), 9));
         Assert::IsTrue(Equals(Result.Y(), 18));
         Assert::IsTrue(Equals(Result.Z(), 27));
+
+        P = R+Result;
+        Assert::IsTrue(Equals(P.X(), 19));
+        Assert::IsTrue(Equals(P.Y(), 38));
+        Assert::IsTrue(Equals(P.Z(), 57));
+
+        P = R-Result;
+        Assert::IsTrue(Equals(P.X(), 1));
+        Assert::IsTrue(Equals(P.Y(), 2));
+        Assert::IsTrue(Equals(P.Z(), 3));
+
+        UnitVector UnitResult( Result );
+        P = R+UnitResult;
+        Assert::IsTrue(Equals(P.X(), 10.2672615));
+        Assert::IsTrue(Equals(P.Y(), 20.5345230));
+        Assert::IsTrue(Equals(P.Z(), 30.8017845));
+
+        P = R-UnitResult;
+        Assert::IsTrue(Equals(P.X(), 9.73273849));
+        Assert::IsTrue(Equals(P.Y(), 19.4654770));
+        Assert::IsTrue(Equals(P.Z(), 29.1982155));
+
     }
 
 };

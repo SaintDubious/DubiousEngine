@@ -54,6 +54,11 @@ public:
         Assert::IsTrue(Equals(Q.X(), 11));
         Assert::IsTrue(Equals(Q.Y(), 22));
         Assert::IsTrue(Equals(Q.Z(), 33));
+
+        Q = R*10;
+        Assert::IsTrue(Equals(Q.X(), 100));
+        Assert::IsTrue(Equals(Q.Y(), 200));
+        Assert::IsTrue(Equals(Q.Z(), 300));
     }
 
     TEST_METHOD(VectorLength)

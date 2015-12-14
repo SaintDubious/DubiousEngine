@@ -10,6 +10,7 @@ namespace Math {
 template <int T> class VectorT;
 template <int T> class UnitVectorT;
 template <int T> VectorT<T> operator+( const VectorT<T>& A, const VectorT<T>& B );
+template <int T> VectorT<T> operator*( const VectorT<T>& A, float B );
 
 /// @brief A 3D Vector
 ///
@@ -83,6 +84,7 @@ public:
 
 private:
     friend VectorT<T>   operator+ <>( const VectorT<T>& A, const VectorT<T>& B );
+    friend VectorT<T>   operator* <>( const VectorT<T>& A, float B );
 
     VectorT( const Triple& Coords )
         : m_Coords( Coords )
@@ -96,6 +98,13 @@ template <int T>
 VectorT<T> operator+( const VectorT<T>& A, const VectorT<T>& B )
 {
     return VectorT<T>( A.m_Coords + B.m_Coords );
+}
+
+//////////////////////////////////////////////////////////////
+template <int T> 
+VectorT<T> operator*( const VectorT<T>& A, float B )
+{
+    return VectorT<T>( A.m_Coords.m_X*B, A.m_Coords.m_Y*B, A.m_Coords.m_Z*B );
 }
 
 typedef VectorT<0>      Vector;
