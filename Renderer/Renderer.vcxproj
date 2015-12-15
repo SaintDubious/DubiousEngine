@@ -19,21 +19,26 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\Color.cpp" />
     <ClCompile Include="src\Model.cpp" />
     <ClCompile Include="src\OpenGLAttributes.cpp" />
     <ClCompile Include="src\OpenGLCommands.cpp" />
     <ClCompile Include="src\OpenGLContextStore.cpp" />
     <ClCompile Include="src\OpenGLMatrix.cpp" />
+    <ClCompile Include="src\VisibleObject.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\Color.h" />
     <ClInclude Include="src\Model.h" />
+    <ClInclude Include="src\ObjectRenderer.h" />
     <ClInclude Include="src\OpenGLAttributes.h" />
     <ClInclude Include="src\OpenGLCommands.h" />
     <ClInclude Include="src\OpenGLContextStore.h" />
     <ClInclude Include="src\OpenGLMatrix.h" />
     <ClInclude Include="src\OpenGLPrimitive.h" />
+    <ClInclude Include="src\VisibleObject.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{FFCC054D-5156-49EB-9077-E172B5E2857B}</ProjectGuid>

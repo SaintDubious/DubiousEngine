@@ -4,6 +4,9 @@
     <Filter Include="OpenGL">
       <UniqueIdentifier>{8b1bd055-179c-4135-905c-6c8e93378c37}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ObjectRenderers">
+      <UniqueIdentifier>{abfbd7a9-867c-40c2-a527-ad17ce09eb7c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\OpenGLAttributes.cpp">
@@ -20,6 +23,8 @@
     </ClCompile>
     <ClCompile Include="src\Color.cpp" />
     <ClCompile Include="src\Model.cpp" />
+    <ClCompile Include="src\Camera.cpp" />
+    <ClCompile Include="src\VisibleObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\OpenGLAttributes.h">
@@ -39,5 +44,10 @@
     </ClInclude>
     <ClInclude Include="src\Color.h" />
     <ClInclude Include="src\Model.h" />
+    <ClInclude Include="src\Camera.h" />
+    <ClInclude Include="src\ObjectRenderer.h">
+      <Filter>ObjectRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\VisibleObject.h" />
   </ItemGroup>
 </Project>

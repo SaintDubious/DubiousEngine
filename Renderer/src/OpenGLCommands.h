@@ -36,7 +36,6 @@ public:
     }
 
     /// @brief glViewport
-    template <int T>
     static void			Viewport( int X, int Y, int Width, int Height )
     {
         glViewport( X, Y, Width, Height );
