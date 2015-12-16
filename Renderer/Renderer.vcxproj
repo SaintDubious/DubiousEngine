@@ -26,6 +26,8 @@
     <ClCompile Include="src\OpenGLCommands.cpp" />
     <ClCompile Include="src\OpenGLContextStore.cpp" />
     <ClCompile Include="src\OpenGLMatrix.cpp" />
+    <ClCompile Include="src\Scene.cpp" />
+    <ClCompile Include="src\SimpleObjectRenderer.cpp" />
     <ClCompile Include="src\VisibleObject.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -38,6 +40,8 @@
     <ClInclude Include="src\OpenGLContextStore.h" />
     <ClInclude Include="src\OpenGLMatrix.h" />
     <ClInclude Include="src\OpenGLPrimitive.h" />
+    <ClInclude Include="src\Scene.h" />
+    <ClInclude Include="src\SimpleObjectRenderer.h" />
     <ClInclude Include="src\VisibleObject.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

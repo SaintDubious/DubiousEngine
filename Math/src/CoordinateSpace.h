@@ -49,6 +49,16 @@ public:
     /// @param Z - [in] Z Axis
     void                GetAxes( UnitVector& X, UnitVector& Y, UnitVector& Z ) const;
 
+    /// @brief Get the OpenGL rotation Matrix
+    ///
+    /// Get the rotation matrix from the Quaternion. This is
+    /// directly usable by openGL
+    /// @param Matrix - [in] The rotation matrix
+    void                GetMatrix( float Matrix[16] ) const
+    {
+        m_Rotation.GetMatrix( Matrix );
+    }
+
     /// @brief Position accessor
     const PointT<T>&    Position() const { return m_Position; }
 

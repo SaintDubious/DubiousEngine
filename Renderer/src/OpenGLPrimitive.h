@@ -57,7 +57,7 @@ public:
     /// @brief Calls glNormal
     /// @param N - [in] The normal you want to rander
     template <int T>
-    void                Normal( const Math::UnitVector<T>& N ) const
+    void                Normal( const Math::UnitVectorT<T>& N ) const
     {
         glNormal3f( N.X(), N.Y(), N.Z() );
     }
