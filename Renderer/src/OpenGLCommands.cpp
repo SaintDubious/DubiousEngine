@@ -2,8 +2,8 @@
 #include "Color.h"
 
 //////////////////////////////////////////////////////////////
-using Dubious::Renderer::OpenGLCommands;
-using Dubious::Renderer::Color;
+namespace Dubious {
+namespace Renderer {
 
 //////////////////////////////////////////////////////////////
 void OpenGLCommands::Material( int Light, const Color& C )
@@ -16,3 +16,4 @@ void OpenGLCommands::Material( int Light, const Color& C )
     glMaterialfv( GL_FRONT, Light, RawColour );
 }
 
+}}

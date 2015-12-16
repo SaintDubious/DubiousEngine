@@ -1,12 +1,10 @@
 #include "VisibleObject.h"
 #include "Model.h"
-#include "VectorMath.h"
+#include <VectorMath.h>
 
 //////////////////////////////////////////////////////////////
-using Dubious::Renderer::VisibleObject;
-using Dubious::Renderer::ModelPtr;
-using Dubious::Math::LocalPoint;
-using Dubious::Math::LocalUnitVector;
+namespace Dubious {
+namespace Renderer {
 
 //////////////////////////////////////////////////////////////
 VisibleObject::VisibleObject( ModelPtr pModel, ModelPtr pShadowModel )
@@ -17,7 +15,7 @@ VisibleObject::VisibleObject( ModelPtr pModel, ModelPtr pShadowModel )
 }
 
 //////////////////////////////////////////////////////////////
-void VisibleObject::BuildSilhouette(const LocalPoint &LightPos, Silhouette &Sil) const
+void VisibleObject::BuildSilhouette(const Math::LocalPoint &LightPos, Silhouette &Sil) const
 {
     Sil.Edges.clear();
     Sil.Kids.clear();
@@ -28,18 +26,18 @@ void VisibleObject::BuildSilhouette(const LocalPoint &LightPos, Silhouette &Sil)
 }
 
 //////////////////////////////////////////////////////////////
-void VisibleObject::BuildSilhouette( ModelPtr pModel, const LocalPoint &LightPos, Silhouette &Sil) const
+void VisibleObject::BuildSilhouette( ModelPtr pModel, const Math::LocalPoint &LightPos, Silhouette &Sil) const
 {
     Sil.Position = pModel->Offset();
     const Model::EdgeVector& Edges = pModel->Edges();
     if( !Edges.empty() ){
         const LocalPointVector& Points = pModel->Points();
         const Model::SurfaceVector Surfaces = pModel->Surfaces();
-        const LocalPoint* pVertices = &(Points[0]);
+        const Math::LocalPoint* pVertices = &(Points[0]);
         const Model::Surface* pSurfaces = &(Surfaces[0]);
 
         // precompute dot products so as to do less multiplies
-        LocalUnitVector LightPosVector( LightPos.X(), LightPos.Y(), LightPos.Z() );
+        Math::LocalUnitVector LightPosVector( LightPos.X(), LightPos.Y(), LightPos.Z() );
         std::vector<float> DotProducts( Surfaces.size() );
         for( size_t i=0; i<Surfaces.size(); ++i )
             DotProducts[i] = DotProduct( LightPosVector, pSurfaces[i].Normal );
@@ -73,4 +71,4 @@ void VisibleObject::BuildSilhouette( ModelPtr pModel, const LocalPoint &LightPos
     }
 }
 
-
+}}

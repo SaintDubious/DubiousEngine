@@ -4,7 +4,7 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-using Dubious::Utility::FilePath;
+using namespace Dubious::Utility;
 
 namespace TestUtility
 {		

@@ -5,14 +5,8 @@
 #include <cassert>
 
 //////////////////////////////////////////////////////////////
-using Dubious::Utility::AC3DModel;
-using Dubious::Utility::AC3DModelPtr;
-using Dubious::Utility::AC3DFilePtr;
-using Dubious::Utility::AC3DMaterial;
-using Dubious::Utility::AC3DFileReader;
-using Dubious::Utility::FilePath;
-
-using Dubious::Math::LocalPoint;
+namespace Dubious {
+namespace Utility {
 
 //////////////////////////////////////////////////////////////
 // info on the file format can be found at:
@@ -136,7 +130,7 @@ AC3DModelPtr ReadModel( std::ifstream& Input, bool& LOCPresent )
         } 
         else if (Token == LOC) {
             Input >> x >> y >> z;
-            pModel->Offset() = LocalPoint( x, y, z );
+            pModel->Offset() = Math::LocalPoint( x, y, z );
             LOCPresent = true;
         } 
         else if (Token == URL) {
@@ -147,7 +141,7 @@ AC3DModelPtr ReadModel( std::ifstream& Input, bool& LOCPresent )
             Input >> NumVertices;
             for (i=0; i<NumVertices; i++) {
                 Input >> x >> y >> z;
-                pModel->Points().push_back( LocalPoint( x, y, z ) );
+                pModel->Points().push_back( Math::LocalPoint( x, y, z ) );
             }
         } 
         else if (Token == NUMSURF) {
@@ -181,6 +175,9 @@ AC3DModelPtr ReadModel( std::ifstream& Input, bool& LOCPresent )
 AC3DFilePtr AC3DFileReader::ReadFile( const FilePath& FileName )
 {
     std::ifstream InputFile( FileName.FullPath().c_str() );
+    if (!InputFile.good()) {
+        throw std::runtime_error( "Couldn't open AC3D file" );
+    }
     
     std::string Token;
     InputFile >> Token;
@@ -212,3 +209,4 @@ AC3DFilePtr AC3DFileReader::ReadFile( const FilePath& FileName )
     return AC3DFilePtr( new AC3DFile( Materials, pModel ) );
 }
 
+}}

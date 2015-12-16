@@ -1,7 +1,7 @@
 #ifndef INCLUDED_RENDERER_OPENGLATTRIBUTES
 #define INCLUDED_RENDERER_OPENGLATTRIBUTES
 
-#include "Point.h"
+#include <Point.h>
 
 #include <SDL_opengl.h>
 

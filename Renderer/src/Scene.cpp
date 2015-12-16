@@ -8,12 +8,8 @@
 #include "VisibleObject.h"
 
 //////////////////////////////////////////////////////////////
-using Dubious::Renderer::Scene;
-using Dubious::Renderer::ObjectRenderer;
-using Dubious::Renderer::CameraPtr;
-using Dubious::Renderer::VisibleObjectPtr;
-using Dubious::Renderer::OpenGLContextStorePtr;
-using Dubious::Renderer::OpenGLAttributes;
+namespace Dubious {
+namespace Renderer {
 
 typedef std::shared_ptr<ObjectRenderer> ObjectRendererPtr;
 
@@ -124,3 +120,4 @@ void Scene::SetupLight( OpenGLAttributes& Attribs, bool InShadow ) const
 	*/
 }
 
+}}

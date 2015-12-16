@@ -7,7 +7,7 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-using Dubious::Utility::Timer;
+using namespace Dubious::Utility;
 
 namespace TestUtility
 {		

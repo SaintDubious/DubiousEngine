@@ -2,8 +2,8 @@
 #define INCLUDED_RENDERER_MODEL
 
 #include "Color.h"
-#include "Point.h"
-#include "UnitVector.h"
+#include <Point.h>
+#include <UnitVector.h>
 
 #include <vector>
 #include <memory>

@@ -3,7 +3,7 @@
 
 #include "Color.h"
 
-#include "CoordinateSpace.h"
+#include <CoordinateSpace.h>
 
 #include <memory>
 #include <vector>
@@ -69,10 +69,10 @@ public:
     ModelPtr			ShadowModel() const { return m_pShadowModel; }
 
     /// @brief Renderer
-    ObjectRendererPtr   ObjectRenderer() const { return m_pObjectRenderer; }
+    ObjectRendererPtr&  ObjectRenderer() { return m_pObjectRenderer; }
 
     /// @brief Shadow Renderer
-    ShadowRendererPtr	ShadowRenderer() const { return m_pShadowRenderer; }
+    ShadowRendererPtr&  ShadowRenderer() { return m_pShadowRenderer; }
 
     /// @brief Accessor
     Color&				BaseColor() { return m_BaseColor; }

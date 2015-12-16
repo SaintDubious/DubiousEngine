@@ -4,6 +4,10 @@
 #include <SDL_opengl.h>
 #include <stdexcept>
 
+//////////////////////////////////////////////////////////////
+namespace Dubious {
+namespace Utility {
+
 namespace
 {
 static const int LEFT_MOUSE_BUTTON		= 1;
@@ -13,10 +17,9 @@ static const int MOUSE_SCROLL_DOWN		= 5;
 }
 
 //////////////////////////////////////////////////////////////
-using Dubious::Utility::SDLManager;
-
-//////////////////////////////////////////////////////////////
 SDLManager::SDLManager()
+    : m_pWindow( NULL )
+    , m_GLContext( NULL )
 {
     if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
         throw std::runtime_error( "Could not initialize SDL" );
@@ -28,6 +31,8 @@ SDLManager::SDLManager()
 //////////////////////////////////////////////////////////////
 SDLManager::~SDLManager()
 {
+    if (m_GLContext != NULL)
+        SDL_GL_DeleteContext( m_GLContext );
     if (m_pWindow != NULL)
         SDL_DestroyWindow( m_pWindow );
     SDL_Quit();
@@ -42,6 +47,9 @@ void SDLManager::CreateRootWindow( const std::string& Title, int Width, int Heig
     m_pWindow = SDL_CreateWindow( Title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Width, Height, Mode );
     if (m_pWindow == NULL) 
         throw std::runtime_error( "Could not create root window" );
+    m_GLContext = SDL_GL_CreateContext( m_pWindow );
+    if (m_GLContext == NULL) 
+        throw std::runtime_error( "Failed to create OpenGL Context" );
 }
 
 //////////////////////////////////////////////////////////////
@@ -79,9 +87,6 @@ void SDLManager::Run()
                 else if (Event.button.button == RIGHT_MOUSE_BUTTON && m_OnMouseRightDown) {
                     m_OnMouseRightDown( std::make_pair(Event.motion.x, Event.motion.y) );
                 } 
-                else if (((Event.button.button == MOUSE_SCROLL_UP) || (Event.button.button == MOUSE_SCROLL_DOWN)) && m_OnMouseWheel ) {
-                    m_OnMouseWheel( std::make_pair(Event.motion.x, Event.motion.y), Event.button.button == MOUSE_SCROLL_UP );
-                }
                 break;
             case SDL_MOUSEBUTTONUP:
                 if (Event.button.button == LEFT_MOUSE_BUTTON && m_OnMouseLeftUp ) {
@@ -89,6 +94,11 @@ void SDLManager::Run()
                 } 
                 else if (Event.button.button == RIGHT_MOUSE_BUTTON && m_OnMouseRightUp) {
                     m_OnMouseRightUp( std::make_pair(Event.motion.x, Event.motion.y) );
+                }
+                break;
+            case SDL_MOUSEWHEEL:
+                if (m_OnMouseWheel) {
+                    m_OnMouseWheel( Event.wheel.y );
                 }
                 break;
             }
@@ -103,6 +113,7 @@ void SDLManager::Run()
                 m_OnIdle();
             }
             glFinish();
+            SDL_GL_SwapWindow( m_pWindow );
         }
     }
 }
@@ -113,3 +124,4 @@ void SDLManager::Stop()
     m_Quit = true;
 }
 
+}}

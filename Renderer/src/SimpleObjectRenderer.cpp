@@ -7,12 +7,8 @@
 #include "OpenGLPrimitive.h"
 
 //////////////////////////////////////////////////////////////
-using Dubious::Renderer::SimpleObjectRenderer;
-using Dubious::Renderer::LocalPointVector;
-using Dubious::Renderer::OpenGLContextStorePtr;
-using Dubious::Renderer::VisibleObjectPtr;
-using Dubious::Renderer::ModelPtr;
-using Dubious::Math::LocalPoint;
+namespace Dubious {
+namespace Renderer {
 
 //////////////////////////////////////////////////////////////
 SimpleObjectRenderer::SimpleObjectRenderer( OpenGLContextStorePtr pContextStore )
@@ -34,11 +30,37 @@ void SimpleObjectRenderer::RenderObject( VisibleObjectPtr pObject )
 
 	unsigned int GLHandle = m_pContextStore->GetCallList( iter->second );
 	OpenGLMatrix GLMatrix;
-//	OpenGLCommands::Translate( pObject->CoordinateSpace().Position() );
+	OpenGLCommands::Translate( pObject->CoordinateSpace().Position() - Math::Point() );
 	float m[16];
 	pObject->CoordinateSpace().GetMatrix( m );
 	OpenGLCommands::MultMatrix( m );
 	OpenGLCommands::CallList( GLHandle );	
+}
+
+//////////////////////////////////////////////////////////////
+namespace {
+void RenderModel( ModelPtr pModel )
+{
+    OpenGLMatrix LocalMatrix;
+    OpenGLCommands::Translate( pModel->Offset() - Math::LocalPoint() );
+    const LocalPointVector& Points( pModel->Points() );
+    OpenGLCommands::Material( GL_AMBIENT, pModel->MaterialColor() );
+    OpenGLCommands::Material( GL_DIFFUSE, pModel->MaterialColor() );
+    for (const Model::Surface& Surface : pModel->Surfaces()) {
+        const Math::LocalPoint& A( Points[Surface.p0] );
+        const Math::LocalPoint& B( Points[Surface.p1] );
+        const Math::LocalPoint& C( Points[Surface.p2] );
+        const Math::LocalUnitVector& Normal = Surface.Normal;
+
+        OpenGLPrimitive Prim( OpenGLPrimitive::TRIANGLES );
+        Prim.Normal( Normal );
+        Prim.Vertex( A );
+        Prim.Vertex( B );
+        Prim.Vertex( C );
+    }
+    for (const ModelPtr Kid : pModel->Kids())
+        RenderModel( Kid );
+}
 }
 
 //////////////////////////////////////////////////////////////
@@ -53,29 +75,4 @@ void SimpleObjectRenderer::ConstructModel( VisibleObjectPtr pObject )
 	m_ObjectDataMap[pObject] = Handle;
 }
 
-//////////////////////////////////////////////////////////////
-void SimpleObjectRenderer::RenderModel( ModelPtr pModel )
-{
-	OpenGLMatrix LocalMatrix;
-	OpenGLCommands::Translate( pModel->Offset() - LocalPoint() );
-	const LocalPointVector& Points( pModel->Points() );
-	const Model::SurfaceVector& Surfaces( pModel->Surfaces() );
-	OpenGLCommands::Material( GL_AMBIENT, pModel->MaterialColor() );
-	OpenGLCommands::Material( GL_DIFFUSE, pModel->MaterialColor() );
-	for( size_t i=0; i<Surfaces.size(); ++i ){
-		const Math::LocalPoint& A( Points[Surfaces[i].p0] );
-		const Math::LocalPoint& B( Points[Surfaces[i].p1] );
-		const Math::LocalPoint& C( Points[Surfaces[i].p2] );
-		const Math::LocalUnitVector& Normal = Surfaces[i].Normal;
-
-		OpenGLPrimitive Prim( OpenGLPrimitive::TRIANGLES );
-		Prim.Normal( Normal );
-		Prim.Vertex( A );
-		Prim.Vertex( B );
-		Prim.Vertex( C );
-	}
-	const ModelPtrVector& Kids = pModel->Kids();
-	for( size_t i=0; i<Kids.size(); ++i )
-		RenderModel( Kids[i] );
-}
-
+}}

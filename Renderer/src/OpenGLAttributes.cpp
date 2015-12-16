@@ -4,9 +4,9 @@
 #include <assert.h>
 #include <stdexcept>
 
-using Dubious::Renderer::OpenGLAttributes;
-using Dubious::Renderer::Color;
-using Dubious::Math::Point;
+//////////////////////////////////////////////////////////////
+namespace Dubious {
+namespace Renderer {
 
 ////////////////////////////////////////////////////////////////////////////////////
 OpenGLAttributes::OpenGLAttributes( int BitField, bool Restore )
@@ -49,7 +49,7 @@ void OpenGLAttributes::Disable( AttrBits BitField ) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
-void OpenGLAttributes::LightPosition( int Light, const Point& Position ) const
+void OpenGLAttributes::LightPosition( int Light, const Math::Point& Position ) const
 {
     float LightParams[4];
     LightParams[0] = Position.X();
@@ -116,4 +116,4 @@ void OpenGLAttributes::VerifyBits( AttrBits BitField ) const
     }
 }
 
-
+}}

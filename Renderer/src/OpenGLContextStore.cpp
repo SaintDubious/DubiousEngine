@@ -2,8 +2,8 @@
 #include <SDL_opengl.h>
 
 //////////////////////////////////////////////////////////////
-using Dubious::Renderer::OpenGLContextStore;
-using Dubious::Renderer::CallListHandle;
+namespace Dubious {
+namespace Renderer {
 
 //////////////////////////////////////////////////////////////
 OpenGLContextStore::OpenGLContextStore()
@@ -54,3 +54,5 @@ unsigned int OpenGLContextStore::GetCallList( CallListHandle Handle ) const
         throw std::runtime_error( "Specified call list handle doesn't exist" );
     return m_CallLists[Handle].GLHandle;
 }
+
+}}

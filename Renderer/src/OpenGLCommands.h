@@ -2,8 +2,8 @@
 #define INCLUDED_RENDERER_OPENGLCOMMANDS
 
 #include "Color.h"
-#include "Vector.h"
-#include "Point.h"
+#include <Vector.h>
+#include <Point.h>
 
 #include <SDL_opengl.h>
 #include <gl/GLU.h>

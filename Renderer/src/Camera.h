@@ -1,7 +1,7 @@
 #ifndef INCLUDED_RENDERER_CAMERA
 #define INCLUDED_RENDERER_CAMERA
 
-#include "CoordinateSpace.h"
+#include <CoordinateSpace.h>
 
 #include <memory>
 

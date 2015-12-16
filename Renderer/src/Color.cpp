@@ -1,7 +1,8 @@
 #include "Color.h"
 
 //////////////////////////////////////////////////////////////
-using Dubious::Renderer::Color;
+namespace Dubious {
+namespace Renderer {
 
 const Color Color::RED   ( 1.0f, 0,    0 );
 const Color Color::GREEN ( 0,    1.0f, 0 );
@@ -30,3 +31,4 @@ Color::Color( float R, float G, float B, float A )
 {
 }
 
+}}

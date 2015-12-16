@@ -1,7 +1,7 @@
 #ifndef INCLUDED_UTILITY_AC3DFILEREADER
 #define INCLUDED_UTILITY_AC3DFILEREADER
 
-#include "Point.h"
+#include <Point.h>
 
 #include <string>
 #include <memory>

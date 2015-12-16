@@ -3,7 +3,8 @@
 #include <SDL_opengl.h>
 
 //////////////////////////////////////////////////////////////
-using Dubious::Renderer::OpenGLMatrix;
+namespace Dubious {
+namespace Renderer {
 
 //////////////////////////////////////////////////////////////
 OpenGLMatrix::OpenGLMatrix()
@@ -29,3 +30,4 @@ void OpenGLMatrix::MatrixMode( int Mode )
     glMatrixMode( Mode );
 }
 
+}}

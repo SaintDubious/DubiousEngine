@@ -2,7 +2,8 @@
 #include <sstream>
 
 //////////////////////////////////////////////////////////////
-using Dubious::Utility::FilePath;
+namespace Dubious {
+namespace Utility {
 
 namespace 
 {
@@ -73,3 +74,5 @@ std::ostream& operator<<( std::ostream& os, const FilePath& Input )
     os << Input.FullPath();
     return os;
 }
+
+}}

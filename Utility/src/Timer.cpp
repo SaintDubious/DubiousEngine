@@ -1,7 +1,8 @@
 #include "Timer.h"
 
 //////////////////////////////////////////////////////////////
-using Dubious::Utility::Timer;
+namespace Dubious {
+namespace Utility {
 
 //////////////////////////////////////////////////////////////
 Timer::Timer()
@@ -30,3 +31,4 @@ int64_t Timer::Elapsed() const
     return std::chrono::duration_cast<std::chrono::milliseconds>(EndTime - m_StartTime).count();
 }
 
+}}

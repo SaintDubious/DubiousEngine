@@ -45,7 +45,7 @@ public:
 
 private:
 	void                ConstructModel( VisibleObjectPtr pObject );
-	void                RenderModel( ModelPtr pModel );
+
 	OpenGLContextStorePtr m_pContextStore;
 	typedef std::map<VisibleObjectPtr,unsigned int> ObjectDataMap;
 	ObjectDataMap       m_ObjectDataMap;

@@ -91,7 +91,7 @@ public:
     /// @brief called when the scroll wheel is moved
     /// @param Point - [in] the location of the mouse relative to the application window.
     /// @param WheelUp - [in] true if the wheel is scrolled up
-    std::function<void (const MousePoint&,bool)>& OnMouseWheel() { return m_OnMouseWheel; }
+    std::function<void (int)>& OnMouseWheel() { return m_OnMouseWheel; }
 
     /// @brief called when a key is pressed.  
     ///
@@ -102,6 +102,7 @@ public:
 
 private:
     SDL_Window*         m_pWindow;
+    SDL_GLContext       m_GLContext;
     bool                m_Quit;
     std::function<void ()> m_OnQuit;
     std::function<void ()> m_OnIdle;
@@ -110,7 +111,7 @@ private:
     std::function<void (const MousePoint&)> m_OnMouseLeftUp;
     std::function<void (const MousePoint&)> m_OnMouseRightDown;
     std::function<void (const MousePoint&)> m_OnMouseRightUp;
-    std::function<void (const MousePoint&, bool)> m_OnMouseWheel;
+    std::function<void (int Y)> m_OnMouseWheel;
     std::function<void (SDL_Keycode,unsigned short)> m_OnKeyDown;
 };
 
