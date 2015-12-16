@@ -21,24 +21,23 @@ namespace Math {
 ///	and positive Z is going from this text to your eye.  If you hold up your right hand and 
 ///	place your thumb along positive X and your index finger along positive Y then your middle
 ///	finger is pointing along positive Z (at you).
-template <int T>
-class CoordinateSpaceT
+class CoordinateSpace
 {
 public:
     /// @brief Default constructor
     ///
     /// The default constructor creates a coordinate space centered at 
     /// (0,0,0) with the +Y axis as Up and +Z as Forward, etc etc
-    CoordinateSpaceT() = default;
+    CoordinateSpace() = default;
 
     /// @brief Default copy constructor
-    CoordinateSpaceT( const CoordinateSpaceT& ) = default;
+    CoordinateSpace( const CoordinateSpace& ) = default;
 
     /// @brief Default Destructor
-    ~CoordinateSpaceT() = default;
+    ~CoordinateSpace() = default;
 
     /// @brief Default assignment operator
-    CoordinateSpaceT& operator=( const CoordinateSpaceT& ) = default;
+    CoordinateSpace& operator=( const CoordinateSpace& ) = default;
 
     /// @brief Get 3 axis
     ///
@@ -54,20 +53,43 @@ public:
     /// Get the rotation matrix from the Quaternion. This is
     /// directly usable by openGL
     /// @param Matrix - [in] The rotation matrix
-    void                GetMatrix( float Matrix[16] ) const
-    {
-        m_Rotation.GetMatrix( Matrix );
-    }
+    void                GetMatrix( float Matrix[16] ) const;
 
     /// @brief Position accessor
-    const PointT<T>&    Position() const { return m_Position; }
+    const Point&        Position() const { return m_Position; }
+
+    /// @brief Move by the amount specified
+    ///
+    /// This version takes a global vector, therefore it moves
+    /// relative to global space.
+    /// @param Diff - [in] The amount to move
+    void                Translate( const Vector& Diff );
+
+    /// @brief Move by the amount specified
+    ///
+    /// This version takes a local vector, therefore it moves
+    /// relative to local space.
+    /// @param Diff - [in] The amount to move
+    void                Translate( const LocalVector& Diff );
+
+    /// @brief Rotate the coordinate space
+    ///
+    /// This version takes a global quaternion, therefore it
+    /// rotates relative to global space
+    /// @param Diff - [in] The amount to rotate
+    void                Rotate( const Quaternion& Diff );
+
+    /// @brief Rotate the coordinate space
+    ///
+    /// This version takes a local quaternion, therefore it
+    /// rotates relative to local space
+    /// @param Diff - [in] The amount to rotate
+    void                Rotate( const LocalQuaternion& Diff );
 
 private:
-    PointT<T>           m_Position;
-    QuaternionT<T>      m_Rotation;
+    Point               m_Position;
+    Quaternion          m_Rotation;
 };
-
-typedef CoordinateSpaceT<0>  CoordinateSpace;
 
 }
 }

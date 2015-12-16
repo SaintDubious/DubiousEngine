@@ -6,11 +6,7 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-using Dubious::Math::Vector;
-using Dubious::Math::UnitVector;
-using Dubious::Math::Equals;
-using Dubious::Math::CrossProduct;
-using Dubious::Math::ToRadians;
+using namespace Dubious::Math;
 
 namespace MathTest {
 

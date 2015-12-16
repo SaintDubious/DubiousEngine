@@ -7,11 +7,7 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-using Dubious::Math::Quaternion;
-using Dubious::Math::Equals;
-using Dubious::Math::ToRadians;
-using Dubious::Math::Triple;
-using Dubious::Math::UnitVector;
+using namespace Dubious::Math;
 
 namespace MathTest {
 
@@ -60,8 +56,13 @@ public:
         T = Quaternion( UnitVector( 0, 1, 0 ), ToRadians( 10 ) );
         for (int i=2; i<18; ++i) {
             S = T*S;
-            U = Quaternion( UnitVector( 0, 1, 0 ), ToRadians(i*10) );
+            U = Quaternion( UnitVector( 0, 1, 0 ), ToRadians(i*10.0f) );
             Assert::IsTrue( S == U );
+            Quaternion Conjugate = S.Conjugate();
+            Assert::IsTrue( Conjugate.m_Real == S.m_Real );
+            Assert::IsTrue( Conjugate.m_Imaginary.m_X == -S.m_Imaginary.m_X );
+            Assert::IsTrue( Conjugate.m_Imaginary.m_Y == -S.m_Imaginary.m_Y );
+            Assert::IsTrue( Conjugate.m_Imaginary.m_Z == -S.m_Imaginary.m_Z );
         }
     }
 

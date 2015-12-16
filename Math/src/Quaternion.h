@@ -81,6 +81,14 @@ public:
     /// @brief Default assignment operator
     QuaternionT& operator=( const QuaternionT& ) = default;
 
+    /// @brief The conjugate
+    ///
+    /// This is needed to rotate a Vector by the rotation represented
+    /// by this quaternion. The conjugate is simply:
+    /// (w, -x, -y, -z)
+    /// @returns the conjugate
+    QuaternionT         Conjugate() const;
+
     /// @brief Get the rotation matrix
     ///
     /// Return the rotation matrix representation of this quaternion.
@@ -92,9 +100,15 @@ public:
 
 private:
     friend class MathTest::QuaternionTest;
+    friend class CoordinateSpace;
     friend bool operator== <>( const QuaternionT<T>& A, const QuaternionT<T>& B );
     friend bool operator!= <>( const QuaternionT<T>& A, const QuaternionT<T>& B );
     friend QuaternionT<T> operator* <>( const QuaternionT<T>& A, const QuaternionT<T>& B );
+
+    QuaternionT( float Real, const Triple& Imaginary )
+        : m_Real( Real )
+        , m_Imaginary( Imaginary )
+    {}
 
     void                Normalize();
 
@@ -136,6 +150,7 @@ QuaternionT<T> operator*( const QuaternionT<T>& A, const QuaternionT<T>& B )
 }
 
 typedef QuaternionT<0> Quaternion;
+typedef QuaternionT<1> LocalQuaternion;
 
 }
 }

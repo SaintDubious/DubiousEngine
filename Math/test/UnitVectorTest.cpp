@@ -6,9 +6,7 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-using Dubious::Math::UnitVector;
-using Dubious::Math::Vector;
-using Dubious::Math::Equals;
+using namespace Dubious::Math;
 
 namespace MathTest {
 
@@ -18,6 +16,11 @@ public:
 
     TEST_METHOD(UnitVectorConstruction)
     {
+        UnitVector Junk;
+        Assert::IsTrue(Equals(Junk.X(), 1));
+        Assert::IsTrue(Equals(Junk.Y(), 0));
+        Assert::IsTrue(Equals(Junk.Z(), 0));
+
         UnitVector P(1, 2, 3);
         Assert::IsTrue(Equals(P.X(), 0.267261237f));
         Assert::IsTrue(Equals(P.Y(), 0.534522474f));

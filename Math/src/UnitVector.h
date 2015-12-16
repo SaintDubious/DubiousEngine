@@ -24,6 +24,18 @@ class UnitVectorT
 public:
     /// @brief Constructor
     ///
+    /// This is primarily an optimization. In some cases you need to
+    /// create an empty UnitVector so that you can assign it or
+    /// pass it as an out parameter to something. In this case you
+    /// don't really care what value it holds. Creating one with
+    /// dummy args causes a painful normalization. So this function
+    /// will create one as 1,0,0 and not call normalization
+    UnitVectorT()
+        : m_Coords( 1, 0, 0 )
+    {}
+
+    /// @brief Constructor
+    ///
     /// Creates the unit vector with the given X, Y, and Z converted
     /// to a length of 1
     /// @param X - [in] X component

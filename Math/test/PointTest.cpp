@@ -7,10 +7,7 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-using Dubious::Math::Point;
-using Dubious::Math::Vector;
-using Dubious::Math::UnitVector;
-using Dubious::Math::Equals;
+using namespace Dubious::Math;
 
 namespace MathTest {
 
@@ -66,14 +63,14 @@ public:
 
         UnitVector UnitResult( Result );
         P = R+UnitResult;
-        Assert::IsTrue(Equals(P.X(), 10.2672615));
-        Assert::IsTrue(Equals(P.Y(), 20.5345230));
-        Assert::IsTrue(Equals(P.Z(), 30.8017845));
+        Assert::IsTrue(Equals(P.X(), 10.2672615f));
+        Assert::IsTrue(Equals(P.Y(), 20.5345230f));
+        Assert::IsTrue(Equals(P.Z(), 30.8017845f));
 
         P = R-UnitResult;
-        Assert::IsTrue(Equals(P.X(), 9.73273849));
-        Assert::IsTrue(Equals(P.Y(), 19.4654770));
-        Assert::IsTrue(Equals(P.Z(), 29.1982155));
+        Assert::IsTrue(Equals(P.X(), 9.73273849f));
+        Assert::IsTrue(Equals(P.Y(), 19.4654770f));
+        Assert::IsTrue(Equals(P.Z(), 29.1982155f));
 
     }
 

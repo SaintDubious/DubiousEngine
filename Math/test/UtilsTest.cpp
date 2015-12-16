@@ -4,9 +4,7 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-using Dubious::Math::Equals;
-using Dubious::Math::ToRadians;
-using Dubious::Math::ToDegrees;
+using namespace Dubious::Math;
 
 namespace MathTest {
 

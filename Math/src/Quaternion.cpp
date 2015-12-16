@@ -2,8 +2,8 @@
 #include "UnitVector.h"
 
 //////////////////////////////////////////////////////////////
-using Dubious::Math::QuaternionT;
-using Dubious::Math::UnitVectorT;
+namespace Dubious {
+namespace Math {
 
 //////////////////////////////////////////////////////////////
 template <int T>
@@ -14,7 +14,7 @@ QuaternionT<T>::QuaternionT( const UnitVectorT<T>& Axis, float Angle )
     m_Imaginary = Triple( Axis.X() * HalfSin, Axis.Y() * HalfSin, Axis.Z() * HalfSin );
 }
 
-////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////
 template <int T>
 void QuaternionT<T>::GetMatrix( float Matrix[16] ) const
 {
@@ -45,7 +45,14 @@ void QuaternionT<T>::GetMatrix( float Matrix[16] ) const
     Matrix[_44] = 1.0;
 }
 
-////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////
+template <int T>
+QuaternionT<T> QuaternionT<T>::Conjugate() const
+{
+    return QuaternionT<T>( m_Real, Triple( -m_Imaginary.m_X, -m_Imaginary.m_Y, -m_Imaginary.m_Z ) );
+}
+
+//////////////////////////////////////////////////////////////
 template <int T>
 void QuaternionT<T>::Normalize()
 {
@@ -62,5 +69,7 @@ void QuaternionT<T>::Normalize()
                           m_Imaginary.m_Z/Magnitude );
 }
 
-
 template class QuaternionT<0>;
+template class QuaternionT<1>;
+
+}}

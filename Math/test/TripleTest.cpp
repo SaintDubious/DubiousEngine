@@ -5,8 +5,7 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-using Dubious::Math::Triple;
-using Dubious::Math::Equals;
+using namespace Dubious::Math;
 
 namespace MathTest {
 

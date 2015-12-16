@@ -2,8 +2,8 @@
 #include "Vector.h"
 
 //////////////////////////////////////////////////////////////
-using Dubious::Math::UnitVectorT;
-using Dubious::Math::VectorT;
+namespace Dubious {
+namespace Math {
 
 //////////////////////////////////////////////////////////////
 template <int T>
@@ -29,3 +29,5 @@ UnitVectorT<T>::UnitVectorT(const VectorT<T>& V)
 
 template class UnitVectorT<0>;
 template class UnitVectorT<1>;
+
+}}
