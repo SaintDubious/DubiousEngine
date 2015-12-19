@@ -2,6 +2,7 @@
 #define INCLUDED_RENDERER_OPENGLCOMMANDS
 
 #include "Color.h"
+
 #include <Vector.h>
 #include <Point.h>
 

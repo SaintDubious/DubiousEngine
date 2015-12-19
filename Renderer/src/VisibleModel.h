@@ -1,7 +1,8 @@
-#ifndef INCLUDED_RENDERER_MODEL
-#define INCLUDED_RENDERER_MODEL
+#ifndef INCLUDED_RENDERER_VISIBLEMODEL
+#define INCLUDED_RENDERER_VISIBLEMODEL
 
 #include "Color.h"
+
 #include <Point.h>
 #include <UnitVector.h>
 
@@ -20,25 +21,25 @@ typedef std::vector<AC3DMaterial> AC3DMaterialVector;
 
 namespace Math {
 struct Triple;
+typedef std::vector<LocalPoint> LocalPointVector;
+typedef std::vector<LocalUnitVector> LocalUnitVectorVector;
 }
 
 namespace Renderer {
 
-class Model;
-typedef std::shared_ptr<Model> ModelPtr;
-typedef std::vector<ModelPtr> ModelPtrVector;
-typedef std::vector<Math::LocalPoint> LocalPointVector;
-typedef std::vector<Math::LocalUnitVector> LocalUnitVectorVector;
+class VisibleModel;
+typedef std::shared_ptr<VisibleModel> VisibleModelPtr;
+typedef std::vector<VisibleModelPtr> VisibleModelPtrVector;
 
 /// @brief Representation of a visible model
 ///
 /// The Renderer::Model is a model suitable for drawing in
 ///	OpenGL.  It is similar to the AC3DModel, but it contains
 ///	more information, like point normals.
-class Model
+class VisibleModel
 {
 public:
-    Model( const Model& ) = delete;
+    VisibleModel( const VisibleModel& ) = delete;
 
     /// @brief Construct from AC3D Model
     ///
@@ -47,7 +48,7 @@ public:
     /// when you want to cast shadows.
     /// @param File - [in] The file object
     /// @param IncludeEdges - [in] Set true to build edges
-    Model( const Utility::AC3DFile& File, bool IncludeEdges );
+    VisibleModel( const Utility::AC3DFile& File, bool IncludeEdges );
 
     /// @brief Construct a cube
     ///
@@ -56,12 +57,12 @@ public:
     /// edge information, used in shadow rendering
     /// @param File - [in] The file object
     /// @param IncludeEdges - [in] Set true to build edges
-    Model( const Math::Triple& Dimensions, bool IncludeEdges );
+    VisibleModel( const Math::Triple& Dimensions, bool IncludeEdges );
 
     /// @brief Default destructor
-    ~Model() = default;
+    ~VisibleModel() = default;
 
-    Model& operator=( const Model& ) = delete;
+    VisibleModel& operator=( const VisibleModel& ) = delete;
 
     /// @brief Model Surface
     ///
@@ -99,26 +100,26 @@ public:
     void				BuildEdges();
 
     const Math::LocalPoint& Offset() const { return m_Offset; }
-    const LocalPointVector& Points() const { return m_Points; }
+    const Math::LocalPointVector& Points() const { return m_Points; }
     const SurfaceVector& Surfaces() const { return m_Surfaces; }
     const EdgeVector&	Edges() const { return m_Edges; }
     const Color&		MaterialColor() const { return m_Color; }
-    const ModelPtrVector& Kids() const { return m_Kids; }
+    const VisibleModelPtrVector& Kids() const { return m_Kids; }
 private:
 
-    Model();
+    VisibleModel();
 
     void				Construct( const Utility::AC3DModel& AC3DModel, const Utility::AC3DMaterialVector& Materials, bool IncludeEdges );
     void				ComputePointNormals();
     void				AddEdge( unsigned short p0, unsigned short p1, unsigned short s0, unsigned short s1 );
 
     Math::LocalPoint	m_Offset;
-    LocalPointVector	m_Points;
-    LocalUnitVectorVector m_PointNormals;
+    Math::LocalPointVector m_Points;
+    Math::LocalUnitVectorVector m_PointNormals;
     SurfaceVector		m_Surfaces;
     EdgeVector			m_Edges;
     Color				m_Color;
-    ModelPtrVector		m_Kids;
+    VisibleModelPtrVector m_Kids;
 
 };
 

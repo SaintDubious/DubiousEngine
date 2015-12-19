@@ -2,6 +2,7 @@
 #define INCLUDED_RENDERER_SIMPLE_RENDERER
 
 #include "ObjectRenderer.h"
+
 #include <map>
 #include <memory>
 
@@ -10,11 +11,7 @@ namespace Dubious {
 namespace Renderer {
 
 class OpenGLContextStore;
-class VisibleObject;
-class Model;
 typedef std::shared_ptr<OpenGLContextStore> OpenGLContextStorePtr;
-typedef std::shared_ptr<VisibleObject> VisibleObjectPtr;
-typedef std::shared_ptr<Model> ModelPtr;
 
 /// @brief Basic object renderer.
 ///

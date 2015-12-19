@@ -3,7 +3,6 @@
 
 #include "Point.h"
 #include "Quaternion.h"
-#include "UnitVector.h"
 
 //////////////////////////////////////////////////////////////
 namespace Dubious {

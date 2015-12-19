@@ -12,10 +12,10 @@
 namespace Dubious {
 namespace Renderer {
 
-class Model;
+class VisibleModel;
 class ObjectRenderer;
 class ShadowRenderer;
-typedef std::shared_ptr<Model> ModelPtr;
+typedef std::shared_ptr<VisibleModel> VisibleModelPtr;
 typedef std::shared_ptr<ObjectRenderer> ObjectRendererPtr;
 typedef std::shared_ptr<ShadowRenderer> ShadowRendererPtr;
 
@@ -33,7 +33,7 @@ public:
     /// @param pModel - [in] the model representing this object
     /// @param pShadowModel - [in] the model that represents the shadow.
     ///		This can be an empty pointer for non-shadow casting objects
-    VisibleObject( ModelPtr pModel, ModelPtr pShadowModel );
+    VisibleObject( VisibleModelPtr pModel, VisibleModelPtr pShadowModel );
 
     VisibleObject( const VisibleObject& ) = delete;
 
@@ -63,10 +63,10 @@ public:
     Math::CoordinateSpace& CoordinateSpace() { return m_CoordinateSpace; }
 
     /// @brief Accessor
-    ModelPtr			Model() const { return m_pModel; }
+    VisibleModelPtr		Model() const { return m_pModel; }
 
     /// @brief Accessor
-    ModelPtr			ShadowModel() const { return m_pShadowModel; }
+    VisibleModelPtr		ShadowModel() const { return m_pShadowModel; }
 
     /// @brief Renderer
     ObjectRendererPtr&  ObjectRenderer() { return m_pObjectRenderer; }
@@ -78,10 +78,10 @@ public:
     Color&				BaseColor() { return m_BaseColor; }
 private:
 
-    void				BuildSilhouette( ModelPtr pModel, const Math::LocalPoint &LightPos, Silhouette &Sil ) const;
+    void				BuildSilhouette( VisibleModelPtr pModel, const Math::LocalPoint &LightPos, Silhouette &Sil ) const;
 
-    ModelPtr			m_pModel;
-    ModelPtr			m_pShadowModel;
+    VisibleModelPtr		m_pModel;
+    VisibleModelPtr		m_pShadowModel;
     Math::CoordinateSpace m_CoordinateSpace;
     ObjectRendererPtr	m_pObjectRenderer;
     ShadowRendererPtr	m_pShadowRenderer;

@@ -1,13 +1,14 @@
 #ifndef INCLUDED_RENDERER_OPENGLPRIMITIVE
 #define INCLUDED_RENDERER_OPENGLPRIMITIVE
 
-#include <Point.h>
-#include <UnitVector.h>
-
 #include <SDL_opengl.h>
 
 //////////////////////////////////////////////////////////////
 namespace Dubious {
+namespace Math {
+template <int T> class PointT;
+template <int T> class UnitVectorT;
+}
 namespace Renderer {
 
 /// @brief OpenGL Primitives

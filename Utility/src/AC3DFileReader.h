@@ -9,12 +9,14 @@
 
 //////////////////////////////////////////////////////////////
 namespace Dubious {
+namespace Math {
+typedef std::vector<LocalPoint> LocalPointVector;
+}
 namespace Utility {
 
 class AC3DModel;
 typedef std::shared_ptr<AC3DModel> AC3DModelPtr;
 typedef std::vector<AC3DModelPtr> AC3DModelPtrVector;
-typedef std::vector<Math::LocalPoint> LocalPointVector;
 
 /// @brief An AC3D Model
 /// 
@@ -63,8 +65,8 @@ public:
     const Math::LocalPoint&	Offset() const { return m_Offset; }
 
     /// @brief Accessor - the Points that make up the model.
-    LocalPointVector&   Points() { return m_Points; }
-    const LocalPointVector&	Points() const { return m_Points; }
+    Math::LocalPointVector& Points() { return m_Points; }
+    const Math::LocalPointVector& Points() const { return m_Points; }
 
     /// @brief Accessor - the surfaces that make up the model
     SurfaceVector&      Surfaces() { return m_Surfaces; }
@@ -77,7 +79,7 @@ public:
 private:
     std::string         m_Name;
     Math::LocalPoint    m_Offset;
-    LocalPointVector    m_Points;
+    Math::LocalPointVector m_Points;
     SurfaceVector       m_Surfaces;
     AC3DModelPtrVector  m_Kids;
 };

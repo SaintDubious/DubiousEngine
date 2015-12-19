@@ -2,6 +2,7 @@
 #define INCLUDED_MATH_VECTORMATH
 
 #include "Vector.h"
+#include "UnitVector.h"
 
 //////////////////////////////////////////////////////////////
 namespace Dubious {
@@ -14,7 +15,6 @@ VectorT<T> CrossProduct( const VectorT<T>& A, const VectorT<T>& B )
     return VectorT<T>( (A.Y()*B.Z()) - (A.Z()*B.Y()), 
         (A.Z()*B.X()) - (A.X()*B.Z()), 
         (A.X()*B.Y()) - (A.Y()*B.X()));
-
 }
 
 //////////////////////////////////////////////////////////////

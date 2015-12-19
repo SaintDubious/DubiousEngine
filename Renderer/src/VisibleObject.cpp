@@ -1,5 +1,5 @@
 #include "VisibleObject.h"
-#include "Model.h"
+#include "VisibleModel.h"
 #include <VectorMath.h>
 
 //////////////////////////////////////////////////////////////
@@ -7,7 +7,7 @@ namespace Dubious {
 namespace Renderer {
 
 //////////////////////////////////////////////////////////////
-VisibleObject::VisibleObject( ModelPtr pModel, ModelPtr pShadowModel )
+VisibleObject::VisibleObject( VisibleModelPtr pModel, VisibleModelPtr pShadowModel )
     : m_pModel( pModel )
     , m_pShadowModel( pShadowModel )
     , m_BaseColor( pModel->MaterialColor() )
@@ -26,15 +26,15 @@ void VisibleObject::BuildSilhouette(const Math::LocalPoint &LightPos, Silhouette
 }
 
 //////////////////////////////////////////////////////////////
-void VisibleObject::BuildSilhouette( ModelPtr pModel, const Math::LocalPoint &LightPos, Silhouette &Sil) const
+void VisibleObject::BuildSilhouette( VisibleModelPtr pModel, const Math::LocalPoint &LightPos, Silhouette &Sil) const
 {
     Sil.Position = pModel->Offset();
-    const Model::EdgeVector& Edges = pModel->Edges();
+    const VisibleModel::EdgeVector& Edges = pModel->Edges();
     if( !Edges.empty() ){
-        const LocalPointVector& Points = pModel->Points();
-        const Model::SurfaceVector Surfaces = pModel->Surfaces();
+        const Math::LocalPointVector& Points = pModel->Points();
+        const VisibleModel::SurfaceVector Surfaces = pModel->Surfaces();
         const Math::LocalPoint* pVertices = &(Points[0]);
-        const Model::Surface* pSurfaces = &(Surfaces[0]);
+        const VisibleModel::Surface* pSurfaces = &(Surfaces[0]);
 
         // precompute dot products so as to do less multiplies
         Math::LocalUnitVector LightPosVector( LightPos.X(), LightPos.Y(), LightPos.Z() );
@@ -46,7 +46,7 @@ void VisibleObject::BuildSilhouette( ModelPtr pModel, const Math::LocalPoint &Li
         // This is sort of a hack, but the STL is a bit too slow to pull this off
         // in debug mode, so dropping down to raw arrays.
         const float* pDots = &(DotProducts[0]);
-        const Model::Edge* pEdges = &(Edges[0]);
+        const VisibleModel::Edge* pEdges = &(Edges[0]);
         for( size_t i=0; i<Edges.size(); ++i ){
             float Dot1 = pDots[pEdges[i].s0];
             float Dot2 = pDots[pEdges[i].s1];
@@ -65,7 +65,7 @@ void VisibleObject::BuildSilhouette( ModelPtr pModel, const Math::LocalPoint &Li
     }
     // have you checked the children?
     Sil.Kids.reserve( pModel->Kids().size() );
-    for (const ModelPtr Kid : pModel->Kids()) {
+    for (const VisibleModelPtr Kid : pModel->Kids()) {
         Sil.Kids.push_back( Silhouette() );
         BuildSilhouette( Kid, LightPos, Sil.Kids[Sil.Kids.size()-1] );
     }

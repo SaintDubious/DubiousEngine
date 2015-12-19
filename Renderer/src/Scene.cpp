@@ -4,7 +4,7 @@
 #include "OpenGLAttributes.h"
 #include "Camera.h"
 #include "ObjectRenderer.h"
-//#include "ShadowRenderer.h"
+#include "ShadowRenderer.h"
 #include "VisibleObject.h"
 
 //////////////////////////////////////////////////////////////

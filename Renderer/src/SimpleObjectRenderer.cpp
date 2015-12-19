@@ -1,6 +1,6 @@
 #include "SimpleObjectRenderer.h"
 #include "VisibleObject.h"
-#include "Model.h"
+#include "VisibleModel.h"
 #include "OpenGLContextStore.h"
 #include "OpenGLMatrix.h"
 #include "OpenGLCommands.h"
@@ -39,14 +39,14 @@ void SimpleObjectRenderer::RenderObject( VisibleObjectPtr pObject )
 
 //////////////////////////////////////////////////////////////
 namespace {
-void RenderModel( ModelPtr pModel )
+void RenderModel( VisibleModelPtr pModel )
 {
     OpenGLMatrix LocalMatrix;
     OpenGLCommands::Translate( pModel->Offset() - Math::LocalPoint() );
-    const LocalPointVector& Points( pModel->Points() );
+    const Math::LocalPointVector& Points( pModel->Points() );
     OpenGLCommands::Material( GL_AMBIENT, pModel->MaterialColor() );
     OpenGLCommands::Material( GL_DIFFUSE, pModel->MaterialColor() );
-    for (const Model::Surface& Surface : pModel->Surfaces()) {
+    for (const VisibleModel::Surface& Surface : pModel->Surfaces()) {
         const Math::LocalPoint& A( Points[Surface.p0] );
         const Math::LocalPoint& B( Points[Surface.p1] );
         const Math::LocalPoint& C( Points[Surface.p2] );
@@ -58,7 +58,7 @@ void RenderModel( ModelPtr pModel )
         Prim.Vertex( B );
         Prim.Vertex( C );
     }
-    for (const ModelPtr Kid : pModel->Kids())
+    for (const VisibleModelPtr Kid : pModel->Kids())
         RenderModel( Kid );
 }
 }

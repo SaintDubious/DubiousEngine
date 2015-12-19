@@ -5,10 +5,10 @@
 #include <Point.h>
 #include <Scene.h>
 #include <Camera.h>
-#include <Model.h>
+#include <VisibleModel.h>
 #include <VisibleObject.h>
 #include <SimpleObjectRenderer.h>
-//#include <ShadowRenderer.h>
+#include <ShadowRenderer.h>
 #include <OpenGLContextStore.h>
 #include <VectorMath.h>
 
@@ -26,7 +26,7 @@ namespace Renderer
 {
 typedef std::shared_ptr<Scene> ScenePtr;
 typedef std::shared_ptr<Camera> CameraPtr;
-typedef std::shared_ptr<Model> ModelPtr;
+typedef std::shared_ptr<VisibleModel> VisibleModelPtr;
 typedef std::shared_ptr<VisibleObject> VisibleObjectPtr;
 typedef std::shared_ptr<SimpleObjectRenderer> SimpleObjectRendererPtr;
 }
@@ -75,11 +75,11 @@ int main( int argc, char** argv )
 		Utility::AC3DFilePtr pModelFile = Utility::AC3DFileReader::ReadFile( Utility::FilePath( VisualModelFile ) );
 		Utility::AC3DFilePtr pShadowFile = Utility::AC3DFileReader::ReadFile( Utility::FilePath( ShadowModelFile ) );
 
-		Renderer::ModelPtr pFloorModel( new Renderer::Model( *pFloorFile, false ) );
-		Renderer::ModelPtr pModel( new Renderer::Model( *pModelFile, false ) );
-		Renderer::ModelPtr pShadowModel( new Renderer::Model( *pShadowFile, true ) );
+		Renderer::VisibleModelPtr pFloorModel( new Renderer::VisibleModel( *pFloorFile, false ) );
+		Renderer::VisibleModelPtr pModel( new Renderer::VisibleModel( *pModelFile, false ) );
+		Renderer::VisibleModelPtr pShadowModel( new Renderer::VisibleModel( *pShadowFile, true ) );
 
-		Renderer::VisibleObjectPtr pFloorObject( new Renderer::VisibleObject(pFloorModel, Renderer::ModelPtr()) );
+		Renderer::VisibleObjectPtr pFloorObject( new Renderer::VisibleObject(pFloorModel, Renderer::VisibleModelPtr()) );
 		pObject = Renderer::VisibleObjectPtr( new Renderer::VisibleObject(pModel, pShadowModel) );
 
 		pFloorObject->CoordinateSpace().Translate( Math::Vector( 0, -5, 0 ) );
@@ -88,10 +88,10 @@ int main( int argc, char** argv )
 		Renderer::OpenGLContextStorePtr pContextStore( new Renderer::OpenGLContextStore );
 		pScene = Renderer::ScenePtr( new Renderer::Scene(pContextStore) );
 		Renderer::SimpleObjectRendererPtr SimpleRenderer( new Renderer::SimpleObjectRenderer( pScene->ContextStore() ) );
-//		Renderer::ShadowRendererPtr ShadowRenderer( new Renderer::ShadowRenderer() );
+		Renderer::ShadowRendererPtr ShadowRenderer( new Renderer::ShadowRenderer() );
 		pFloorObject->ObjectRenderer() = SimpleRenderer;
 		pObject->ObjectRenderer() = SimpleRenderer;
-//		pObject->ShadowRenderer() = ShadowRenderer;
+		pObject->ShadowRenderer() = ShadowRenderer;
 
 		pScene->SceneLight().Position = Math::Point( 20, 20, 0 );
 		pScene->SceneLight().Ambient = Renderer::Color( 0.2f, 0.2f, 0.2f, 1.0f );
@@ -167,15 +167,15 @@ void OnMouseMotion( const Utility::SDLManager::MousePoint& P )
 		pCamera->CoordinateSpace().GetAxes( X, Y, Z );
 		Math::Vector VZ( Z );
         VZ = VZ * pCamera->ZAxisOffset();
-		if (Offset.second < 0) {
+		if (Offset.second > 0) {
 			if (Math::DotProduct( MaxY, VZ ) > -(pCamera->ZAxisOffset()*pCamera->ZAxisOffset()) * 0.9f) {
-				Math::LocalQuaternion XRotation( Math::LocalVector( 1.0f, 0, 0 ), Math::ToRadians(static_cast<float>(-Offset.second)) );
+				Math::LocalQuaternion XRotation( Math::LocalVector( 1.0f, 0, 0 ), Math::ToRadians(static_cast<float>(Offset.second)) );
 				pCamera->CoordinateSpace().Rotate( XRotation );
 			}
 		}
-		else if (Offset.second > 0) {
+		else if (Offset.second < 0) {
 			if (Math::DotProduct( MaxY, VZ ) < (pCamera->ZAxisOffset()*pCamera->ZAxisOffset()) * 0.9f) {
-				Math::LocalQuaternion XRotation( Math::LocalVector( 1.0f, 0, 0 ), Math::ToRadians(static_cast<float>(-Offset.second)) );
+				Math::LocalQuaternion XRotation( Math::LocalVector( 1.0f, 0, 0 ), Math::ToRadians(static_cast<float>(Offset.second)) );
 				pCamera->CoordinateSpace().Rotate( XRotation );
 			}
 		}

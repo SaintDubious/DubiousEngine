@@ -2,6 +2,7 @@
 #define INCLUDED_RENDERER_SCENE
 
 #include "Color.h"
+
 #include <Point.h>
 
 #include <memory>

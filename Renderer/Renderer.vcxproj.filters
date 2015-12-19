@@ -22,11 +22,14 @@
       <Filter>OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Color.cpp" />
-    <ClCompile Include="src\Model.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\VisibleObject.cpp" />
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\SimpleObjectRenderer.cpp">
+      <Filter>ObjectRenderers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\VisibleModel.cpp" />
+    <ClCompile Include="src\ShadowRenderer.cpp">
       <Filter>ObjectRenderers</Filter>
     </ClCompile>
   </ItemGroup>
@@ -47,7 +50,6 @@
       <Filter>OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Color.h" />
-    <ClInclude Include="src\Model.h" />
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\ObjectRenderer.h">
       <Filter>ObjectRenderers</Filter>
@@ -55,6 +57,10 @@
     <ClInclude Include="src\VisibleObject.h" />
     <ClInclude Include="src\Scene.h" />
     <ClInclude Include="src\SimpleObjectRenderer.h">
+      <Filter>ObjectRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\VisibleModel.h" />
+    <ClInclude Include="src\ShadowRenderer.h">
       <Filter>ObjectRenderers</Filter>
     </ClInclude>
   </ItemGroup>

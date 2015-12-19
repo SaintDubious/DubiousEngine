@@ -1,4 +1,4 @@
-#include "Model.h"
+#include "VisibleModel.h"
 #include <AC3DFileReader.h>
 #include <VectorMath.h>
 
@@ -7,13 +7,13 @@ namespace Dubious {
 namespace Renderer {
 
 //////////////////////////////////////////////////////////////
-Model::Model()
+VisibleModel::VisibleModel()
     : m_Color( Color::WHITE )
 {
 }
 
 //////////////////////////////////////////////////////////////
-Model::Model( const Utility::AC3DFile& File, bool IncludeEdges )
+VisibleModel::VisibleModel( const Utility::AC3DFile& File, bool IncludeEdges )
     : m_Color( Color::WHITE )
 {
     Construct( *File.Model(), File.Materials(), IncludeEdges );
@@ -21,18 +21,18 @@ Model::Model( const Utility::AC3DFile& File, bool IncludeEdges )
 
 namespace 
 {
-Model::Surface BuildSurface( const LocalPointVector& Points, int p0, int p1, int p2 )
+VisibleModel::Surface BuildSurface( const Math::LocalPointVector& Points, int p0, int p1, int p2 )
 {
     const Math::LocalPoint& A = Points[p0];
     const Math::LocalPoint& B = Points[p1];
     const Math::LocalPoint& C = Points[p2];
-    return Model::Surface( p0, p1, p2, Math::CrossProduct( (B-A), (C-A) ) );
+    return VisibleModel::Surface( p0, p1, p2, Math::CrossProduct( (B-A), (C-A) ) );
 }
 
 }
 
 //////////////////////////////////////////////////////////////
-void Model::Construct( const Utility::AC3DModel& AC3DModel, const Utility::AC3DMaterialVector& Materials, bool IncludeEdges )
+void VisibleModel::Construct( const Utility::AC3DModel& AC3DModel, const Utility::AC3DMaterialVector& Materials, bool IncludeEdges )
 {
     m_Offset = AC3DModel.Offset();
     m_Points = AC3DModel.Points();
@@ -40,7 +40,7 @@ void Model::Construct( const Utility::AC3DModel& AC3DModel, const Utility::AC3DM
         m_Surfaces.push_back( BuildSurface( m_Points, S.p0, S.p1, S.p2 ) );
     }
     for (Utility::AC3DModelPtr p : AC3DModel.Kids()) {
-        m_Kids.push_back( ModelPtr( new Model() ) );
+        m_Kids.push_back( VisibleModelPtr( new VisibleModel() ) );
         m_Kids.back()->Construct( *p, Materials, IncludeEdges );
     }
     if (!AC3DModel.Surfaces().empty()) {
@@ -54,7 +54,7 @@ void Model::Construct( const Utility::AC3DModel& AC3DModel, const Utility::AC3DM
 }
 
 //////////////////////////////////////////////////////////////
-Model::Model( const Math::Triple& Dimensions, bool IncludeEdges )
+VisibleModel::VisibleModel( const Math::Triple& Dimensions, bool IncludeEdges )
 {
     // The code for this comes from looking at an AC3D file
     // for a cube.
@@ -88,7 +88,7 @@ Model::Model( const Math::Triple& Dimensions, bool IncludeEdges )
 }
 
 //////////////////////////////////////////////////////////////
-void Model::ComputePointNormals()
+void VisibleModel::ComputePointNormals()
 {
     for( size_t i=0; i<m_Points.size(); ++i ){
         Math::LocalVector AvgNormal;
@@ -104,7 +104,7 @@ void Model::ComputePointNormals()
 }
 
 //////////////////////////////////////////////////////////////
-void Model::BuildEdges()
+void VisibleModel::BuildEdges()
 {
     size_t j = 0;
     for( size_t i=0; i<m_Surfaces.size(); ++i ){
@@ -142,7 +142,7 @@ void Model::BuildEdges()
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
-void Model::AddEdge( unsigned short p0, unsigned short p1, unsigned short s0, unsigned short s1 )
+void VisibleModel::AddEdge( unsigned short p0, unsigned short p1, unsigned short s0, unsigned short s1 )
 {
     Edge	NewEdge;
     NewEdge.p0 = p0;
