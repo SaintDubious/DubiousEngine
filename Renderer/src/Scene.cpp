@@ -54,8 +54,8 @@ void Scene::Render( CameraPtr pCamera )
 	iter = m_Objects.begin();
 	for( ; iter!=end; ++iter ){
 		ShadowRendererPtr pShadowRenderer = (*iter)->ShadowRenderer();
-//		if (pShadowRenderer)
-//			pShadowRenderer->RenderShadowVolume( *iter, (*iter)->CoordinateSpace().Transform( m_SceneLight.Position ) );
+		if (pShadowRenderer)
+			pShadowRenderer->RenderShadowVolume( *iter, Math::LocalPoint()+(*iter)->CoordinateSpace().Transform( m_SceneLight.Position-Math::Point() ) );
 	}
 	Attribs.ColorMask( true, true, true, true );
 	Attribs.DepthFunc( GL_EQUAL );

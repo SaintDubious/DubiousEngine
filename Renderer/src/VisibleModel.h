@@ -9,6 +9,8 @@
 #include <vector>
 #include <memory>
 
+namespace RendererTest { class VisibleModelTest; }
+
 //////////////////////////////////////////////////////////////
 namespace Dubious {
 
@@ -106,9 +108,9 @@ public:
     const Color&		MaterialColor() const { return m_Color; }
     const VisibleModelPtrVector& Kids() const { return m_Kids; }
 private:
+    friend class RendererTest::VisibleModelTest;
 
     VisibleModel();
-
     void				Construct( const Utility::AC3DModel& AC3DModel, const Utility::AC3DMaterialVector& Materials, bool IncludeEdges );
     void				ComputePointNormals();
     void				AddEdge( unsigned short p0, unsigned short p1, unsigned short s0, unsigned short s1 );

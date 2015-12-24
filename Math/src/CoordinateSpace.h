@@ -85,6 +85,18 @@ public:
     /// @param Diff - [in] The amount to rotate
     void                Rotate( const LocalQuaternion& Diff );
 
+    /// @brief Converts the local vector to the global coord space.
+    ///
+    /// @param V - [in] a vector in local coordinate space
+    /// @returns The same vector in world coordinate space
+    Vector		        Transform( const LocalVector& V ) const;
+
+    /// @brief Converts the vector to the local coord space
+    ///
+    /// @param V - [in] a vector in world coordinate space
+    /// @returns The same vector in local coordinate space
+    LocalVector	        Transform( const Vector& V ) const;
+
 private:
     Point               m_Position;
     Quaternion          m_Rotation;

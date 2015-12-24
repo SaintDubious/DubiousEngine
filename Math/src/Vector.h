@@ -9,6 +9,8 @@ namespace Math {
 
 template <int T> class VectorT;
 template <int T> class UnitVectorT;
+template <int T> bool operator==( const VectorT<T>& A, const VectorT<T>& B );
+template <int T> bool operator!=( const VectorT<T>& A, const VectorT<T>& B );
 template <int T> VectorT<T> operator+( const VectorT<T>& A, const VectorT<T>& B );
 template <int T> VectorT<T> operator*( const VectorT<T>& A, float B );
 
@@ -83,6 +85,8 @@ public:
     float               Z() const { return m_Coords.m_Z; }
 
 private:
+    friend bool         operator== <>( const VectorT<T>& A, const VectorT<T>& B );
+    friend bool         operator!= <>( const VectorT<T>& A, const VectorT<T>& B );
     friend VectorT<T>   operator+ <>( const VectorT<T>& A, const VectorT<T>& B );
     friend VectorT<T>   operator* <>( const VectorT<T>& A, float B );
 
@@ -92,6 +96,20 @@ private:
 
     Triple              m_Coords;
 };
+
+//////////////////////////////////////////////////////////////
+template<int T> 
+bool operator==( const VectorT<T>& A, const VectorT<T>& B )
+{
+    return A.m_Coords == B.m_Coords;
+}
+
+//////////////////////////////////////////////////////////////
+template<int T> 
+bool operator!=( const VectorT<T>& A, const VectorT<T>& B )
+{
+    return A.m_Coords != B.m_Coords;
+}
 
 //////////////////////////////////////////////////////////////
 template <int T> 

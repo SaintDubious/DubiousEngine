@@ -42,10 +42,12 @@ public:
     {
         Vector P(1, 2, 3);
         Vector Q;
+        Assert::IsTrue( Q != P );
         Q = P;
         Assert::IsTrue(Equals(Q.X(), 1));
         Assert::IsTrue(Equals(Q.Y(), 2));
         Assert::IsTrue(Equals(Q.Z(), 3));
+        Assert::IsTrue( Q == P );
 
         Vector R( 10, 20, 30 );
         Q = R+P;

@@ -66,6 +66,16 @@ public:
         Assert::IsTrue( Z == UnitVector( 1, 0, 0 ) );
     }
 
+    TEST_METHOD(CoordinateSpaceVectorTransform)
+    {
+        CoordinateSpace C;
+        C.Rotate( Quaternion( Vector( 0, 1, 0 ), ToRadians( 90 ) ) );
+        Vector V = C.Transform( LocalVector( 1, 1, 1 ) );
+        Assert::IsTrue( V == Vector( 1, 1, -1 ) );
+        LocalVector LV = C.Transform( Vector( 1, 1, 1 ) );
+        Assert::IsTrue( LV == LocalVector( -1, 1, 1 ) );
+    }
+
 };
 
 }

@@ -31,16 +31,7 @@ void CoordinateSpace::Translate( const Vector& Diff )
 //////////////////////////////////////////////////////////////
 void CoordinateSpace::Translate( const LocalVector& Diff )
 {
-    // The trick here is to first rotate the Passed in Vector
-    // by the rotation of this coordinate space. That will
-    // transform the vector into this space. Then you can 
-    // simply add it to the existing position
-    // http://math.stackexchange.com/questions/40164/how-do-you-rotate-a-vector-by-a-unit-quaternion
-    Quaternion QDiff( 0, Triple( Diff.X(), Diff.Y(), Diff.Z() ) );
-    Quaternion QRotated = m_Rotation * QDiff * m_Rotation.Conjugate();
-    Vector Rotated( QRotated.m_Imaginary.m_X, QRotated.m_Imaginary.m_Y, QRotated.m_Imaginary.m_Z );
-
-    m_Position = m_Position + Rotated;
+    m_Position = m_Position + Transform(Diff);
 }
 
 //////////////////////////////////////////////////////////////
@@ -57,6 +48,24 @@ void CoordinateSpace::Rotate( const LocalQuaternion& Diff )
     // create a Quaternion that's a direct copy of the 
     // LocalQuaternion
     m_Rotation = m_Rotation * Quaternion( Diff.m_Real, Diff.m_Imaginary );
+}
+
+//////////////////////////////////////////////////////////////
+Vector CoordinateSpace::Transform( const LocalVector& V ) const
+{
+    // https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation
+    Quaternion QDiff( 0, Triple( V.X(), V.Y(), V.Z() ) );
+    Quaternion QRotated = m_Rotation * QDiff * m_Rotation.Conjugate();
+    return Vector( QRotated.m_Imaginary.m_X, QRotated.m_Imaginary.m_Y, QRotated.m_Imaginary.m_Z );
+}
+
+//////////////////////////////////////////////////////////////
+LocalVector CoordinateSpace::Transform( const Vector& V ) const
+{
+    // https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation
+    Quaternion QDiff( 0, Triple( V.X(), V.Y(), V.Z() ) );
+    Quaternion QRotated = m_Rotation.Conjugate() * QDiff * m_Rotation;
+    return LocalVector( QRotated.m_Imaginary.m_X, QRotated.m_Imaginary.m_Y, QRotated.m_Imaginary.m_Z );
 }
 
 }}
