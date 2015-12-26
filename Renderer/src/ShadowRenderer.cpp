@@ -32,25 +32,25 @@ void DrawShadowVolume( const Math::LocalPoint& ShadowEnd, const Math::LocalVecto
 //////////////////////////////////////////////////////////////
 void ShadowRenderer::RenderShadowVolume( VisibleObjectPtr pObject, const Math::LocalPoint& LightPosition )
 {
-	VisibleObject::Silhouette Sil;
-	pObject->BuildSilhouette( LightPosition, Sil );
-	
-	OpenGLMatrix Matrix;
+    VisibleObject::Silhouette Sil;
+    pObject->BuildSilhouette( LightPosition, Sil );
+    
+    OpenGLMatrix Matrix;
 //	OpenGLCommands::Translate( pObject->CoordinateSpace().Position() );
-	float m[16];
-	pObject->CoordinateSpace().GetMatrix( m );
-	OpenGLCommands::MultMatrix( m );
+    float m[16];
+    pObject->CoordinateSpace().GetMatrix( m );
+    OpenGLCommands::MultMatrix( m );
 
-	OpenGLCommands::CullFace( GL_FRONT );
-	OpenGLAttributes::StencilOp( GL_KEEP, GL_INCR, GL_KEEP );
-	DrawShadowVolume( LightPosition, Math::LocalVector(), Sil );
-
-	OpenGLCommands::CullFace( GL_BACK );
-	OpenGLAttributes::StencilOp( GL_KEEP, GL_DECR, GL_KEEP );
     Math::LocalVector LightVect = Math::LocalUnitVector(LightPosition - Math::LocalPoint());
     LightVect = LightVect * -100;
 
-	DrawShadowVolume( Math::LocalPoint()+LightVect, Math::LocalVector(), Sil );
+    OpenGLCommands::CullFace( GL_FRONT );
+    OpenGLAttributes::StencilOp( GL_KEEP, GL_INCR, GL_KEEP );
+    DrawShadowVolume( Math::LocalPoint()+LightVect, Math::LocalVector(), Sil );
+
+    OpenGLCommands::CullFace( GL_BACK );
+    OpenGLAttributes::StencilOp( GL_KEEP, GL_DECR, GL_KEEP );
+    DrawShadowVolume( Math::LocalPoint()+LightVect, Math::LocalVector(), Sil );
 }
 
 }

@@ -19,7 +19,7 @@ void VisibleObject::BuildSilhouette(const Math::LocalPoint &LightPos, Silhouette
 {
     Sil.Edges.clear();
     Sil.Kids.clear();
-    if( !m_pShadowModel )
+    if (!m_pShadowModel)
         return;
 
     BuildSilhouette( m_pShadowModel, LightPos, Sil );
@@ -31,34 +31,26 @@ void VisibleObject::BuildSilhouette( VisibleModelPtr pModel, const Math::LocalPo
     Sil.Position = pModel->Offset();
     const VisibleModel::EdgeVector& Edges = pModel->Edges();
     if( !Edges.empty() ){
-        const Math::LocalPointVector& Points = pModel->Points();
-        const VisibleModel::SurfaceVector Surfaces = pModel->Surfaces();
-        const Math::LocalPoint* pVertices = &(Points[0]);
-        const VisibleModel::Surface* pSurfaces = &(Surfaces[0]);
-
         // precompute dot products so as to do less multiplies
         Math::LocalUnitVector LightPosVector( LightPos.X(), LightPos.Y(), LightPos.Z() );
-        std::vector<float> DotProducts( Surfaces.size() );
-        for( size_t i=0; i<Surfaces.size(); ++i )
-            DotProducts[i] = DotProduct( LightPosVector, pSurfaces[i].Normal );
+        std::vector<float> DotProducts;
+        for (const VisibleModel::Surface& Surf : pModel->Surfaces()) {
+            DotProducts.push_back( DotProduct( LightPosVector, Surf.Normal ) );
+        }
 
-        Sil.Edges.reserve( 20 );
-        // This is sort of a hack, but the STL is a bit too slow to pull this off
-        // in debug mode, so dropping down to raw arrays.
-        const float* pDots = &(DotProducts[0]);
-        const VisibleModel::Edge* pEdges = &(Edges[0]);
-        for( size_t i=0; i<Edges.size(); ++i ){
-            float Dot1 = pDots[pEdges[i].s0];
-            float Dot2 = pDots[pEdges[i].s1];
+        const Math::LocalPointVector& Points = pModel->Points();
+        for (const VisibleModel::Edge& Edge : Edges) {
+            float Dot1 = DotProducts[Edge.s0];
+            float Dot2 = DotProducts[Edge.s1];
             Silhouette::Edge NewEdge;
             if( Dot1 <= 0 && Dot2 > 0 ) {
-                NewEdge.first = pVertices[pEdges[i].p0];
-                NewEdge.second = pVertices[pEdges[i].p1];
+                NewEdge.first = Points[Edge.p0];
+                NewEdge.second = Points[Edge.p1];
                 Sil.Edges.push_back( NewEdge );
             }
             else if( Dot1 > 0 && Dot2 <= 0 ){
-                NewEdge.first = pVertices[pEdges[i].p1];
-                NewEdge.second = pVertices[pEdges[i].p0];
+                NewEdge.first = Points[Edge.p1];
+                NewEdge.second = Points[Edge.p0];
                 Sil.Edges.push_back( NewEdge );
             }
         }

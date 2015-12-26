@@ -18,20 +18,20 @@ typedef std::shared_ptr<VisibleObject> VisibleObjectPtr;
 class ShadowRenderer
 {
 public:
-	/// @brief Constructor
-	ShadowRenderer() = default;
+    /// @brief Constructor
+    ShadowRenderer() = default;
 
     ShadowRenderer( const ShadowRenderer& ) = delete;
 
-	/// @brief Destructor
-	~ShadowRenderer() = default;
+    /// @brief Destructor
+    ~ShadowRenderer() = default;
 
     ShadowRenderer& operator=( const ShadowRenderer& ) = delete;
 
     /// @brief Call to render the shadow
-	/// @param pVisibleObject - [in] the object that needs a shadow
-	/// @param LighPosition - [in] Where the light is in the local coord space
-	void                RenderShadowVolume( VisibleObjectPtr pVisibleObject, const Math::LocalPoint& LighPosition );
+    /// @param pVisibleObject - [in] the object that needs a shadow
+    /// @param LighPosition - [in] Where the light is in the local coord space
+    void                RenderShadowVolume( VisibleObjectPtr pVisibleObject, const Math::LocalPoint& LighPosition );
 };
 
 }

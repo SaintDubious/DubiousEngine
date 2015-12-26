@@ -12,29 +12,29 @@ namespace Renderer {
 
 //////////////////////////////////////////////////////////////
 SimpleObjectRenderer::SimpleObjectRenderer( OpenGLContextStorePtr pContextStore )
-	: m_pContextStore( pContextStore )
+    : m_pContextStore( pContextStore )
 {
 }
 
 //////////////////////////////////////////////////////////////
 void SimpleObjectRenderer::RenderObject( VisibleObjectPtr pObject )
 {
-	auto iter = m_ObjectDataMap.find( pObject );
-	if( iter == m_ObjectDataMap.end() ){
-		m_ObjectDataMap[pObject] = 0;
-		ConstructModel(pObject);
-		iter = m_ObjectDataMap.find( pObject );
-	}
-	if( !m_pContextStore->CallListExists( iter->second ) )
-		ConstructModel(pObject);
+    auto iter = m_ObjectDataMap.find( pObject );
+    if( iter == m_ObjectDataMap.end() ){
+        m_ObjectDataMap[pObject] = 0;
+        ConstructModel(pObject);
+        iter = m_ObjectDataMap.find( pObject );
+    }
+    if( !m_pContextStore->CallListExists( iter->second ) )
+        ConstructModel(pObject);
 
-	unsigned int GLHandle = m_pContextStore->GetCallList( iter->second );
-	OpenGLMatrix GLMatrix;
-	OpenGLCommands::Translate( pObject->CoordinateSpace().Position() - Math::Point() );
-	float m[16];
-	pObject->CoordinateSpace().GetMatrix( m );
-	OpenGLCommands::MultMatrix( m );
-	OpenGLCommands::CallList( GLHandle );	
+    unsigned int GLHandle = m_pContextStore->GetCallList( iter->second );
+    OpenGLMatrix GLMatrix;
+    OpenGLCommands::Translate( pObject->CoordinateSpace().Position() - Math::Point() );
+    float m[16];
+    pObject->CoordinateSpace().GetMatrix( m );
+    OpenGLCommands::MultMatrix( m );
+    OpenGLCommands::CallList( GLHandle );	
 }
 
 //////////////////////////////////////////////////////////////
@@ -66,13 +66,13 @@ void RenderModel( VisibleModelPtr pModel )
 //////////////////////////////////////////////////////////////
 void SimpleObjectRenderer::ConstructModel( VisibleObjectPtr pObject )
 {
-	CallListHandle Handle = m_pContextStore->CreateCallList( 1 );
-	unsigned int GLHandle = m_pContextStore->GetCallList( Handle );
-	OpenGLCommands::NewList( GLHandle, GL_COMPILE );
+    CallListHandle Handle = m_pContextStore->CreateCallList( 1 );
+    unsigned int GLHandle = m_pContextStore->GetCallList( Handle );
+    OpenGLCommands::NewList( GLHandle, GL_COMPILE );
 
-	RenderModel( pObject->Model() );
-	OpenGLCommands::EndList();
-	m_ObjectDataMap[pObject] = Handle;
+    RenderModel( pObject->Model() );
+    OpenGLCommands::EndList();
+    m_ObjectDataMap[pObject] = Handle;
 }
 
 }}

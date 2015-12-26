@@ -30,55 +30,55 @@ class Scene
 {
 public:
     /// @brief Constructor
-	/// @param pStore - [in] An Open GL Context Store
-	Scene( OpenGLContextStorePtr pStore );
+    /// @param pStore - [in] An Open GL Context Store
+    Scene( OpenGLContextStorePtr pStore );
 
     Scene( const Scene& ) = delete;
 
-	/// @brief Destructor
-	~Scene() = default;
+    /// @brief Destructor
+    ~Scene() = default;
 
     Scene& operator=( const Scene& ) = delete;
     
     /// @brief A Light
-	///
-	/// This struct is just a simple grouping of the properties
-	///	of a light.
-	struct Light
-	{
-		Math::Point 	Position;
-		Color			Ambient;
-		Color			Diffuse;
-		Color			Specular;
-	};
+    ///
+    /// This struct is just a simple grouping of the properties
+    ///	of a light.
+    struct Light
+    {
+        Math::Point 	Position;
+        Color			Ambient;
+        Color			Diffuse;
+        Color			Specular;
+    };
 
-	/// @brief Call this to render the scene
-	void				Render( CameraPtr pCamera );
+    /// @brief Call this to render the scene
+    void				Render( CameraPtr pCamera );
 
-	/// @brief Add an object to the scene
-	/// @param pObject - [in] the object
-	void				AddObject( VisibleObjectPtr pObject );
+    /// @brief Add an object to the scene
+    /// @param pObject - [in] the object
+    void				AddObject( VisibleObjectPtr pObject );
 
-	/// @brief Remove and object from the scene
-	/// @param pObject - [in] the object
-	void				RemoveObject( VisibleObjectPtr pObject );
+    /// @brief Remove and object from the scene
+    /// @param pObject - [in] the object
+    void				RemoveObject( VisibleObjectPtr pObject );
 
-	/// @brief Remove all objects from the scene
-	void				RemoveAllObjects();
+    /// @brief Remove all objects from the scene
+    void				RemoveAllObjects();
 
-	/// @brief Accessor to the light
-	Light&				SceneLight() { return m_SceneLight; }
+    /// @brief Accessor to the light
+    Light&				SceneLight() { return m_SceneLight; }
 
-	/// @brief Accessor to the context store
-	OpenGLContextStorePtr ContextStore() const { return m_pContextStore; }
+    /// @brief Accessor to the context store
+    OpenGLContextStorePtr ContextStore() const { return m_pContextStore; }
 
 private:
 
-	void				SetupLight( OpenGLAttributes& Attribs, bool InShadow ) const;
+    void				SetupLight( OpenGLAttributes& Attribs, bool InShadow ) const;
 
-	OpenGLContextStorePtr m_pContextStore;
-	VisibleObjectPtrList m_Objects;
-	Light				m_SceneLight;
+    OpenGLContextStorePtr m_pContextStore;
+    VisibleObjectPtrList m_Objects;
+    Light				m_SceneLight;
 };
 
 }
