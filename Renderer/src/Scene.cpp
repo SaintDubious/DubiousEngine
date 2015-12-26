@@ -20,10 +20,10 @@ Scene::Scene( OpenGLContextStorePtr pStore )
 }
 
 //////////////////////////////////////////////////////////////
-void Scene::Render( CameraPtr pCamera )
+void Scene::Render( Camera& SceneCamera )
 {
     OpenGLAttributes::Clear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
-    pCamera->ReadyForPhoto();
+    SceneCamera.ReadyForPhoto();
 
     OpenGLAttributes Attribs( OpenGLAttributes::ENABLE_BIT | OpenGLAttributes::DEPTH_BUFFER_BIT | OpenGLAttributes::POLYGON_BIT, true );
     SetupLight( Attribs, true );

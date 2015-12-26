@@ -53,7 +53,7 @@ public:
     };
 
     /// @brief Call this to render the scene
-    void				Render( CameraPtr pCamera );
+    void				Render( Camera& SceneCamera );
 
     /// @brief Add an object to the scene
     /// @param pObject - [in] the object

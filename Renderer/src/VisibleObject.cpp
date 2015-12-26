@@ -15,34 +15,24 @@ VisibleObject::VisibleObject( VisibleModelPtr pModel, VisibleModelPtr pShadowMod
 }
 
 //////////////////////////////////////////////////////////////
-void VisibleObject::BuildSilhouette(const Math::LocalPoint &LightPos, Silhouette &Sil) const
+namespace {
+void Build( const VisibleModel& TheModel, const Math::LocalPoint &LightPos, VisibleObject::Silhouette &Sil)
 {
-    Sil.Edges.clear();
-    Sil.Kids.clear();
-    if (!m_pShadowModel)
-        return;
-
-    BuildSilhouette( m_pShadowModel, LightPos, Sil );
-}
-
-//////////////////////////////////////////////////////////////
-void VisibleObject::BuildSilhouette( VisibleModelPtr pModel, const Math::LocalPoint &LightPos, Silhouette &Sil) const
-{
-    Sil.Position = pModel->Offset();
-    const VisibleModel::EdgeVector& Edges = pModel->Edges();
+    Sil.Position = TheModel.Offset();
+    const VisibleModel::EdgeVector& Edges = TheModel.Edges();
     if( !Edges.empty() ){
         // precompute dot products so as to do less multiplies
         Math::LocalUnitVector LightPosVector( LightPos.X(), LightPos.Y(), LightPos.Z() );
         std::vector<float> DotProducts;
-        for (const VisibleModel::Surface& Surf : pModel->Surfaces()) {
+        for (const VisibleModel::Surface& Surf : TheModel.Surfaces()) {
             DotProducts.push_back( DotProduct( LightPosVector, Surf.Normal ) );
         }
 
-        const Math::LocalPointVector& Points = pModel->Points();
+        const Math::LocalPointVector& Points = TheModel.Points();
         for (const VisibleModel::Edge& Edge : Edges) {
             float Dot1 = DotProducts[Edge.s0];
             float Dot2 = DotProducts[Edge.s1];
-            Silhouette::Edge NewEdge;
+            VisibleObject::Silhouette::Edge NewEdge;
             if( Dot1 <= 0 && Dot2 > 0 ) {
                 NewEdge.first = Points[Edge.p0];
                 NewEdge.second = Points[Edge.p1];
@@ -56,11 +46,23 @@ void VisibleObject::BuildSilhouette( VisibleModelPtr pModel, const Math::LocalPo
         }
     }
     // have you checked the children?
-    Sil.Kids.reserve( pModel->Kids().size() );
-    for (const VisibleModelPtr Kid : pModel->Kids()) {
-        Sil.Kids.push_back( Silhouette() );
-        BuildSilhouette( Kid, LightPos, Sil.Kids[Sil.Kids.size()-1] );
+    Sil.Kids.reserve( TheModel.Kids().size() );
+    for (const VisibleModelPtr Kid : TheModel.Kids()) {
+        Sil.Kids.push_back( VisibleObject::Silhouette() );
+        Build( *Kid, LightPos, Sil.Kids[Sil.Kids.size()-1] );
     }
+}
+}
+
+//////////////////////////////////////////////////////////////
+void VisibleObject::BuildSilhouette(const Math::LocalPoint &LightPos, Silhouette &Sil) const
+{
+    Sil.Edges.clear();
+    Sil.Kids.clear();
+    if (!m_pShadowModel)
+        return;
+
+    Build( *m_pShadowModel, LightPos, Sil );
 }
 
 }}

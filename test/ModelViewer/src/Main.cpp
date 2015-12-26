@@ -12,6 +12,7 @@
 #include <ShadowRenderer.h>
 #include <OpenGLContextStore.h>
 #include <VectorMath.h>
+#include <Timer.h>
 
 #include <memory>
 #include <iostream>
@@ -58,6 +59,10 @@ Renderer::CameraPtr		pCamera;
 Utility::SDLManager::MousePoint LeftDownPoint;
 bool					LeftButtonDown;
 Renderer::VisibleObjectPtr pObject;
+Renderer::SimpleObjectRendererPtr SimpleRenderer;
+Renderer::OutlinedObjectRendererPtr OutlinedRenderer;
+Utility::Timer          FrameRateTimer;
+int                     FrameCount;
 
 //////////////////////////////////////////////////////////////
 int main( int argc, char** argv )
@@ -89,8 +94,8 @@ int main( int argc, char** argv )
 
         Renderer::OpenGLContextStorePtr pContextStore( new Renderer::OpenGLContextStore );
         pScene = Renderer::ScenePtr( new Renderer::Scene(pContextStore) );
-        Renderer::SimpleObjectRendererPtr SimpleRenderer( new Renderer::SimpleObjectRenderer( pScene->ContextStore() ) );
-        Renderer::OutlinedObjectRendererPtr OutlinedRenderer( new Renderer::OutlinedObjectRenderer( pScene->ContextStore() ) );
+        SimpleRenderer.reset( new Renderer::SimpleObjectRenderer( pScene->ContextStore() ) );
+        OutlinedRenderer.reset( new Renderer::OutlinedObjectRenderer( pScene->ContextStore() ) );
         Renderer::ShadowRendererPtr ShadowRenderer( new Renderer::ShadowRenderer() );
         pFloorObject->ObjectRenderer() = SimpleRenderer;
         pObject->ObjectRenderer() = OutlinedRenderer;
@@ -106,7 +111,8 @@ int main( int argc, char** argv )
         pCamera = Renderer::CameraPtr( new Renderer::Camera( 0, 0, WIDTH,HEIGHT, 80.0f ) );
         pCamera->ZAxisOffset() = 20;
         
-
+        FrameRateTimer.Start();
+        FrameCount = 0;
         SDL.OnQuit() = OnQuit;
         SDL.OnIdle() = OnIdle;
         SDL.OnMouseMotion() = OnMouseMotion;
@@ -136,9 +142,16 @@ void OnQuit()
 //////////////////////////////////////////////////////////////
 void OnIdle()
 {
-	Math::Quaternion Q( Math::Vector( 0, 1.0f, 0 ), Math::ToRadians( 1.0f ) );
-	pObject->CoordinateSpace().Rotate( Q );
-    pScene->Render( pCamera );
+    Math::Quaternion Q( Math::Vector( 0, 1.0f, 0 ), Math::ToRadians( 1.0f ) );
+    pObject->CoordinateSpace().Rotate( Q );
+    pScene->Render( *pCamera );
+
+    ++FrameCount;
+    if (FrameRateTimer.Elapsed() > 1000) {
+        std::cout << "Frame Rate = " << FrameCount << "fps\n";
+        FrameRateTimer.Restart();
+        FrameCount = 0;
+    }
 
     // no reason to push the CPU to 100%
     SDL_Delay( 10 );
@@ -206,6 +219,14 @@ void OnKeyDown( SDL_Keycode Key, unsigned short Mod )
     {
     case SDLK_q:
         SDL.Stop();
+        break;
+    case SDLK_r:
+        if (pObject->ObjectRenderer() == SimpleRenderer) {
+            pObject->ObjectRenderer() = OutlinedRenderer;
+        }
+        else {
+            pObject->ObjectRenderer() = SimpleRenderer;
+        }
         break;
     }
 }

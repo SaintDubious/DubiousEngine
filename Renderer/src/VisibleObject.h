@@ -78,8 +78,6 @@ public:
     Color&				BaseColor() { return m_BaseColor; }
 private:
 
-    void				BuildSilhouette( VisibleModelPtr pModel, const Math::LocalPoint &LightPos, Silhouette &Sil ) const;
-
     VisibleModelPtr		m_pModel;
     VisibleModelPtr		m_pShadowModel;
     Math::CoordinateSpace m_CoordinateSpace;
