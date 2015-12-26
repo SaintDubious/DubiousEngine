@@ -32,6 +32,9 @@
     <ClCompile Include="src\ShadowRenderer.cpp">
       <Filter>ObjectRenderers</Filter>
     </ClCompile>
+    <ClCompile Include="src\OutlinedObjectRenderer.cpp">
+      <Filter>ObjectRenderers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\OpenGLAttributes.h">
@@ -61,6 +64,9 @@
     </ClInclude>
     <ClInclude Include="src\VisibleModel.h" />
     <ClInclude Include="src\ShadowRenderer.h">
+      <Filter>ObjectRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\OutlinedObjectRenderer.h">
       <Filter>ObjectRenderers</Filter>
     </ClInclude>
   </ItemGroup>

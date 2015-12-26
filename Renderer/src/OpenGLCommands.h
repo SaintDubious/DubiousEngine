@@ -89,6 +89,18 @@ public:
     {
         glCullFace( Face );
     }
+
+    /// @brief glPolygonMode
+    static void         PolygonMode( GLenum Face, GLenum Mode)
+    {
+        glPolygonMode( Face, Mode );
+    }
+
+    /// @brief glLineWidth
+    static void         LineWidth( float Width )
+    {
+        glLineWidth( Width );
+    }
 };
 
 }

@@ -8,6 +8,7 @@
 #include <VisibleModel.h>
 #include <VisibleObject.h>
 #include <SimpleObjectRenderer.h>
+#include <OutlinedObjectRenderer.h>
 #include <ShadowRenderer.h>
 #include <OpenGLContextStore.h>
 #include <VectorMath.h>
@@ -29,6 +30,7 @@ typedef std::shared_ptr<Camera> CameraPtr;
 typedef std::shared_ptr<VisibleModel> VisibleModelPtr;
 typedef std::shared_ptr<VisibleObject> VisibleObjectPtr;
 typedef std::shared_ptr<SimpleObjectRenderer> SimpleObjectRendererPtr;
+typedef std::shared_ptr<OutlinedObjectRenderer> OutlinedObjectRendererPtr;
 }
 }
 
@@ -88,9 +90,10 @@ int main( int argc, char** argv )
         Renderer::OpenGLContextStorePtr pContextStore( new Renderer::OpenGLContextStore );
         pScene = Renderer::ScenePtr( new Renderer::Scene(pContextStore) );
         Renderer::SimpleObjectRendererPtr SimpleRenderer( new Renderer::SimpleObjectRenderer( pScene->ContextStore() ) );
+        Renderer::OutlinedObjectRendererPtr OutlinedRenderer( new Renderer::OutlinedObjectRenderer( pScene->ContextStore() ) );
         Renderer::ShadowRendererPtr ShadowRenderer( new Renderer::ShadowRenderer() );
         pFloorObject->ObjectRenderer() = SimpleRenderer;
-        pObject->ObjectRenderer() = SimpleRenderer;
+        pObject->ObjectRenderer() = OutlinedRenderer;
         pObject->ShadowRenderer() = ShadowRenderer;
 
         pScene->SceneLight().Position = Math::Point( 20, 20, 0 );

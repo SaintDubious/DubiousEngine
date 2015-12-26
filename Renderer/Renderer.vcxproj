@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\Color.cpp" />
+    <ClCompile Include="src\OutlinedObjectRenderer.cpp" />
     <ClCompile Include="src\ShadowRenderer.cpp" />
     <ClCompile Include="src\VisibleModel.cpp" />
     <ClCompile Include="src\OpenGLAttributes.cpp" />
@@ -34,6 +35,7 @@
   <ItemGroup>
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\Color.h" />
+    <ClInclude Include="src\OutlinedObjectRenderer.h" />
     <ClInclude Include="src\ShadowRenderer.h" />
     <ClInclude Include="src\VisibleModel.h" />
     <ClInclude Include="src\ObjectRenderer.h" />
