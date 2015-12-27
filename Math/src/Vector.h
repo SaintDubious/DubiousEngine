@@ -12,6 +12,7 @@ template <int T> class UnitVectorT;
 template <int T> bool operator==( const VectorT<T>& A, const VectorT<T>& B );
 template <int T> bool operator!=( const VectorT<T>& A, const VectorT<T>& B );
 template <int T> VectorT<T> operator+( const VectorT<T>& A, const VectorT<T>& B );
+template <int T> VectorT<T> operator-( const VectorT<T>& A, const VectorT<T>& B );
 template <int T> VectorT<T> operator*( const VectorT<T>& A, float B );
 
 /// @brief A 3D Vector
@@ -88,6 +89,7 @@ private:
     friend bool         operator== <>( const VectorT<T>& A, const VectorT<T>& B );
     friend bool         operator!= <>( const VectorT<T>& A, const VectorT<T>& B );
     friend VectorT<T>   operator+ <>( const VectorT<T>& A, const VectorT<T>& B );
+    friend VectorT<T>   operator- <>( const VectorT<T>& A, const VectorT<T>& B );
     friend VectorT<T>   operator* <>( const VectorT<T>& A, float B );
 
     VectorT( const Triple& Coords )
@@ -116,6 +118,13 @@ template <int T>
 VectorT<T> operator+( const VectorT<T>& A, const VectorT<T>& B )
 {
     return VectorT<T>( A.m_Coords + B.m_Coords );
+}
+
+//////////////////////////////////////////////////////////////
+template <int T> 
+VectorT<T> operator-( const VectorT<T>& A, const VectorT<T>& B )
+{
+    return VectorT<T>( A.m_Coords - B.m_Coords );
 }
 
 //////////////////////////////////////////////////////////////

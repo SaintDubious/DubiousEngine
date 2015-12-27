@@ -35,7 +35,7 @@ typedef std::vector<VisibleModelPtr> VisibleModelPtrVector;
 
 /// @brief Representation of a visible model
 ///
-/// The Renderer::Model is a model suitable for drawing in
+/// The Renderer::VisibleModel is a model suitable for drawing in
 ///	OpenGL.  It is similar to the AC3DModel, but it contains
 ///	more information, like point normals.
 class VisibleModel
@@ -57,7 +57,7 @@ public:
     /// Builds a cube of the given dimensions with the origin
     /// centered. If IncludeEdges is true then it will build
     /// edge information, used in shadow rendering
-    /// @param File - [in] The file object
+    /// @param Dimensions - [in] The Dimensions
     /// @param IncludeEdges - [in] Set true to build edges
     VisibleModel( const Math::Triple& Dimensions, bool IncludeEdges );
 

@@ -19,6 +19,20 @@ public:
         Assert::IsTrue( C.Position() == Point( 0, 0, 0 ) );
     }
 
+    TEST_METHOD(CoordinateSpaceOperators)
+    {
+        CoordinateSpace A, B;
+        Assert::IsTrue( A == B );
+        B.Translate( Vector( 1, 0, 0 ) );
+        Assert::IsFalse( A == B );
+        B.Translate( Vector( -1, 0, 0 ) );
+        Assert::IsTrue( A == B );
+        B.Rotate( Quaternion( UnitVector( 0, 1, 0 ), ToRadians(45) ) );
+        Assert::IsFalse( A == B );
+        B.Translate( Vector( 1, 0, 0 ) );
+        Assert::IsFalse( A == B );
+    }
+
     TEST_METHOD(CoordinateSpaceTranslation)
     {
         CoordinateSpace C;

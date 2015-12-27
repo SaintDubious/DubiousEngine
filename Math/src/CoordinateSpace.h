@@ -98,9 +98,14 @@ public:
     LocalVector	        Transform( const Vector& V ) const;
 
 private:
+    
+    friend bool         operator== ( const CoordinateSpace& A, const CoordinateSpace& B );
+
     Point               m_Position;
     Quaternion          m_Rotation;
 };
+
+bool operator== ( const CoordinateSpace& A, const CoordinateSpace& B );
 
 }
 }

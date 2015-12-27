@@ -68,4 +68,10 @@ LocalVector CoordinateSpace::Transform( const Vector& V ) const
     return LocalVector( QRotated.m_Imaginary.m_X, QRotated.m_Imaginary.m_Y, QRotated.m_Imaginary.m_Z );
 }
 
+bool operator== ( const CoordinateSpace& A, const CoordinateSpace& B )
+{
+    return A.m_Position == B.m_Position &&
+           A.m_Rotation == B.m_Rotation;
+}
+
 }}

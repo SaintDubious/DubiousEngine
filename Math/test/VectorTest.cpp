@@ -55,6 +55,11 @@ public:
         Assert::IsTrue(Equals(Q.Y(), 22));
         Assert::IsTrue(Equals(Q.Z(), 33));
 
+        Q = R-P;
+        Assert::IsTrue(Equals(Q.X(), 9));
+        Assert::IsTrue(Equals(Q.Y(), 18));
+        Assert::IsTrue(Equals(Q.Z(), 27));
+
         Q = R*10;
         Assert::IsTrue(Equals(Q.X(), 100));
         Assert::IsTrue(Equals(Q.Y(), 200));
