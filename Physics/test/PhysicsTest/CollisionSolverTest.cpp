@@ -25,6 +25,8 @@ public:
         B.CoordinateSpace().Translate( Vector( 3, 0, 0 ) );
         Assert::IsTrue( Solver.Intersection( A, B ) == false );
         B.CoordinateSpace().Translate( Vector( -2, 0, 0 ) );
+        Assert::IsTrue( Solver.Intersection( A, B ) == false );
+        B.CoordinateSpace().Translate( Vector( -0.5, 0.5, 0 ) );
         Assert::IsTrue( Solver.Intersection( A, B ) == true );
     }
 

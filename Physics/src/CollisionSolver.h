@@ -12,6 +12,7 @@ class PhysicsObject;
 /// Given two PhysicsObjects, figure out if they intersect. Uses
 /// the GJK algorithm:
 /// http://mollyrocket.com/849
+/// http://hacktank.net/blog/?p=93
 class CollisionSolver
 {
 public:
