@@ -34,6 +34,11 @@ bool NearestSimplex2( std::vector<Math::Vector>& Simplex, Math::Vector& Directio
     const Math::Vector& AB = B - A;
     const Math::Vector& AO = Origin - A;
     Direction = Math::CrossProduct( Math::CrossProduct( AB, AO ), AB );
+    if (Direction == Math::Vector()) {
+        // If the cross product is (0,0,0) then the origin lies on this
+        // line. No need to go any further.
+        return true;
+    }
     return false;
 }
 
@@ -76,7 +81,14 @@ bool NearestSimplex3( std::vector<Math::Vector>& Simplex, Math::Vector& Directio
 
     // The point lies inside the triangle
     // Now the question is if it's above or below
-    if (Math::DotProduct( ABxAC, AO ) > 0) {
+    float SideCheck = Math::DotProduct( ABxAC, AO );
+    if (Math::Equals( SideCheck, 0 )) {
+        // If the side check finds that the point lies 
+        // within this triangle then there's no need
+        // to continue
+        return true;
+    }
+    else if ( SideCheck > 0) {
         // This direction is above the triangle (ie on the same side
         // as the triangle normal). We keep everything the same and
         // use the direction as the triangle normal
@@ -170,6 +182,9 @@ bool CollisionSolver::Intersection( const PhysicsObject& A, const PhysicsObject&
     Direction = Math::Vector() - SimplexPoint;
     while (true) {
         SimplexPoint = Support( A, Direction ) - Support( B, Direction*-1 );
+        // If this next check is < 0 then touching will be considered
+        // a collision. If it's <= 0 then thouching will not be a collision
+        // .... I think. Not very well tested
         if (Math::DotProduct( SimplexPoint, Direction ) <= 0) {
             return false;
         }

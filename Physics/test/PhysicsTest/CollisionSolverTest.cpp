@@ -24,9 +24,17 @@ public:
 
         B.CoordinateSpace().Translate( Vector( 3, 0, 0 ) );
         Assert::IsTrue( Solver.Intersection( A, B ) == false );
-        B.CoordinateSpace().Translate( Vector( -2, 0, 0 ) );
+        // Touching... should this be a collision?
+        B.CoordinateSpace().Translate( Vector( -1, 0, 0 ) );
         Assert::IsTrue( Solver.Intersection( A, B ) == false );
-        B.CoordinateSpace().Translate( Vector( -0.5, 0.5, 0 ) );
+        // definite collision
+        B.CoordinateSpace().Translate( Vector( -1, 0, 0 ) );
+        Assert::IsTrue( Solver.Intersection( A, B ) == true );
+
+        // Add some rotation
+        B.CoordinateSpace().Rotate( Quaternion( Vector( 0, 1, 0 ), ToRadians( 30 ) ) );
+        Assert::IsTrue( Solver.Intersection( A, B ) == true );
+        B.CoordinateSpace().Rotate( Quaternion( Vector( 1, 0, 0 ), ToRadians( 30 ) ) );
         Assert::IsTrue( Solver.Intersection( A, B ) == true );
     }
 
