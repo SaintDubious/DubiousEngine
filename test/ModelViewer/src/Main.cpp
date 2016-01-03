@@ -68,7 +68,7 @@ int                     FrameCount;
 int main( int argc, char** argv )
 {
     if( argc != 3 ){
-        std::cout << "Usage: TestRenderer ModelFile.ac ShadowModel.ac\n";
+        std::cout << "Usage: ModelViewer ModelFile.ac ShadowModel.ac\n";
         return 0;
     }
     std::string VisualModelFile = argv[1];

@@ -107,6 +107,13 @@ private:
 
 bool operator== ( const CoordinateSpace& A, const CoordinateSpace& B );
 
+//////////////////////////////////////////////////////////////
+inline std::ostream& operator<<(std::ostream& o, const CoordinateSpace& C)
+{
+    o << "Q: " << "P: ";
+    return o;
+}
+
 }
 }
 
