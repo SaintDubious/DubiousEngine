@@ -9,9 +9,9 @@ namespace Math {
 
 template <int T> class VectorT;
 
-template <int T> class UnitVectorT;
-template <int T> bool operator==( const UnitVectorT<T>& A, const UnitVectorT<T>& B );
-template <int T> bool operator!=( const UnitVectorT<T>& A, const UnitVectorT<T>& B );
+template <int T> class Unit_vectorT;
+template <int T> bool operator==( const Unit_vectorT<T>& a, const Unit_vectorT<T>& b );
+template <int T> bool operator!=( const Unit_vectorT<T>& a, const Unit_vectorT<T>& b );
 
 /// @brief A 3D Unit Vector
 ///
@@ -19,8 +19,7 @@ template <int T> bool operator!=( const UnitVectorT<T>& A, const UnitVectorT<T>&
 /// The template parameter is only so the compiler can enforce
 /// different meanings for Unit Vectors (ie local versus global)
 template <int T>
-class UnitVectorT
-{
+class Unit_vectorT {
 public:
     /// @brief Constructor
     ///
@@ -30,70 +29,59 @@ public:
     /// don't really care what value it holds. Creating one with
     /// dummy args causes a painful normalization. So this function
     /// will create one as 1,0,0 and not call normalization
-    UnitVectorT()
-        : m_Coords( 1, 0, 0 )
-    {}
+    Unit_vectorT() = default;
 
     /// @brief Constructor
     ///
     /// Creates the unit vector with the given X, Y, and Z converted
     /// to a length of 1
-    /// @param X - [in] X component
-    /// @param Y - [in] Y component
-    /// @param Z - [in] Z component
-    UnitVectorT(float X, float Y, float Z);
+    /// @param x - [in] X component
+    /// @param y - [in] Y component
+    /// @param z - [in] Z component
+    Unit_vectorT(float x, float y, float z);
 
     /// @brief Constructor
     ///
     /// Creates a Unit Vector from the passed in Vector. This
     /// serves as a Normalize function
     /// @param V - [in] Vector to copy
-    UnitVectorT(const VectorT<T>& V);
-
-    /// @brief Default copy constructor
-    UnitVectorT(const UnitVectorT&) = default;
-
-    /// @brief Destructor
-    ~UnitVectorT() = default;
-
-    /// @brief Default assignment operator
-    UnitVectorT& operator=(const UnitVectorT&) = default;
+    Unit_vectorT(const VectorT<T>& v);
 
     /// @brief X accessor
     /// @returns X coordinate
-    float               X() const { return m_Coords.m_X; }
+    float               x() const { return m_coords.m_x; }
 
     /// @brief Y accessor
     /// @returns Y coordinate
-    float               Y() const { return m_Coords.m_Y; }
+    float               y() const { return m_coords.m_y; }
 
     /// @brief Z accessor
     /// @returns Z coordinate
-    float               Z() const { return m_Coords.m_Z; }
+    float               z() const { return m_coords.m_z; }
 
 private:
-    friend bool operator== <>( const UnitVectorT<T>& A, const UnitVectorT<T>& B );
-    friend bool operator!= <>( const UnitVectorT<T>& A, const UnitVectorT<T>& B );
+    friend bool operator== <>( const Unit_vectorT<T>& a, const Unit_vectorT<T>& b );
+    friend bool operator!= <>( const Unit_vectorT<T>& a, const Unit_vectorT<T>& b );
 
-    Triple              m_Coords;
+    Triple              m_coords = {1, 0, 0};
 };
 
 //////////////////////////////////////////////////////////////
 template<int T> 
-bool operator==( const UnitVectorT<T>& A, const UnitVectorT<T>& B )
+bool operator==( const Unit_vectorT<T>& a, const Unit_vectorT<T>& b )
 {
-    return A.m_Coords == B.m_Coords;
+    return a.m_coords == b.m_coords;
 }
 
 //////////////////////////////////////////////////////////////
 template<int T> 
-bool operator!=( const UnitVectorT<T>& A, const UnitVectorT<T>& B )
+bool operator!=( const Unit_vectorT<T>& a, const Unit_vectorT<T>& b )
 {
-    return A.m_Coords != B.m_Coords;
+    return a.m_coords != b.m_coords;
 }
 
-typedef UnitVectorT<0>  UnitVector;
-typedef UnitVectorT<1>  LocalUnitVector;
+typedef Unit_vectorT<0>  Unit_vector;
+typedef Unit_vectorT<1>  Local_unit_vector;
 }
 }
 

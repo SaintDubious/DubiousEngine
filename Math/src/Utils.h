@@ -14,19 +14,19 @@ static const float PI = 3.1415926535f;
 /// @param A - [in] The first number
 /// @param B - [in] The second number
 /// @returns True if the numbers are "close enough" to being equal
-bool Equals( float A, float B );
+bool equals( float a, float b );
 
 /// @brief converts degrees to radians
 ///
 /// @param Degrees - [in] Angle in Degrees
 /// @returns Angle in Radians
-float ToRadians( float Degrees );
+float to_radians( float degrees );
 
 /// @brief converts radians to degrees
 ///
 /// @param Radians - [in] Angle in Radians
 /// @returns Angle in Degrees
-float ToDegrees( float Radians );
+float to_degrees( float radians );
 
 }
 }

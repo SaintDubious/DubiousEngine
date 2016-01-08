@@ -2,7 +2,7 @@
 #define INCLUDED_MATH_VECTORMATH
 
 #include "Vector.h"
-#include "UnitVector.h"
+#include "Unit_vector.h"
 
 //////////////////////////////////////////////////////////////
 namespace Dubious {
@@ -10,25 +10,25 @@ namespace Math {
 
 //////////////////////////////////////////////////////////////
 template <int T>
-VectorT<T> CrossProduct( const VectorT<T>& A, const VectorT<T>& B )
+VectorT<T> cross_product( const VectorT<T>& a, const VectorT<T>& b )
 {
-    return VectorT<T>( (A.Y()*B.Z()) - (A.Z()*B.Y()), 
-        (A.Z()*B.X()) - (A.X()*B.Z()), 
-        (A.X()*B.Y()) - (A.Y()*B.X()));
+    return VectorT<T>( (a.y()*b.z()) - (a.z()*b.y()), 
+        (a.z()*b.x()) - (a.x()*b.z()), 
+        (a.x()*b.y()) - (a.y()*b.x()));
 }
 
 //////////////////////////////////////////////////////////////
 template <int T>
-float DotProduct( const VectorT<T>& A, const VectorT<T>& B )
+float dot_product( const VectorT<T>& a, const VectorT<T>& b )
 {
-    return A.X()*B.X() + A.Y()*B.Y() + A.Z()*B.Z();
+    return a.x()*b.x() + a.y()*b.y() + a.z()*b.z();
 }
 
 //////////////////////////////////////////////////////////////
 template <int T>
-float DotProduct( const UnitVectorT<T>& A, const UnitVectorT<T>& B )
+float dot_product( const Unit_vectorT<T>& A, const Unit_vectorT<T>& B )
 {
-    return A.X()*B.X() + A.Y()*B.Y() + A.Z()*B.Z();
+    return a.x()*b.x() + a.y()*b.y() + a.z()*b.z();
 }
 
 }

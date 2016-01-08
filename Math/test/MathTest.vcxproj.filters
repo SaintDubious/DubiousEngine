@@ -4,13 +4,13 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="PointTest.cpp" />
-    <ClCompile Include="TripleTest.cpp" />
-    <ClCompile Include="VectorTest.cpp" />
-    <ClCompile Include="UnitVectorTest.cpp" />
-    <ClCompile Include="QuaternionTest.cpp" />
-    <ClCompile Include="CoordinateSpaceTest.cpp" />
-    <ClCompile Include="UtilsTest.cpp" />
-    <ClCompile Include="VectorMathTest.cpp" />
+    <ClCompile Include="Triple_test.cpp" />
+    <ClCompile Include="Unit_vector_test.cpp" />
+    <ClCompile Include="Utils_test.cpp" />
+    <ClCompile Include="Vector_math_test.cpp" />
+    <ClCompile Include="Vector_test.cpp" />
+    <ClCompile Include="Quaternion_test.cpp" />
+    <ClCompile Include="Point_test.cpp" />
+    <ClCompile Include="Coordinate_space_test.cpp" />
   </ItemGroup>
 </Project>

@@ -1,5 +1,5 @@
 #include "Quaternion.h"
-#include "UnitVector.h"
+#include "Unit_vector.h"
 
 //////////////////////////////////////////////////////////////
 namespace Dubious {
@@ -7,66 +7,66 @@ namespace Math {
 
 //////////////////////////////////////////////////////////////
 template <int T>
-QuaternionT<T>::QuaternionT( const UnitVectorT<T>& Axis, float Angle )
+QuaternionT<T>::QuaternionT( const Unit_vectorT<T>& axis, float angle )
 {
-    float HalfSin = sinf( Angle / 2.0f );
-    m_Real = cosf( Angle / 2.0f );
-    m_Imaginary = Triple( Axis.X() * HalfSin, Axis.Y() * HalfSin, Axis.Z() * HalfSin );
+    float half_sin = sinf( angle / 2.0f );
+    m_real = cosf( angle / 2.0f );
+    m_imaginary = Triple( axis.x() * half_sin, axis.y() * half_sin, axis.z() * half_sin );
 }
 
 //////////////////////////////////////////////////////////////
 template <int T>
-void QuaternionT<T>::GetMatrix( float Matrix[16] ) const
+void QuaternionT<T>::get_matrix( float matrix[16] ) const
 {
-    float 	xx( m_Imaginary.m_X * m_Imaginary.m_X );
-    float 	yy( m_Imaginary.m_Y * m_Imaginary.m_Y );
-    float 	zz( m_Imaginary.m_Z * m_Imaginary.m_Z );
+    float 	xx( m_imaginary.m_x * m_imaginary.m_x );
+    float 	yy( m_imaginary.m_y * m_imaginary.m_y );
+    float 	zz( m_imaginary.m_z * m_imaginary.m_z );
 
-    using namespace MatrixIndex;
+    using namespace Matrix_index;
 
-    Matrix[_11] = 1.0f - 2.0f * ( yy + zz );
-    Matrix[_21] = 2.0f * ( m_Imaginary.m_X * m_Imaginary.m_Y + m_Real * m_Imaginary.m_Z );
-    Matrix[_31] = 2.0f * ( m_Imaginary.m_X * m_Imaginary.m_Z - m_Real * m_Imaginary.m_Y );
-    Matrix[_41] = 0.0;
+    matrix[_11] = 1.0f - 2.0f * ( yy + zz );
+    matrix[_21] = 2.0f * ( m_imaginary.m_x * m_imaginary.m_y + m_real * m_imaginary.m_z );
+    matrix[_31] = 2.0f * ( m_imaginary.m_x * m_imaginary.m_z - m_real * m_imaginary.m_y );
+    matrix[_41] = 0.0;
 
-    Matrix[_12] = 2.0f * ( m_Imaginary.m_X * m_Imaginary.m_Y - m_Real * m_Imaginary.m_Z );
-    Matrix[_22] = 1.0f - 2.0f * ( xx + zz );
-    Matrix[_32] = 2.0f * ( m_Imaginary.m_Y * m_Imaginary.m_Z + m_Real * m_Imaginary.m_X );
-    Matrix[_42] = 0.0;
+    matrix[_12] = 2.0f * ( m_imaginary.m_x * m_imaginary.m_y - m_real * m_imaginary.m_z );
+    matrix[_22] = 1.0f - 2.0f * ( xx + zz );
+    matrix[_32] = 2.0f * ( m_imaginary.m_y * m_imaginary.m_z + m_real * m_imaginary.m_x );
+    matrix[_42] = 0.0;
 
-    Matrix[_13] = 2.0f * ( m_Imaginary.m_X * m_Imaginary.m_Z + m_Real * m_Imaginary.m_Y );
-    Matrix[_23] = 2.0f * ( m_Imaginary.m_Y * m_Imaginary.m_Z - m_Real * m_Imaginary.m_X );
-    Matrix[_33] = 1.0f - 2.0f * ( xx + yy );
-    Matrix[_43] = 0.0;
+    matrix[_13] = 2.0f * ( m_imaginary.m_x * m_imaginary.m_z + m_real * m_imaginary.m_y );
+    matrix[_23] = 2.0f * ( m_imaginary.m_y * m_imaginary.m_z - m_real * m_imaginary.m_x );
+    matrix[_33] = 1.0f - 2.0f * ( xx + yy );
+    matrix[_43] = 0.0;
 
-    Matrix[_14] = 0.0;
-    Matrix[_24] = 0.0;
-    Matrix[_34] = 0.0;
-    Matrix[_44] = 1.0;
+    matrix[_14] = 0.0;
+    matrix[_24] = 0.0;
+    matrix[_34] = 0.0;
+    matrix[_44] = 1.0;
 }
 
 //////////////////////////////////////////////////////////////
 template <int T>
-QuaternionT<T> QuaternionT<T>::Conjugate() const
+QuaternionT<T> QuaternionT<T>::conjugate() const
 {
-    return QuaternionT<T>( m_Real, Triple( -m_Imaginary.m_X, -m_Imaginary.m_Y, -m_Imaginary.m_Z ) );
+    return QuaternionT<T>( m_real, Triple( -m_imaginary.m_x, -m_imaginary.m_y, -m_imaginary.m_z ) );
 }
 
 //////////////////////////////////////////////////////////////
 template <int T>
-void QuaternionT<T>::Normalize()
+void QuaternionT<T>::normalize()
 {
-    float Magnitude = sqrt( m_Real*m_Real + 
-                            m_Imaginary.m_X*m_Imaginary.m_X +
-                            m_Imaginary.m_Y*m_Imaginary.m_Y +
-                            m_Imaginary.m_Z*m_Imaginary.m_Z );
-    if (Equals(Magnitude, 0)) {
+    float magnitude = sqrt( m_real*m_real + 
+                            m_imaginary.m_x*m_imaginary.m_x +
+                            m_imaginary.m_y*m_imaginary.m_y +
+                            m_imaginary.m_z*m_imaginary.m_z );
+    if (equals(magnitude, 0)) {
         throw std::runtime_error( "Quaternion has 0 magnitude" );
     }
-    m_Real = m_Real/Magnitude;
-    m_Imaginary = Triple( m_Imaginary.m_X/Magnitude, 
-                          m_Imaginary.m_Y/Magnitude, 
-                          m_Imaginary.m_Z/Magnitude );
+    m_real = m_real/magnitude;
+    m_imaginary = Triple( m_imaginary.m_x/magnitude, 
+                          m_imaginary.m_y/magnitude, 
+                          m_imaginary.m_z/magnitude );
 }
 
 template class QuaternionT<0>;

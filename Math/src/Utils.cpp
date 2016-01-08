@@ -8,21 +8,21 @@ namespace Dubious {
 namespace Math {
 
 //////////////////////////////////////////////////////////////
-bool Equals( float A, float B )
+bool equals( float a, float b )
 {
-    return fabs(A-B) < 0.000001;
+    return fabs(a-b) < 0.000001;
 }
 
 //////////////////////////////////////////////////////////////
-float ToRadians( float Degrees )
+float to_radians( float degrees )
 {
-    return PI * Degrees/180.0f;
+    return PI * degrees/180.0f;
 }
 
 //////////////////////////////////////////////////////////////
-float ToDegrees( float Radians )
+float to_degrees( float radians )
 {
-    return Radians * 180.0f / PI;
+    return radians * 180.0f / PI;
 }
 
 }

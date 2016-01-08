@@ -8,12 +8,12 @@ namespace Dubious {
 namespace Math {
 
 template <int T> class VectorT;
-template <int T> class UnitVectorT;
-template <int T> bool operator==( const VectorT<T>& A, const VectorT<T>& B );
-template <int T> bool operator!=( const VectorT<T>& A, const VectorT<T>& B );
-template <int T> VectorT<T> operator+( const VectorT<T>& A, const VectorT<T>& B );
-template <int T> VectorT<T> operator-( const VectorT<T>& A, const VectorT<T>& B );
-template <int T> VectorT<T> operator*( const VectorT<T>& A, float B );
+template <int T> class Unit_vectorT;
+template <int T> bool operator==( const VectorT<T>& a, const VectorT<T>& b );
+template <int T> bool operator!=( const VectorT<T>& a, const VectorT<T>& b );
+template <int T> VectorT<T> operator+( const VectorT<T>& a, const VectorT<T>& b );
+template <int T> VectorT<T> operator-( const VectorT<T>& a, const VectorT<T>& b );
+template <int T> VectorT<T> operator*( const VectorT<T>& a, float b );
 
 /// @brief A 3D Vector
 ///
@@ -21,23 +21,21 @@ template <int T> VectorT<T> operator*( const VectorT<T>& A, float B );
 /// The template parameter is only so the compiler can enforce
 /// different meanings for Vectors (ie local versus global)
 template <int T>
-class VectorT
-{
+class VectorT {
 public:
     /// @brief Default Constructor
     ///
     /// Creates a Vector of 0 length
-    VectorT()
-    {}
+    VectorT() = default;
 
     /// @brief Constructor
     ///
     /// Creates the vector with the given X, Y, and Z
-    /// @param X - [in] X component
-    /// @param Y - [in] Y component
-    /// @param Z - [in] Z component
-    VectorT(float X, float Y, float Z)
-        : m_Coords(X, Y, Z)
+    /// @param x - [in] X component
+    /// @param y - [in] Y component
+    /// @param z - [in] Z component
+    VectorT(float x, float y, float z)
+        : m_coords(x, y, z)
     {}
 
     /// @brief Construct from Unit Vector
@@ -47,16 +45,7 @@ public:
     /// can be constructed from Local Unit Vectors, but not
     /// Global Unit Vectors
     /// @param U - [in] Unit Vector to copy
-    VectorT( const UnitVectorT<T>& U );
-
-    /// @brief Default copy constructor
-    VectorT( const VectorT& ) = default;
-
-    /// @brief Destructor
-    ~VectorT() = default;
-
-    /// @brief Default assignment operator
-    VectorT& operator=(const VectorT&) = default;
+    VectorT( const Unit_vectorT<T>& u );
 
     /// @brief Length Squared
     ///
@@ -65,77 +54,77 @@ public:
     /// squared is a good way to do that as it doesn't require
     /// the costly sqrt function
     /// @returns The length of the vector squared
-    float               LengthSquared() const;
+    float               length_squared() const;
 
     /// @brief Length
     ///
     /// The length of the vector
     /// @returns The Vector length
-    float               Length() const;
+    float               length() const;
 
     /// @brief X accessor
     /// @returns X coordinate
-    float               X() const { return m_Coords.m_X; }
+    float               x() const { return m_coords.m_x; }
 
     /// @brief Y accessor
     /// @returns Y coordinate
-    float               Y() const { return m_Coords.m_Y; }
+    float               y() const { return m_coords.m_y; }
 
     /// @brief Z accessor
     /// @returns Z coordinate
-    float               Z() const { return m_Coords.m_Z; }
+    float               z() const { return m_coords.m_z; }
 
 private:
-    friend bool         operator== <>( const VectorT<T>& A, const VectorT<T>& B );
-    friend bool         operator!= <>( const VectorT<T>& A, const VectorT<T>& B );
-    friend VectorT<T>   operator+ <>( const VectorT<T>& A, const VectorT<T>& B );
-    friend VectorT<T>   operator- <>( const VectorT<T>& A, const VectorT<T>& B );
-    friend VectorT<T>   operator* <>( const VectorT<T>& A, float B );
+    friend bool         operator== <>( const VectorT<T>& a, const VectorT<T>& b );
+    friend bool         operator!= <>( const VectorT<T>& a, const VectorT<T>& b );
+    friend VectorT<T>   operator+ <>( const VectorT<T>& a, const VectorT<T>& b );
+    friend VectorT<T>   operator- <>( const VectorT<T>& a, const VectorT<T>& b );
+    friend VectorT<T>   operator* <>( const VectorT<T>& a, float b );
 
-    VectorT( const Triple& Coords )
-        : m_Coords( Coords )
+    VectorT( const Triple& coords )
+        : m_coords( coords )
     {}
 
-    Triple              m_Coords;
+    Triple              m_coords;
 };
 
 //////////////////////////////////////////////////////////////
 template<int T> 
-bool operator==( const VectorT<T>& A, const VectorT<T>& B )
+bool operator==( const VectorT<T>& a, const VectorT<T>& b )
 {
-    return A.m_Coords == B.m_Coords;
+    return a.m_coords == b.m_coords;
 }
 
 //////////////////////////////////////////////////////////////
 template<int T> 
-bool operator!=( const VectorT<T>& A, const VectorT<T>& B )
+bool operator!=( const VectorT<T>& a, const VectorT<T>& b )
 {
-    return A.m_Coords != B.m_Coords;
+    return a.m_coords != b.m_coords;
 }
 
 //////////////////////////////////////////////////////////////
 template <int T> 
-VectorT<T> operator+( const VectorT<T>& A, const VectorT<T>& B )
+VectorT<T> operator+( const VectorT<T>& a, const VectorT<T>& b )
 {
-    return VectorT<T>( A.m_Coords + B.m_Coords );
+    return VectorT<T>( a.m_coords + b.m_coords );
 }
 
 //////////////////////////////////////////////////////////////
 template <int T> 
-VectorT<T> operator-( const VectorT<T>& A, const VectorT<T>& B )
+VectorT<T> operator-( const VectorT<T>& a, const VectorT<T>& b )
 {
-    return VectorT<T>( A.m_Coords - B.m_Coords );
+    return VectorT<T>( a.m_coords - b.m_coords );
 }
 
 //////////////////////////////////////////////////////////////
 template <int T> 
-VectorT<T> operator*( const VectorT<T>& A, float B )
+VectorT<T> operator*( const VectorT<T>& a, float b )
 {
-    return VectorT<T>( A.m_Coords.m_X*B, A.m_Coords.m_Y*B, A.m_Coords.m_Z*B );
+    return VectorT<T>( a.m_coords.m_x*b, a.m_coords.m_y*b, a.m_coords.m_z*b );
 }
 
 typedef VectorT<0>      Vector;
-typedef VectorT<1>      LocalVector;
+typedef VectorT<1>      Local_vector;
 }
 }
 

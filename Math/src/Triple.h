@@ -17,75 +17,61 @@ namespace Math {
 /// copying, and equality. I'm making the data public because it's
 /// not a real class, but a collection of helper functions wrapper
 /// around three floats
-struct Triple
-{
+struct Triple {
     /// @brief Default Constructor
     ///
     /// Initializes a Triple to 0,0,0
-    Triple()
-        : m_X( 0 )
-        , m_Y( 0 )
-        , m_Z( 0 )
-    {}
+    Triple() = default;
 
     /// @brief Constructor
     ///
     /// Creates a triple with the passed in values
-    /// @param X - [in] X component
-    /// @param Y - [in] Y component
-    /// @param Z - [in] Z component
-    Triple(float X, float Y, float Z)
-        : m_X(X)
-        , m_Y(Y)
-        , m_Z(Z)
+    /// @param x - [in] X component
+    /// @param y - [in] Y component
+    /// @param z - [in] Z component
+    Triple(float x, float y, float z)
+        : m_x(x)
+        , m_y(y)
+        , m_z(z)
     {}
 
-    /// @brief Default copy constructor
-    Triple(const Triple&) = default;
-
-    /// @brief Destructor
-    ~Triple() = default;
-
-    /// @brief Default assignment operator
-    Triple& operator=(const Triple&) = default;
-
-    float               m_X;
-    float               m_Y;
-    float               m_Z;
+    float               m_x = 0;
+    float               m_y = 0;
+    float               m_z = 0;
 };
 
 //////////////////////////////////////////////////////////////
-inline bool operator==( const Triple& A, const Triple& B )
+inline bool operator==( const Triple& a, const Triple& b )
 {
-    return Equals(A.m_X, B.m_X) &&
-           Equals(A.m_Y, B.m_Y) &&
-           Equals(A.m_Z, B.m_Z);
+    return equals(a.m_x, b.m_x) &&
+           equals(a.m_y, b.m_y) &&
+           equals(a.m_z, b.m_z);
 }
 
 //////////////////////////////////////////////////////////////
-inline bool operator!=(const Triple& A, const Triple& B)
+inline bool operator!=(const Triple& a, const Triple& b)
 {
-    return !Equals(A.m_X, B.m_X) ||
-           !Equals(A.m_Y, B.m_Y) ||
-           !Equals(A.m_Z, B.m_Z);
+    return !equals(a.m_x, b.m_x) ||
+           !equals(a.m_y, b.m_y) ||
+           !equals(a.m_z, b.m_z);
 }
 
 //////////////////////////////////////////////////////////////
-inline Triple operator+(const Triple& A, const Triple& B)
+inline Triple operator+(const Triple& a, const Triple& b)
 {
-    return Triple(A.m_X + B.m_X, A.m_Y + B.m_Y, A.m_Z + B.m_Z);
+    return Triple(a.m_x + b.m_x, a.m_y + b.m_y, a.m_z + b.m_z);
 }
 
 //////////////////////////////////////////////////////////////
-inline Triple operator-(const Triple& A, const Triple& B)
+inline Triple operator-(const Triple& a, const Triple& b)
 {
-    return Triple(A.m_X - B.m_X, A.m_Y - B.m_Y, A.m_Z - B.m_Z);
+    return Triple(a.m_x - b.m_x, a.m_y - b.m_y, a.m_z - b.m_z);
 }
 
 //////////////////////////////////////////////////////////////
-inline std::ostream& operator<<(std::ostream& o, const Triple& A)
+inline std::ostream& operator<<(std::ostream& o, const Triple& a)
 {
-    o << "(" << A.m_X << ", " << A.m_Y << ", " << A.m_Z << ")";
+    o << "(" << a.m_x << ", " << a.m_y << ", " << a.m_z << ")";
     return o;
 }
 

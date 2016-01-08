@@ -1,5 +1,5 @@
 #include "Vector.h"
-#include "UnitVector.h"
+#include "Unit_vector.h"
 
 //////////////////////////////////////////////////////////////
 namespace Dubious {
@@ -7,23 +7,23 @@ namespace Math {
 
 //////////////////////////////////////////////////////////////
 template<int T>
-VectorT<T>::VectorT( const UnitVectorT<T>& U)
-    : m_Coords( U.X(), U.Y(), U.Z() )
+VectorT<T>::VectorT( const Unit_vectorT<T>& u)
+    : m_coords( u.x(), u.y(), u.z() )
 {
 }
 
 //////////////////////////////////////////////////////////////
 template<int T>
-float VectorT<T>::LengthSquared() const
+float VectorT<T>::length_squared() const
 {
-    return m_Coords.m_X*m_Coords.m_X + m_Coords.m_Y*m_Coords.m_Y + m_Coords.m_Z*m_Coords.m_Z;
+    return m_coords.m_x*m_coords.m_x + m_coords.m_y*m_coords.m_y + m_coords.m_z*m_coords.m_z;
 }
 
 //////////////////////////////////////////////////////////////
 template<int T>
-float VectorT<T>::Length() const
+float VectorT<T>::length() const
 {
-    return sqrt(LengthSquared());
+    return sqrt(length_squared());
 }
 
 template class VectorT<0>;

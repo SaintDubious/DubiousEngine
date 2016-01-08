@@ -3,18 +3,18 @@
 
 #include "Triple.h"
 
-namespace MathTest { class QuaternionTest; }
+namespace Math_test { class Quaternion_test; }
 
 //////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Math {
 
-template <int T> class UnitVectorT;
+template <int T> class Unit_vectorT;
 
 // When you're looking up the matrix element by column and row
-// it can be helpful to have something a bit more meaningul then
+// it can be helpful to have something a bit more meaningful then
 // an array index
-namespace MatrixIndex 
+namespace Matrix_index 
 {
     // Column x Row
     static const int _11 = 0;
@@ -36,9 +36,9 @@ namespace MatrixIndex
 }
 
 template <int T> class QuaternionT;
-template <int T> bool operator==( const QuaternionT<T>& A, const QuaternionT<T>& B );
-template <int T> bool operator!=( const QuaternionT<T>& A, const QuaternionT<T>& B );
-template <int T> QuaternionT<T> operator*( const QuaternionT<T>& A, const QuaternionT<T>& B );
+template <int T> bool operator==( const QuaternionT<T>& a, const QuaternionT<T>& b );
+template <int T> bool operator!=( const QuaternionT<T>& a, const QuaternionT<T>& b );
+template <int T> QuaternionT<T> operator*( const QuaternionT<T>& a, const QuaternionT<T>& b );
 
 /// @brief Unit Quaternion
 ///
@@ -50,17 +50,14 @@ template <int T> QuaternionT<T> operator*( const QuaternionT<T>& A, const Quater
 /// http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/slerp/
 /// http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToAngle/index.htm
 template <int T>
-class QuaternionT
-{
+class QuaternionT {
 public:
     /// @brief Default Constructor
     ///
     /// The default constructor will create a rotation that represents
     /// Axis aligned with global X, Y, and Z. In other words this will
     /// create exactly what you'd expect for a default constructor
-    QuaternionT()
-        : m_Real( 1.0f )
-    {}
+    QuaternionT() = default;
 
     /// @brief Construct from axis and angle
     ///
@@ -68,18 +65,9 @@ public:
     /// axis and an angle around that axis. This is a right hand coordinate
     /// system, so the angle is counter-clockwise rotation around the
     /// axis
-    /// @param Axis - [in] The axis around which we will rotate
-    /// @param Angle - [in] Magnitude of Rotation (in radians)
-    QuaternionT( const UnitVectorT<T>& Axis, float Angle );
-
-    /// @brief Default copy constructor
-    QuaternionT( const QuaternionT& ) = default;
-
-    /// @brief Default destructor
-    ~QuaternionT() = default;
-
-    /// @brief Default assignment operator
-    QuaternionT& operator=( const QuaternionT& ) = default;
+    /// @param axis - [in] The axis around which we will rotate
+    /// @param angle - [in] Magnitude of Rotation (in radians)
+    QuaternionT( const Unit_vectorT<T>& axis, float angle );
 
     /// @brief The conjugate
     ///
@@ -87,7 +75,7 @@ public:
     /// by this quaternion. The conjugate is simply:
     /// (w, -x, -y, -z)
     /// @returns the conjugate
-    QuaternionT         Conjugate() const;
+    QuaternionT         conjugate() const;
 
     /// @brief Get the rotation matrix
     ///
@@ -95,62 +83,62 @@ public:
     /// This is basically a shortcut for OpenGL rotation as it takes
     /// this same matrix as an input. It's also handy for finding 
     /// the three axis of rotation in one call
-    /// @param Matrix - [out] Will be filled with the rotation matrix
-    void GetMatrix( float Matrix[16] ) const;
+    /// @param matrix - [out] Will be filled with the rotation matrix
+    void                get_matrix( float matrix[16] ) const;
 
 private:
-    friend class MathTest::QuaternionTest;
-    friend class CoordinateSpace;
-    friend bool operator== <>( const QuaternionT<T>& A, const QuaternionT<T>& B );
-    friend bool operator!= <>( const QuaternionT<T>& A, const QuaternionT<T>& B );
-    friend QuaternionT<T> operator* <>( const QuaternionT<T>& A, const QuaternionT<T>& B );
+    friend class Math_test::Quaternion_test;
+    friend class Coordinate_space;
+    friend bool operator== <>( const QuaternionT<T>& a, const QuaternionT<T>& b );
+    friend bool operator!= <>( const QuaternionT<T>& a, const QuaternionT<T>& b );
+    friend QuaternionT<T> operator* <>( const QuaternionT<T>& a, const QuaternionT<T>& b );
 
-    QuaternionT( float Real, const Triple& Imaginary )
-        : m_Real( Real )
-        , m_Imaginary( Imaginary )
+    QuaternionT( float real, const Triple& imaginary )
+        : m_real( real )
+        , m_imaginary( imaginary )
     {}
 
-    void                Normalize();
+    void                normalize();
 
-    float               m_Real;
-    Triple              m_Imaginary;
+    float               m_real = 1.0f;
+    Triple              m_imaginary;
 };
 
 //////////////////////////////////////////////////////////////
 template<int T> 
-bool operator==( const QuaternionT<T>& A, const QuaternionT<T>& B )
+bool operator==( const QuaternionT<T>& a, const QuaternionT<T>& b )
 {
-    return Equals( A.m_Real, B.m_Real) &&
-           A.m_Imaginary == B.m_Imaginary;
+    return equals( a.m_real, b.m_real) &&
+           a.m_imaginary == b.m_imaginary;
 }
 
 //////////////////////////////////////////////////////////////
 template<int T> 
-bool operator!=( const QuaternionT<T>& A, const QuaternionT<T>& B )
+bool operator!=( const QuaternionT<T>& a, const QuaternionT<T>& b )
 {
-    return !Equals( A.m_Real, B.m_Real) ||
-           A.m_Imaginary != B.m_Imaginary;
+    return !equals( a.m_real, b.m_real) ||
+           a.m_imaginary != b.m_imaginary;
 }
 
 //////////////////////////////////////////////////////////////
 template <int T> 
-QuaternionT<T> operator*( const QuaternionT<T>& A, const QuaternionT<T>& B )
+QuaternionT<T> operator*( const QuaternionT<T>& a, const QuaternionT<T>& b )
 {
-    QuaternionT<T> Result;
+    QuaternionT<T> result;
 
-    Result.m_Real          = A.m_Real*B.m_Real          - A.m_Imaginary.m_X*B.m_Imaginary.m_X - A.m_Imaginary.m_Y*B.m_Imaginary.m_Y - A.m_Imaginary.m_Z*B.m_Imaginary.m_Z;
-    Result.m_Imaginary.m_X = A.m_Real*B.m_Imaginary.m_X + A.m_Imaginary.m_X*B.m_Real          + A.m_Imaginary.m_Y*B.m_Imaginary.m_Z - A.m_Imaginary.m_Z*B.m_Imaginary.m_Y;
-    Result.m_Imaginary.m_Y = A.m_Real*B.m_Imaginary.m_Y - A.m_Imaginary.m_X*B.m_Imaginary.m_Z + A.m_Imaginary.m_Y*B.m_Real          + A.m_Imaginary.m_Z*B.m_Imaginary.m_X;
-    Result.m_Imaginary.m_Z = A.m_Real*B.m_Imaginary.m_Z + A.m_Imaginary.m_X*B.m_Imaginary.m_Y - A.m_Imaginary.m_Y*B.m_Imaginary.m_X + A.m_Imaginary.m_Z*B.m_Real;
+    result.m_real          = a.m_real*b.m_real          - a.m_imaginary.m_x*b.m_imaginary.m_x - a.m_imaginary.m_y*b.m_imaginary.m_y - a.m_imaginary.m_z*b.m_imaginary.m_z;
+    result.m_imaginary.m_x = a.m_real*b.m_imaginary.m_x + a.m_imaginary.m_x*b.m_real          + a.m_imaginary.m_y*b.m_imaginary.m_z - a.m_imaginary.m_z*b.m_imaginary.m_y;
+    result.m_imaginary.m_y = a.m_real*b.m_imaginary.m_y - a.m_imaginary.m_x*b.m_imaginary.m_z + a.m_imaginary.m_y*b.m_real          + a.m_imaginary.m_z*b.m_imaginary.m_x;
+    result.m_imaginary.m_z = a.m_real*b.m_imaginary.m_z + a.m_imaginary.m_x*b.m_imaginary.m_y - a.m_imaginary.m_y*b.m_imaginary.m_x + a.m_imaginary.m_z*b.m_real;
     // I'm not sure if we need to normalize or not after a multiplication.
     // Holding the code handy just in case
- //   Result.Normalize();
+ //   result.normalize();
 
-    return Result;
+    return result;
 }
 
 typedef QuaternionT<0> Quaternion;
-typedef QuaternionT<1> LocalQuaternion;
+typedef QuaternionT<1> Local_quaternion;
 
 }
 }
