@@ -4,7 +4,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="FilePathTest.cpp" />
-    <ClCompile Include="TimerTest.cpp" />
+    <ClCompile Include="File_path_test.cpp" />
+    <ClCompile Include="Timer_test.cpp" />
   </ItemGroup>
 </Project>

@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="src\AC3DFileReader.cpp" />
-    <ClCompile Include="src\FilePath.cpp" />
-    <ClCompile Include="src\SDLManager.cpp" />
     <ClCompile Include="src\Timer.cpp" />
+    <ClCompile Include="src\Sdl_manager.cpp" />
+    <ClCompile Include="src\File_path.cpp" />
+    <ClCompile Include="src\Ac3d_file_reader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\AC3DFileReader.h" />
-    <ClInclude Include="src\FilePath.h" />
-    <ClInclude Include="src\SDLManager.h" />
     <ClInclude Include="src\Timer.h" />
+    <ClInclude Include="src\Sdl_manager.h" />
+    <ClInclude Include="src\File_path.h" />
+    <ClInclude Include="src\Ac3d_file_reader.h" />
   </ItemGroup>
 </Project>

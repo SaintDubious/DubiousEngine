@@ -14,8 +14,7 @@ namespace Utility {
 ///	This is a simple helper class that just moves all of the annoying
 ///	path parsing into one central location.  It only uses the '/' 
 ///	character as a separator.
-class FilePath
-{
+class File_path {
 public:
     /// @brief Constructor.  
     ///
@@ -23,38 +22,29 @@ public:
     ///	smart enough to figure out if it's a full or relative path.
     ///	Passing it an empty string will throw an exception
     /// @param Path - [in] the path: /blah/blah/file.txt
-    FilePath( const std::string& Path );
-
-    /// @brief Default copy constructor
-    FilePath( const FilePath& ) = default;
-
-    /// @brief Destructor
-    ~FilePath() = default;
-
-    /// @brief Default assignment operator
-    FilePath& operator=( const FilePath& ) = default;
+    File_path( const std::string& Path );
 
     /// @brief Returns the full path that you specified to the constructor
     /// @returns the full path: /blah/blah/file.txt
-    std::string			FullPath() const;
+    std::string			full_path() const;
 
     /// @brief Returns just the path part of the full path.  
     ///
     /// This means everything except the final token.  Note that this will end
     ///	in a final '/'
     /// @returns the path only: /blah/blah/
-    std::string			Path() const;
+    std::string			path() const;
 
     /// @brief Returns just the file part.  This means only the last token
     /// @returns the file only: file.txt
-    std::string			File() const;
+    std::string			file() const;
 
 private:
-    std::vector<std::string> m_Parts;
-    bool				m_Absolute;
+    std::vector<std::string> m_parts;
+    bool				m_absolute;
 };
 
-std::ostream& operator<<( std::ostream& os, const FilePath& Input );
+std::ostream& operator<<( std::ostream& os, const File_path& p );
 
 }
 }
