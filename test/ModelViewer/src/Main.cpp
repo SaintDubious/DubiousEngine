@@ -142,12 +142,12 @@ void on_idle()
 }
 
 //////////////////////////////////////////////////////////////
-void on_mouse_motion( const Utility::Sdl_manager::Mouse_point& P )
+void on_mouse_motion( const Utility::Sdl_manager::Mouse_point& p )
 {
     if( left_button_down ){
-        Utility::Sdl_manager::Mouse_point Offset = std::make_pair( left_down_point.first - P.first, left_down_point.second - P.second );
-        Math::Quaternion YRotation( Math::Vector( 0, 1.0f, 0 ), Math::to_radians(static_cast<float>(Offset.first)) ); 
-        camera->coordinate_space().rotate( YRotation );
+        Utility::Sdl_manager::Mouse_point offset = std::make_pair( left_down_point.first - p.first, left_down_point.second - p.second );
+        Math::Quaternion y_rotation( Math::Vector( 0, 1.0f, 0 ), Math::to_radians(static_cast<float>(offset.first)) ); 
+        camera->coordinate_space().rotate( y_rotation );
 
         // Rotation around the local XAxis is limited to about 80 degrees in
         // either direction.
@@ -156,28 +156,28 @@ void on_mouse_motion( const Utility::Sdl_manager::Mouse_point& P )
         std::tie( std::ignore, std::ignore, z) = camera->coordinate_space().get_axes();
         Math::Vector vz( z );
         vz = vz * camera->z_axis_offset();
-        if (Offset.second > 0) {
+        if (offset.second > 0) {
             if (Math::dot_product( max_y, vz ) > -(camera->z_axis_offset()*camera->z_axis_offset()) * 0.9f) {
-                Math::Local_quaternion x_rotation( Math::Local_vector( 1.0f, 0, 0 ), Math::to_radians(static_cast<float>(Offset.second)) );
+                Math::Local_quaternion x_rotation( Math::Local_vector( 1.0f, 0, 0 ), Math::to_radians(static_cast<float>(offset.second)) );
                 camera->coordinate_space().rotate( x_rotation );
             }
         }
-        else if (Offset.second < 0) {
+        else if (offset.second < 0) {
             if (Math::dot_product( max_y, vz ) < (camera->z_axis_offset()*camera->z_axis_offset()) * 0.9f) {
-                Math::Local_quaternion x_rotation( Math::Local_vector( 1.0f, 0, 0 ), Math::to_radians(static_cast<float>(Offset.second)) );
+                Math::Local_quaternion x_rotation( Math::Local_vector( 1.0f, 0, 0 ), Math::to_radians(static_cast<float>(offset.second)) );
                 camera->coordinate_space().rotate( x_rotation );
             }
         }
 
-        left_down_point = P;
+        left_down_point = p;
     }
 }
 
 //////////////////////////////////////////////////////////////
-void on_mouse_left_down( const Utility::Sdl_manager::Mouse_point& P )
+void on_mouse_left_down( const Utility::Sdl_manager::Mouse_point& p )
 {
     left_button_down = true;
-    left_down_point = P;
+    left_down_point = p;
 }
 
 //////////////////////////////////////////////////////////////
@@ -187,19 +187,19 @@ void on_mouse_left_up( const Utility::Sdl_manager::Mouse_point&  )
 }
 
 //////////////////////////////////////////////////////////////
-void on_mouse_wheel( int Y )
+void on_mouse_wheel( int y )
 {
-    int Delta = Y*-5;
-    if( camera->z_axis_offset() + Delta < 5 ) {
+    int delta = y*-5;
+    if( camera->z_axis_offset() + delta < 5 ) {
         return;
     }
-    camera->z_axis_offset() += Delta;
+    camera->z_axis_offset() += delta;
 }
 
 //////////////////////////////////////////////////////////////
-void on_key_down( SDL_Keycode Key, unsigned short Mod )
+void on_key_down( SDL_Keycode key, unsigned short mod )
 {
-    switch( Key )
+    switch( key )
     {
     case SDLK_q:
         sdl.stop();

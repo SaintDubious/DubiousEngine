@@ -131,14 +131,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\CollisionSolver.h" />
-    <ClInclude Include="src\PhysicsModel.h" />
-    <ClInclude Include="src\PhysicsObject.h" />
+    <ClInclude Include="src\Collision_solver.h" />
+    <ClInclude Include="src\Physics_model.h" />
+    <ClInclude Include="src\Physics_object.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\CollisionSolver.cpp" />
-    <ClCompile Include="src\PhysicsModel.cpp" />
-    <ClCompile Include="src\PhysicsObject.cpp" />
+    <ClCompile Include="src\Collision_solver.cpp" />
+    <ClCompile Include="src\Physics_model.cpp" />
+    <ClCompile Include="src\Physics_object.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -4,6 +4,6 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CollisionSolverTest.cpp" />
+    <ClCompile Include="Collision_solver_test.cpp" />
   </ItemGroup>
 </Project>

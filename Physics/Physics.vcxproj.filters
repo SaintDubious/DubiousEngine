@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="src\PhysicsModel.h" />
-    <ClInclude Include="src\PhysicsObject.h" />
-    <ClInclude Include="src\CollisionSolver.h" />
+    <ClInclude Include="src\Physics_model.h" />
+    <ClInclude Include="src\Physics_object.h" />
+    <ClInclude Include="src\Collision_solver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\PhysicsModel.cpp" />
-    <ClCompile Include="src\PhysicsObject.cpp" />
-    <ClCompile Include="src\CollisionSolver.cpp" />
+    <ClCompile Include="src\Physics_model.cpp" />
+    <ClCompile Include="src\Physics_object.cpp" />
+    <ClCompile Include="src\Collision_solver.cpp" />
   </ItemGroup>
 </Project>

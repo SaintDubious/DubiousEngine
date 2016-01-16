@@ -5,7 +5,7 @@
 namespace Dubious {
 namespace Physics {
 
-class PhysicsObject;
+class Physics_object;
 
 /// @brief Collision solver that implements GJK
 ///
@@ -13,22 +13,16 @@ class PhysicsObject;
 /// the GJK algorithm:
 /// http://mollyrocket.com/849
 /// http://hacktank.net/blog/?p=93
-class CollisionSolver
-{
+class Collision_solver {
 public:
     /// @brief Default constructor
-    CollisionSolver() = default;
+    Collision_solver() = default;
 
-    CollisionSolver( const CollisionSolver& ) = delete;
+    Collision_solver( const Collision_solver& ) = delete;
 
-    /// @brief Default destructor
-    ~CollisionSolver() = default;
+    Collision_solver& operator=( const Collision_solver& ) = delete;
 
-    CollisionSolver& operator=( const CollisionSolver& ) = delete;
-
-    bool                Intersection( const PhysicsObject& A, const PhysicsObject& B );
-
-private:
+    bool                intersection( const Physics_object& a, const Physics_object& b );
 
 };
 

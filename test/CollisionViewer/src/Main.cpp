@@ -1,44 +1,26 @@
 #define SDL_MAIN_HANDLED
-#include <SDLManager.h>
-#include <AC3DFileReader.h>
-#include <FilePath.h>
+#include <Sdl_manager.h>
+#include <Ac3d_file_reader.h>
+#include <File_path.h>
 #include <Point.h>
 #include <Scene.h>
 #include <Camera.h>
-#include <VisibleModel.h>
-#include <VisibleObject.h>
-#include <SimpleObjectRenderer.h>
-#include <OpenGLContextStore.h>
-#include <VectorMath.h>
+#include <Visible_model.h>
+#include <Visible_object.h>
+#include <Simple_object_renderer.h>
+#include <Outlined_object_renderer.h>
+#include <Shadow_renderer.h>
+#include <Open_gl_context_store.h>
+#include <Vector_math.h>
 #include <Timer.h>
-#include <CollisionSolver.h>
-#include <PhysicsObject.h>
-#include <PhysicsModel.h>
+#include <Collision_solver.h>
+#include <Physics_object.h>
+#include <Physics_model.h>
 
 #include <memory>
 #include <iostream>
 
 using namespace Dubious;
-namespace Dubious 
-{
-    namespace Utility
-    {
-        typedef std::shared_ptr<AC3DModel> AC3DModelPtr;
-    }
-    namespace Renderer
-    {
-        typedef std::shared_ptr<Scene> ScenePtr;
-        typedef std::shared_ptr<Camera> CameraPtr;
-        typedef std::shared_ptr<VisibleModel> VisibleModelPtr;
-        typedef std::shared_ptr<VisibleObject> VisibleObjectPtr;
-        typedef std::shared_ptr<SimpleObjectRenderer> SimpleObjectRendererPtr;
-    }
-    namespace Physics
-    {
-        typedef std::shared_ptr<PhysicsModel> PhysicsModelPtr;
-        typedef std::shared_ptr<PhysicsObject> PhysicsObjectPtr;
-    }
-}
 
 //////////////////////////////////////////////////////////////
 const float LIGHT_HEIGHT = 50.0f;
@@ -48,83 +30,82 @@ const int HEIGHT=600;
 
 //////////////////////////////////////////////////////////////
 // Events
-void OnQuit();
-void OnIdle();
-void OnMouseMotion( const Utility::SDLManager::MousePoint& P );
-void OnMouseLeftDown( const Utility::SDLManager::MousePoint& P );
-void OnMouseLeftUp( const Utility::SDLManager::MousePoint& P );
-void OnMouseWheel( int Y );
-void OnKeyDown( SDL_Keycode Key, unsigned short Mod );
+void on_quit();
+void on_idle();
+void on_mouse_motion( const Utility::Sdl_manager::Mouse_point& P );
+void on_mouse_left_down( const Utility::Sdl_manager::Mouse_point& P );
+void on_mouse_left_up( const Utility::Sdl_manager::Mouse_point& P );
+void on_mouse_wheel( int Y );
+void on_key_down( SDL_Keycode Key, unsigned short Mod );
 
 //////////////////////////////////////////////////////////////
 // Globals
-Utility::SDLManager		    SDL;
-Renderer::ScenePtr		    pScene;
-Renderer::CameraPtr		    pCamera;
-Utility::SDLManager::MousePoint LeftDownPoint;
-bool					    LeftButtonDown;
-Renderer::SimpleObjectRendererPtr SimpleRenderer;
+Utility::Sdl_manager	            sdl;
+std::unique_ptr<Renderer::Scene>    scene;
+std::unique_ptr<Renderer::Camera>   camera;
+Utility::Sdl_manager::Mouse_point   left_down_point;
+bool					            left_button_down;
+std::shared_ptr<Renderer::Simple_object_renderer> simple_renderer;
 
-Physics::CollisionSolver    Solver;
-Renderer::VisibleObjectPtr  pVisibleObject1;
-Physics::PhysicsObjectPtr   pPhysicsObject1;
-Renderer::VisibleObjectPtr  pVisibleObject2;
-Physics::PhysicsObjectPtr   pPhysicsObject2;
-Renderer::VisibleObjectPtr  SelectedVisibleObject;
-Physics::PhysicsObjectPtr   SelectedPhysicsObject;
+Physics::Collision_solver           solver;
+std::shared_ptr<Renderer::Visible_object>  visible_object_1;
+std::shared_ptr<Physics::Physics_object>   physics_object_1;
+std::shared_ptr<Renderer::Visible_object>  visible_object_2;
+std::shared_ptr<Physics::Physics_object>   physics_object_2;
+std::shared_ptr<Renderer::Visible_object>  selected_visible_object;
+std::shared_ptr<Physics::Physics_object>   selected_physics_object;
 
 //////////////////////////////////////////////////////////////
 int main( int argc, char** argv )
 {
     try {
         std::cout << "Starting test\n";
-        SDL.CreateRootWindow( "Collision Viewer", WIDTH, HEIGHT, false );
+        sdl.create_root_window( "Collision Viewer", WIDTH, HEIGHT, false );
 
+        std::shared_ptr<Renderer::Visible_model> visible_model( new Renderer::Visible_model( Math::Triple( 1, 1, 1 ), false ) );
+        std::shared_ptr<Physics::Physics_model> physics_model( new Physics::Physics_model( Math::Triple( 1, 1, 1 ) ) );
 
-        Renderer::VisibleModelPtr pVisibleModel( new Renderer::VisibleModel( Math::Triple( 1, 1, 1 ), false ) );
-        Physics::PhysicsModelPtr pPhysicsModel( new Physics::PhysicsModel( Math::Triple( 1, 1, 1 ) ) );
+        visible_object_1 = std::shared_ptr<Renderer::Visible_object>( new Renderer::Visible_object(visible_model, visible_model) );
+        visible_object_1->coordinate_space().translate( Math::Vector( 0, 0, 0 ) );
+        physics_object_1 = std::shared_ptr<Physics::Physics_object>( new Physics::Physics_object( physics_model ) );
+        physics_object_1->coordinate_space().translate( Math::Vector( 0, 0, 0 ) );
 
-        pVisibleObject1 = Renderer::VisibleObjectPtr( new Renderer::VisibleObject(pVisibleModel, pVisibleModel) );
-        pVisibleObject1->CoordinateSpace().Translate( Math::Vector( 0, 0, 0 ) );
-        pPhysicsObject1 = Physics::PhysicsObjectPtr( new Physics::PhysicsObject( pPhysicsModel ) );
-        pPhysicsObject1->CoordinateSpace().Translate( Math::Vector( 0, 0, 0 ) );
+        visible_object_2 = std::shared_ptr<Renderer::Visible_object>( new Renderer::Visible_object(visible_model, visible_model) );
+        visible_object_2->coordinate_space().translate( Math::Vector( 3, 0, 0 ) );
+        physics_object_2 = std::shared_ptr<Physics::Physics_object>( new Physics::Physics_object( physics_model ) );
+        physics_object_2->coordinate_space().translate( Math::Vector( 3, 0, 0 ) );
 
-        pVisibleObject2 = Renderer::VisibleObjectPtr( new Renderer::VisibleObject(pVisibleModel, pVisibleModel) );
-        pVisibleObject2->CoordinateSpace().Translate( Math::Vector( 3, 0, 0 ) );
-        pPhysicsObject2 = Physics::PhysicsObjectPtr( new Physics::PhysicsObject( pPhysicsModel ) );
-        pPhysicsObject2->CoordinateSpace().Translate( Math::Vector( 3, 0, 0 ) );
+        selected_visible_object = visible_object_1;
+        selected_physics_object = physics_object_1;
 
-        SelectedVisibleObject = pVisibleObject1;
-        SelectedPhysicsObject = pPhysicsObject1;
+        std::shared_ptr<Renderer::Open_gl_context_store> context_store( new Renderer::Open_gl_context_store );
+        scene = std::unique_ptr<Renderer::Scene>( new Renderer::Scene(context_store) );
+        simple_renderer.reset( new Renderer::Simple_object_renderer( context_store ) );
 
-        Renderer::OpenGLContextStorePtr pContextStore( new Renderer::OpenGLContextStore );
-        pScene = Renderer::ScenePtr( new Renderer::Scene(pContextStore) );
-        SimpleRenderer.reset( new Renderer::SimpleObjectRenderer( pScene->ContextStore() ) );
+        visible_object_1->renderer() = simple_renderer;
+        visible_object_2->renderer() = simple_renderer;
 
-        pVisibleObject1->ObjectRenderer() = SimpleRenderer;
-        pVisibleObject2->ObjectRenderer() = SimpleRenderer;
+        scene->scene_light().position = Math::Point( 20, 20, 0 );
+        scene->scene_light().ambient = Renderer::Color( 0.2f, 0.2f, 0.2f, 1.0f );
+        scene->scene_light().diffuse = Renderer::Color( 0.5f, 0.5f, 0.5f, 1.0f );
+        scene->scene_light().specular = Renderer::Color( 0.1f, 0.1f, 0.1f, 1.0f );
 
-        pScene->SceneLight().Position = Math::Point( 20, 20, 0 );
-        pScene->SceneLight().Ambient = Renderer::Color( 0.2f, 0.2f, 0.2f, 1.0f );
-        pScene->SceneLight().Diffuse = Renderer::Color( 0.5f, 0.5f, 0.5f, 1.0f );
-        pScene->SceneLight().Specular = Renderer::Color( 0.1f, 0.1f, 0.1f, 1.0f );
+        scene->add_object( visible_object_1 );
+        scene->add_object( visible_object_2 );
 
-        pScene->AddObject( pVisibleObject1 );
-        pScene->AddObject( pVisibleObject2 );
+        camera = std::unique_ptr<Renderer::Camera>( new Renderer::Camera( 0, 0, WIDTH,HEIGHT, 80.0f ) );
+        camera->z_axis_offset() = 20;
 
-        pCamera = Renderer::CameraPtr( new Renderer::Camera( 0, 0, WIDTH,HEIGHT, 80.0f ) );
-        pCamera->ZAxisOffset() = 20;
-
-        SDL.OnQuit() = OnQuit;
-        SDL.OnIdle() = OnIdle;
-        SDL.OnMouseMotion() = OnMouseMotion;
-        SDL.OnMouseLeftDown() = OnMouseLeftDown;
-        SDL.OnMouseLeftUp() = OnMouseLeftUp;
-        SDL.OnMouseWheel() = OnMouseWheel;
-        SDL.OnKeyDown() = OnKeyDown;
+        sdl.on_quit() = on_quit;
+        sdl.on_idle() = on_idle;
+        sdl.on_mouse_motion() = on_mouse_motion;
+        sdl.on_mouse_left_down() = on_mouse_left_down;
+        sdl.on_mouse_left_up() = on_mouse_left_up;
+        sdl.on_mouse_wheel() = on_mouse_wheel;
+        sdl.on_key_down() = on_key_down;
 
         std::cout << "Object 1 Selected\n";
-        SDL.Run();
+        sdl.run();
 
         std::cout << "Ending Normally\n";
         return 0;
@@ -139,99 +120,99 @@ int main( int argc, char** argv )
 }
 
 //////////////////////////////////////////////////////////////
-void OnQuit()
+void on_quit()
 {
 }
 
 //////////////////////////////////////////////////////////////
-void OnIdle()
+void on_idle()
 {
-//    Math::Quaternion Q( Math::Vector( 0, 1.0f, 0 ), Math::ToRadians( 1.0f ) );
-//    pObject->CoordinateSpace().Rotate( Q );
-    pScene->Render( *pCamera );
+//    Math::Quaternion Q( Math::Vector( 0, 1.0f, 0 ), Math::to_radians( 1.0f ) );
+//    pObject->coordinate_space().rotate( Q );
+    scene->render( *camera );
 
     // no reason to push the CPU to 100%
     SDL_Delay( 10 );
 }
 
 //////////////////////////////////////////////////////////////
-void OnMouseMotion( const Utility::SDLManager::MousePoint& P )
+void on_mouse_motion( const Utility::Sdl_manager::Mouse_point& p )
 {
-    if( LeftButtonDown ){
-        Utility::SDLManager::MousePoint Offset = std::make_pair( LeftDownPoint.first - P.first, LeftDownPoint.second - P.second );
-        Math::Quaternion YRotation( Math::Vector( 0, 1.0f, 0 ), Math::ToRadians(static_cast<float>(Offset.first)) ); 
-        pCamera->CoordinateSpace().Rotate( YRotation );
+    if( left_button_down ){
+        Utility::Sdl_manager::Mouse_point offset = std::make_pair( left_down_point.first - p.first, left_down_point.second - p.second );
+        Math::Quaternion y_rotation( Math::Vector( 0, 1.0f, 0 ), Math::to_radians(static_cast<float>(offset.first)) ); 
+        camera->coordinate_space().rotate( y_rotation );
 
         // Rotation around the local XAxis is limited to about 80 degrees in
         // either direction.
-        Math::Vector MaxY( 0, pCamera->ZAxisOffset(), 0 );
-        Math::UnitVector X, Y, Z;
-        pCamera->CoordinateSpace().GetAxes( X, Y, Z );
-        Math::Vector VZ( Z );
-        VZ = VZ * pCamera->ZAxisOffset();
-        if (Offset.second > 0) {
-            if (Math::DotProduct( MaxY, VZ ) > -(pCamera->ZAxisOffset()*pCamera->ZAxisOffset()) * 0.9f) {
-                Math::LocalQuaternion XRotation( Math::LocalVector( 1.0f, 0, 0 ), Math::ToRadians(static_cast<float>(Offset.second)) );
-                pCamera->CoordinateSpace().Rotate( XRotation );
+        Math::Vector max_y( 0, camera->z_axis_offset(), 0 );
+        Math::Unit_vector z;
+        std::tie( std::ignore, std::ignore, z) = camera->coordinate_space().get_axes();
+        Math::Vector vz( z );
+        vz = vz * camera->z_axis_offset();
+        if (offset.second > 0) {
+            if (Math::dot_product( max_y, vz ) > -(camera->z_axis_offset()*camera->z_axis_offset()) * 0.9f) {
+                Math::Local_quaternion x_rotation( Math::Local_vector( 1.0f, 0, 0 ), Math::to_radians(static_cast<float>(offset.second)) );
+                camera->coordinate_space().rotate( x_rotation );
             }
         }
-        else if (Offset.second < 0) {
-            if (Math::DotProduct( MaxY, VZ ) < (pCamera->ZAxisOffset()*pCamera->ZAxisOffset()) * 0.9f) {
-                Math::LocalQuaternion XRotation( Math::LocalVector( 1.0f, 0, 0 ), Math::ToRadians(static_cast<float>(Offset.second)) );
-                pCamera->CoordinateSpace().Rotate( XRotation );
+        else if (offset.second < 0) {
+            if (Math::dot_product( max_y, vz ) < (camera->z_axis_offset()*camera->z_axis_offset()) * 0.9f) {
+                Math::Local_quaternion x_rotation( Math::Local_vector( 1.0f, 0, 0 ), Math::to_radians(static_cast<float>(offset.second)) );
+                camera->coordinate_space().rotate( x_rotation );
             }
         }
 
-        LeftDownPoint = P;
+        left_down_point = p;
     }
 }
 
 //////////////////////////////////////////////////////////////
-void OnMouseLeftDown( const Utility::SDLManager::MousePoint& P )
+void on_mouse_left_down( const Utility::Sdl_manager::Mouse_point& p )
 {
-    LeftButtonDown = true;
-    LeftDownPoint = P;
+    left_button_down = true;
+    left_down_point = p;
 }
 
 //////////////////////////////////////////////////////////////
-void OnMouseLeftUp( const Utility::SDLManager::MousePoint&  )
+void on_mouse_left_up( const Utility::Sdl_manager::Mouse_point&  )
 {
-    LeftButtonDown = false;
+    left_button_down = false;
 }
 
 //////////////////////////////////////////////////////////////
-void OnMouseWheel( int Y )
+void on_mouse_wheel( int y )
 {
-    int Delta = Y*-5;
-    if( pCamera->ZAxisOffset() + Delta < 5 ) {
+    int delta = y*-5;
+    if( camera->z_axis_offset() + delta < 5 ) {
         return;
     }
-    pCamera->ZAxisOffset() += Delta;
+    camera->z_axis_offset() += delta;
 }
 
 //////////////////////////////////////////////////////////////
-void OnKeyDown( SDL_Keycode Key, unsigned short Mod )
+void on_key_down( SDL_Keycode key, unsigned short mod )
 {
-    switch( Key )
+    switch( key )
     {
     case SDLK_q:
-        SDL.Stop();
+        sdl.stop();
         break;
     case SDLK_1:
-        SelectedVisibleObject = pVisibleObject1;
-        SelectedPhysicsObject = pPhysicsObject1;
+        selected_visible_object = visible_object_1;
+        selected_physics_object = physics_object_1;
         std::cout << "Object 1 Selected\n";
         break;
     case SDLK_2:
-        SelectedVisibleObject = pVisibleObject2;
-        SelectedPhysicsObject = pPhysicsObject2;
+        selected_visible_object = visible_object_2;
+        selected_physics_object = physics_object_2;
         std::cout << "Object 2 Selected\n";
         break;
     case SDLK_t:
         {
-            std::cout << "Object 1: " << pPhysicsObject1->CoordinateSpace() << "\n"
-                      << "Object 2: " << pPhysicsObject2->CoordinateSpace() << "\n";
-            bool Intersection = Solver.Intersection( *pPhysicsObject1, *pPhysicsObject2 );
+            std::cout << "Object 1: " << physics_object_1->coordinate_space() << "\n"
+                      << "Object 2: " << physics_object_2->coordinate_space() << "\n";
+            bool Intersection = solver.intersection( *physics_object_1, *physics_object_2 );
             if (Intersection) {
                 std::cout << "Objects intersect\n";
             }
@@ -243,43 +224,43 @@ void OnKeyDown( SDL_Keycode Key, unsigned short Mod )
     case SDLK_w:
         {
             Math::Vector D( 0, 0, -1 );
-            SelectedVisibleObject->CoordinateSpace().Translate( D );
-            SelectedPhysicsObject->CoordinateSpace().Translate( D );
+            selected_visible_object->coordinate_space().translate( D );
+            selected_physics_object->coordinate_space().translate( D );
         }
         break;
     case SDLK_a:
         {
             Math::Vector D( -1, 0, 0 );
-            SelectedVisibleObject->CoordinateSpace().Translate( D );
-            SelectedPhysicsObject->CoordinateSpace().Translate( D );
+            selected_visible_object->coordinate_space().translate( D );
+            selected_physics_object->coordinate_space().translate( D );
         }
         break;
     case SDLK_s:
         {
             Math::Vector D( 0, 0, 1 );
-            SelectedVisibleObject->CoordinateSpace().Translate( D );
-            SelectedPhysicsObject->CoordinateSpace().Translate( D );
+            selected_visible_object->coordinate_space().translate( D );
+            selected_physics_object->coordinate_space().translate( D );
         }
         break;
     case SDLK_d:
         {
             Math::Vector D( 1, 0, 0 );
-            SelectedVisibleObject->CoordinateSpace().Translate( D );
-            SelectedPhysicsObject->CoordinateSpace().Translate( D );
+            selected_visible_object->coordinate_space().translate( D );
+            selected_physics_object->coordinate_space().translate( D );
         }
         break;
     case SDLK_z:
         {
             Math::Vector D( 0, 1, 0 );
-            SelectedVisibleObject->CoordinateSpace().Translate( D );
-            SelectedPhysicsObject->CoordinateSpace().Translate( D );
+            selected_visible_object->coordinate_space().translate( D );
+            selected_physics_object->coordinate_space().translate( D );
         }
         break;
     case SDLK_x:
         {
             Math::Vector D( 0, -1, 0 );
-            SelectedVisibleObject->CoordinateSpace().Translate( D );
-            SelectedPhysicsObject->CoordinateSpace().Translate( D );
+            selected_visible_object->coordinate_space().translate( D );
+            selected_physics_object->coordinate_space().translate( D );
         }
         break;
     case SDLK_r:
@@ -288,9 +269,9 @@ void OnKeyDown( SDL_Keycode Key, unsigned short Mod )
             Math::Quaternion Q( Math::Vector( static_cast<float>(rand())/static_cast<float>(RAND_MAX), 
                                               static_cast<float>(rand())/static_cast<float>(RAND_MAX), 
                                               static_cast<float>(rand())/static_cast<float>(RAND_MAX) ), 
-                                              Math::ToRadians(360.0f*static_cast<float>(rand())/static_cast<float>(RAND_MAX)) );
-            SelectedVisibleObject->CoordinateSpace().Rotate( Q );
-            SelectedPhysicsObject->CoordinateSpace().Rotate( Q );
+                                              Math::to_radians(360.0f*static_cast<float>(rand())/static_cast<float>(RAND_MAX)) );
+            selected_visible_object->coordinate_space().rotate( Q );
+            selected_physics_object->coordinate_space().rotate( Q );
         }
         break;
     }
