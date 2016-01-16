@@ -1,4 +1,4 @@
-#include "OpenGLMatrix.h"
+#include "Open_gl_matrix.h"
 
 #include <SDL_opengl.h>
 
@@ -7,27 +7,27 @@ namespace Dubious {
 namespace Renderer {
 
 //////////////////////////////////////////////////////////////
-OpenGLMatrix::OpenGLMatrix()
+Open_gl_matrix::Open_gl_matrix()
 {
     glPushMatrix();
 }
 
 //////////////////////////////////////////////////////////////
-OpenGLMatrix::~OpenGLMatrix()
+Open_gl_matrix::~Open_gl_matrix()
 {
     glPopMatrix();
 }
 
 //////////////////////////////////////////////////////////////
-void OpenGLMatrix::LoadIdentity()
+void Open_gl_matrix::load_identity()
 {
     glLoadIdentity();
 }
 
 //////////////////////////////////////////////////////////////
-void OpenGLMatrix::MatrixMode( int Mode )
+void Open_gl_matrix::matrix_mode( int mode )
 {
-    glMatrixMode( Mode );
+    glMatrixMode( mode );
 }
 
 }}

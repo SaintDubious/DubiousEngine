@@ -12,31 +12,23 @@
 namespace Dubious {
 namespace Renderer {
 
+class Open_gl_context_store;
+class Visible_object;
+class Open_gl_attributes;
 class Camera;
-class OpenGLContextStore;
-class OpenGLAttributes;
-class VisibleObject;
-typedef std::shared_ptr<Camera> CameraPtr;
-typedef std::shared_ptr<OpenGLContextStore> OpenGLContextStorePtr;
-typedef std::shared_ptr<VisibleObject> VisibleObjectPtr;
-typedef std::list<VisibleObjectPtr> VisibleObjectPtrList;
 
 /// @brief A Visible Scene
 ///
 /// A Scene represents a collection of drawable object that will
 ///	be drawn.  It is really the top level construct for the Renderer
 ///	namespace.
-class Scene 
-{
+class Scene {
 public:
     /// @brief Constructor
     /// @param pStore - [in] An Open GL Context Store
-    Scene( OpenGLContextStorePtr pStore );
+    Scene( const std::shared_ptr<Open_gl_context_store>& store );
 
     Scene( const Scene& ) = delete;
-
-    /// @brief Destructor
-    ~Scene() = default;
 
     Scene& operator=( const Scene& ) = delete;
     
@@ -46,39 +38,39 @@ public:
     ///	of a light.
     struct Light
     {
-        Math::Point 	Position;
-        Color			Ambient;
-        Color			Diffuse;
-        Color			Specular;
+        Math::Point 	position;
+        Color			ambient;
+        Color			diffuse;
+        Color			specular;
     };
 
     /// @brief Call this to render the scene
-    void				Render( Camera& SceneCamera );
+    void				render( Camera& camera );
 
     /// @brief Add an object to the scene
     /// @param pObject - [in] the object
-    void				AddObject( VisibleObjectPtr pObject );
+    void				add_object( const std::shared_ptr<Visible_object>& object );
 
     /// @brief Remove and object from the scene
     /// @param pObject - [in] the object
-    void				RemoveObject( VisibleObjectPtr pObject );
+    void				remove_object( const std::shared_ptr<Visible_object>& object );
 
     /// @brief Remove all objects from the scene
-    void				RemoveAllObjects();
+    void				remove_all_objects();
 
     /// @brief Accessor to the light
-    Light&				SceneLight() { return m_SceneLight; }
+    Light&				scene_light() { return m_scene_light; }
 
     /// @brief Accessor to the context store
-    OpenGLContextStorePtr ContextStore() const { return m_pContextStore; }
+    const Open_gl_context_store& context_store() const { return *m_context_store; }
 
 private:
 
-    void				SetupLight( OpenGLAttributes& Attribs, bool InShadow ) const;
+    void				setup_light( Open_gl_attributes& attribs, bool in_shadow ) const;
 
-    OpenGLContextStorePtr m_pContextStore;
-    VisibleObjectPtrList m_Objects;
-    Light				m_SceneLight;
+    std::shared_ptr<Open_gl_context_store> m_context_store;
+    std::list<std::shared_ptr<Visible_object>> m_objects;
+    Light				m_scene_light;
 };
 
 }

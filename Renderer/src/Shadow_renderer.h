@@ -1,37 +1,30 @@
 #ifndef INCLUDED_RENDERER_SHADOWRENDERER
 #define INCLUDED_RENDERER_SHADOWRENDERER
 
-#include "VisibleObject.h"
+#include "Visible_object.h"
 
 //////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Renderer {
-
-class VisibleObject;
-typedef std::shared_ptr<VisibleObject> VisibleObjectPtr;
 
 /// @brief An object that can render a shadow volume
 ///
 /// A ShadowRenderer is an object capable of rendering a shadow.  The
 ///	Scene object will call on this while rendering the scene to draw
 ///	the shadow of each object
-class ShadowRenderer
-{
+class Shadow_renderer {
 public:
     /// @brief Constructor
-    ShadowRenderer() = default;
+    Shadow_renderer() = default;
 
-    ShadowRenderer( const ShadowRenderer& ) = delete;
+    Shadow_renderer( const Shadow_renderer& ) = delete;
 
-    /// @brief Destructor
-    ~ShadowRenderer() = default;
-
-    ShadowRenderer& operator=( const ShadowRenderer& ) = delete;
+    Shadow_renderer& operator=( const Shadow_renderer& ) = delete;
 
     /// @brief Call to render the shadow
     /// @param pVisibleObject - [in] the object that needs a shadow
     /// @param LighPosition - [in] Where the light is in the local coord space
-    void                RenderShadowVolume( VisibleObjectPtr pVisibleObject, const Math::LocalPoint& LighPosition );
+    void                render_shadow_volume( const std::shared_ptr<Visible_object>& object, const Math::Local_point& ligh_position );
 };
 
 }

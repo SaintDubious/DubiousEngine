@@ -11,23 +11,17 @@ const Color Color::BLACK ( 0,    0,    0 );
 const Color Color::WHITE ( 1.0f, 1.0f, 1.0f );
 
 //////////////////////////////////////////////////////////////
-Color::Color()
-    : Color( 0, 0, 0, 1.0f )
+Color::Color( float r, float g, float b )
+    : Color( r, g, b, 1.0f )
 {
 }
 
 //////////////////////////////////////////////////////////////
-Color::Color( float R, float G, float B )
-    : Color( R, G, B, 1.0f )
-{
-}
-
-//////////////////////////////////////////////////////////////
-Color::Color( float R, float G, float B, float A )
-    : m_Red( R )
-    , m_Green( G )
-    , m_Blue( B )
-    , m_Alpha( A )
+Color::Color( float r, float g, float b, float a )
+    : m_red( r )
+    , m_green( g )
+    , m_blue( b )
+    , m_alpha( a )
 {
 }
 

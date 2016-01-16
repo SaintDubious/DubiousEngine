@@ -26,7 +26,7 @@ float dot_product( const VectorT<T>& a, const VectorT<T>& b )
 
 //////////////////////////////////////////////////////////////
 template <int T>
-float dot_product( const Unit_vectorT<T>& A, const Unit_vectorT<T>& B )
+float dot_product( const Unit_vectorT<T>& a, const Unit_vectorT<T>& b )
 {
     return a.x()*b.x() + a.y()*b.y() + a.z()*b.z();
 }

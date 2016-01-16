@@ -7,8 +7,7 @@
 namespace Dubious {
 namespace Renderer {
 
-class VisibleObject;
-typedef std::shared_ptr<VisibleObject> VisibleObjectPtr;
+class Visible_object;
 
 /// @brief Interface for a class that can render an object
 ///
@@ -18,15 +17,11 @@ typedef std::shared_ptr<VisibleObject> VisibleObjectPtr;
 ///	of renderer attached to them.  When the Scene is drawing
 ///	the world it will get the attached renderer and call
 ///	RenderObject.
-class ObjectRenderer
-{
+class Object_renderer {
 public:
-    ObjectRenderer( const ObjectRenderer& ) = delete;
+    Object_renderer( const Object_renderer& ) = delete;
 
-    /// @brief Default Destructor
-    virtual ~ObjectRenderer() = default;
-
-    ObjectRenderer& operator=( const ObjectRenderer& ) = delete;
+    Object_renderer& operator=( const Object_renderer& ) = delete;
     
     /// @brief Renders an object
     ///
@@ -34,11 +29,10 @@ public:
     ///	This is a pure virtual, inherited classes will implement
     ///	it differently to acheive different looks.
     ///	@param pObject - [in] the objet to be rendered.
-    virtual void		RenderObject( VisibleObjectPtr pObject ) = 0;
+    virtual void		render( const std::shared_ptr<Visible_object>& object ) = 0;
 
 protected:
-    ObjectRenderer() = default;
-
+    Object_renderer() = default;
 };
 
 }

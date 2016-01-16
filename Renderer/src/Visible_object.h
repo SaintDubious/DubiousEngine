@@ -3,7 +3,7 @@
 
 #include "Color.h"
 
-#include <CoordinateSpace.h>
+#include <Coordinate_space.h>
 
 #include <memory>
 #include <vector>
@@ -12,12 +12,9 @@
 namespace Dubious {
 namespace Renderer {
 
-class VisibleModel;
-class ObjectRenderer;
-class ShadowRenderer;
-typedef std::shared_ptr<VisibleModel> VisibleModelPtr;
-typedef std::shared_ptr<ObjectRenderer> ObjectRendererPtr;
-typedef std::shared_ptr<ShadowRenderer> ShadowRendererPtr;
+class Visible_model;
+class Object_renderer;
+class Shadow_renderer;
 
 /// @brief An object that can be seen
 ///
@@ -26,21 +23,17 @@ typedef std::shared_ptr<ShadowRenderer> ShadowRendererPtr;
 ///	For this iteration of the engine I'm just making one kind of visible
 ///	object and I will let it be able to draw with shadow or shine or 
 ///	whatever.  
-class VisibleObject
-{
+class Visible_object {
 public:
     /// @brief Constructor.  A Model is required
     /// @param pModel - [in] the model representing this object
     /// @param pShadowModel - [in] the model that represents the shadow.
     ///		This can be an empty pointer for non-shadow casting objects
-    VisibleObject( VisibleModelPtr pModel, VisibleModelPtr pShadowModel );
+    Visible_object( const std::shared_ptr<Visible_model>& model, const std::shared_ptr<Visible_model>& shadow_model );
 
-    VisibleObject( const VisibleObject& ) = delete;
+    Visible_object( const Visible_object& ) = delete;
 
-    /// @brief Default destructor
-    ~VisibleObject() = default;
-
-    VisibleObject& operator=( const VisibleObject& ) = delete;
+    Visible_object& operator=( const Visible_object& ) = delete;
     
     /// @brief Silhouette
     ///
@@ -48,42 +41,42 @@ public:
     ///	find a silhouette when rendering an object's shadow
     struct Silhouette
     {
-        Math::LocalPoint	Position;
-        typedef std::pair<Math::LocalPoint,Math::LocalPoint> Edge;
-        std::vector<Edge>	Edges;
-        std::vector<Silhouette> Kids;
+        Math::Local_point	position;
+        typedef std::pair<Math::Local_point,Math::Local_point> Edge;
+        std::vector<Edge>	edges;
+        std::vector<Silhouette> kids;
     };
 
     /// @brief Builds a Silhououette for use with shadow casting.  
     /// @param LightPos - [in] Position of the light in local coord space
     /// @param Sil - [out] The resulting Silhouette
-    void				BuildSilhouette( const Math::LocalPoint &LightPos, Silhouette &Sil ) const;
+    void				build_silhouette( const Math::Local_point &light_post, Silhouette &sil ) const;
 
     /// @brief Accessor
-    Math::CoordinateSpace& CoordinateSpace() { return m_CoordinateSpace; }
+    Math::Coordinate_space& coordinate_space() { return m_coordinate_space; }
 
     /// @brief Accessor
-    VisibleModelPtr		Model() const { return m_pModel; }
+    std::shared_ptr<Visible_model> model() const { return m_model; }
 
     /// @brief Accessor
-    VisibleModelPtr		ShadowModel() const { return m_pShadowModel; }
+    std::shared_ptr<Visible_model> shadow_model() const { return m_shadow_model; }
 
     /// @brief Renderer
-    ObjectRendererPtr&  ObjectRenderer() { return m_pObjectRenderer; }
+    std::shared_ptr<Object_renderer>& renderer() { return m_renderer; }
 
     /// @brief Shadow Renderer
-    ShadowRendererPtr&  ShadowRenderer() { return m_pShadowRenderer; }
+    std::shared_ptr<Shadow_renderer>& shadow_renderer() { return m_shadow_renderer; }
 
     /// @brief Accessor
-    Color&				BaseColor() { return m_BaseColor; }
+    Color&				base_color() { return m_base_color; }
 private:
 
-    VisibleModelPtr		m_pModel;
-    VisibleModelPtr		m_pShadowModel;
-    Math::CoordinateSpace m_CoordinateSpace;
-    ObjectRendererPtr	m_pObjectRenderer;
-    ShadowRendererPtr	m_pShadowRenderer;
-    Color				m_BaseColor;
+    std::shared_ptr<Visible_model>		m_model;
+    std::shared_ptr<Visible_model>		m_shadow_model;
+    Math::Coordinate_space m_coordinate_space;
+    std::shared_ptr<Object_renderer>	m_renderer;
+    std::shared_ptr<Shadow_renderer>	m_shadow_renderer;
+    Color				m_base_color;
 };
 
 }

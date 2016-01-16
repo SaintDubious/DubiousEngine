@@ -9,24 +9,23 @@ namespace Renderer {
 ///
 /// This class is a safe way to make sure your OpenGL
 ///	Matrix pushes and pops line up.
-class OpenGLMatrix
-{
+class Open_gl_matrix {
 public:
     /// @brief calls push matrix
-    OpenGLMatrix();
+    Open_gl_matrix();
 
-    OpenGLMatrix( const OpenGLMatrix& ) = delete;
+    Open_gl_matrix( const Open_gl_matrix& ) = delete;
 
     /// @brief calls pop matrix
-    ~OpenGLMatrix();
+    ~Open_gl_matrix();
 
-    OpenGLMatrix& operator=( const OpenGLMatrix& ) = delete;
+    Open_gl_matrix& operator=( const Open_gl_matrix& ) = delete;
 
     /// @brief loads the identity matrix
-    static void         LoadIdentity();
+    static void         load_identity();
 
     /// @brief glMatrixMode
-    static void			MatrixMode( int Mode );
+    static void			matrix_mode( int mode );
 };
 
 }

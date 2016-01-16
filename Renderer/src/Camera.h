@@ -1,7 +1,7 @@
 #ifndef INCLUDED_RENDERER_CAMERA
 #define INCLUDED_RENDERER_CAMERA
 
-#include <CoordinateSpace.h>
+#include <Coordinate_space.h>
 
 #include <memory>
 
@@ -19,8 +19,7 @@ namespace Renderer {
 ///	is the distance from the camera to the coordinate space along the
 ///	Z axis.  In this mode, rotations to the coordinate space will
 ///	circle the camera around the target
-class Camera
-{
+class Camera {
 public:
     /// @brief Constructor 
     ///
@@ -31,13 +30,10 @@ public:
     /// @param Width - [in] the viewport Width
     /// @param Height - [in] the viewport Height
     /// @param FOVY - [in] The Field Of View Y axis
-    Camera( int X, int Y, int Width, int Height, float FOVY );
+    Camera( int x, int y, int width, int height, float fovy );
 
     Camera( const Camera& Other ) = delete;
     
-    /// @brief Default destructor
-    ~Camera() = default;
-
     Camera&             operator=( const Camera& Other ) = delete;
     
     /// @brief Prepare Camera for rendering
@@ -45,7 +41,7 @@ public:
     /// This function should be the first thing called during the 
     ///	drawing function.  It applies the camera information to the
     ///	OpenGL buffers.
-    void                ReadyForPhoto() const;
+    void                ready_for_photo() const;
 
     /// @brief Unroject a 2D point
     ///
@@ -53,36 +49,36 @@ public:
     /// 3D space.
     /// @param P - [in] Point to convert
     /// @returns The resulting vector
-    Math::Point         Unproject( const std::pair<int,int>& P ) const;
+    Math::Point         unproject( const std::pair<int,int>& p ) const;
 
     /// @brief Accessor 
     ///
     /// Returns the coordinate space.  See above for the
     ///	difference between 1st and 3rd person view
     /// @returns coordinate space reference
-    Math::CoordinateSpace& CoordinateSpace() { return m_CoordinateSpace; }
+    Math::Coordinate_space& coordinate_space() { return m_coordinate_space; }
 
     /// @brief Accessor 
     ///
     /// Returns the ZAxisOffset.   See above for the
     ///	difference between 1st and 3rd person view
     /// @returns ZAxis Offset reference
-    float&				ZAxisOffset() { return m_ZAxisOffset; }
+    float&				z_axis_offset() { return m_z_axis_offset; }
 
     /// @brief Accessor - gets the max depth
     /// @returns max depth reference
-    float&              MaxDepth() { return m_MaxDepth; }
+    float&              max_depth() { return m_max_depth; }
 
 private:
 
-    int                 m_ViewportX;
-    int                 m_ViewportY;
-    int                 m_ViewportWidth;
-    int                 m_ViewportHeight;
-    float               m_FOVY;
-    Math::CoordinateSpace m_CoordinateSpace;
-    float				m_ZAxisOffset;
-    float               m_MaxDepth;
+    int                 m_viewport_x = 0;
+    int                 m_viewport_y = 0;
+    int                 m_viewport_width = 640;
+    int                 m_viewport_height = 480;
+    float               m_fovy = 90.0f;
+    Math::Coordinate_space m_coordinate_space;
+    float				m_z_axis_offset = 10.0f;
+    float               m_max_depth = 100.0f;
 };
 
 }

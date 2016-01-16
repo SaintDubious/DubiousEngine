@@ -7,7 +7,7 @@
 namespace Dubious {
 namespace Math {
 template <int T> class PointT;
-template <int T> class UnitVectorT;
+template <int T> class Unit_vectorT;
 }
 namespace Renderer {
 
@@ -15,11 +15,10 @@ namespace Renderer {
 ///
 /// Class for managing the drawing of OpenGL primitive objects.
 ///	Manages the calling of glBegin and glEnd for you
-class OpenGLPrimitive
-{
+class Open_gl_primitive {
 public:
     /// @brief The type of the primitive
-    enum PrimitiveType
+    enum Primitive_type
     {
         TRIANGLE_STRIP	= GL_TRIANGLE_STRIP,
         TRIANGLES	= GL_TRIANGLES,
@@ -32,35 +31,35 @@ public:
 
     /// @brief Constructor, calls glBegin
     /// @param TheType - [in] The type of the primitive
-    OpenGLPrimitive( PrimitiveType TheType ) 
+    Open_gl_primitive( Primitive_type type ) 
     {
-        glBegin( TheType );
+        glBegin( type );
     }
 
-    OpenGLPrimitive( const OpenGLPrimitive& ) = delete;
+    Open_gl_primitive( const Open_gl_primitive& ) = delete;
 
     /// @brief Destructor, calls glEnd
-    ~OpenGLPrimitive()
+    ~Open_gl_primitive()
     {
         glEnd();
     }
 
-    OpenGLPrimitive& operator=( const OpenGLPrimitive& ) = delete;
+    Open_gl_primitive& operator=( const Open_gl_primitive& ) = delete;
 
     /// @brief Calls glVertex
     /// @param V - [in] The vector you want to rander
     template <int T>
-    void                Vertex( const Math::PointT<T>& V ) const
+    void                vertex( const Math::PointT<T>& v ) const
     {
-        glVertex3f( V.X(), V.Y(), V.Z() );
+        glVertex3f( v.x(), v.y(), v.z() );
     }
 
     /// @brief Calls glNormal
     /// @param N - [in] The normal you want to rander
     template <int T>
-    void                Normal( const Math::UnitVectorT<T>& N ) const
+    void                normal( const Math::Unit_vectorT<T>& n ) const
     {
-        glNormal3f( N.X(), N.Y(), N.Z() );
+        glNormal3f( n.x(), n.y(), n.z() );
     }
 };
 

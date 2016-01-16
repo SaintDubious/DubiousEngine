@@ -17,8 +17,7 @@ class Color;
 ///	correctly setting bits.  You can also use it to push and pop the
 ///	attribute stack.  Mostly it's meant to check that you're setting
 ///	a bit that belongs to the correct group bit.
-class OpenGLAttributes
-{
+class Open_gl_attributes {
 public:
     /// @brief Constructor.  
     ///
@@ -29,20 +28,20 @@ public:
     ///	you will be changing.  If you try to change bits that are not
     ///	part of the GroupBit it will generate an assertion in debug
     /// @param PushStack - [in] whether or not you want to push
-    OpenGLAttributes( int GroupBitField, bool PushStack );
+    Open_gl_attributes( int group_bit_field, bool push_stack );
 
-    OpenGLAttributes( const OpenGLAttributes& ) = delete;
+    Open_gl_attributes( const Open_gl_attributes& ) = delete;
 
     /// @brief Destructor.  
     ///
     /// If PushStack was specified in the constructor
     ///	then this will pop the stack
-    ~OpenGLAttributes();
+    ~Open_gl_attributes();
 
-    OpenGLAttributes& operator=( const OpenGLAttributes& ) = delete;
+    Open_gl_attributes& operator=( const Open_gl_attributes& ) = delete;
 
     /// @brief GroupBits describe the different grouping of attribute bits.
-    enum GroupBits
+    enum Group_bits
     {
         ENABLE_BIT			= GL_ENABLE_BIT,
         DEPTH_BUFFER_BIT	= GL_DEPTH_BUFFER_BIT,
@@ -57,7 +56,7 @@ public:
     };
 
     /// @brief the actual attribute bits
-    enum AttrBits
+    enum Attr_bits
     {
         TEXTURE_2D			= GL_TEXTURE_2D,
         BLEND				= GL_BLEND,
@@ -72,65 +71,65 @@ public:
     };
     
     /// @brief glEnable
-    void                Enable( AttrBits BitField ) const;
+    void                enable( Attr_bits bit_field ) const;
 
     /// @brief glDisable
-    void                Disable( AttrBits BitField ) const;
+    void                disable( Attr_bits bit_field ) const;
 
     /// @brief glClear
-    static void         Clear( int GroupBitField );
+    static void         clear( int group_bit_field );
 
     /// @brief Sets the light position information.  
     /// @param Light - [in] LIGHT0
     /// @param Position - [in] For now I only do directional lights.
-    void				LightPosition( int Light, const Math::Point& Position ) const;
+    void				light_position( int light, const Math::Point& position ) const;
 
     /// @brief Sets the light color
     /// @param Light - [in] LIGHT0
     /// @param Type - [in] GL_AMBIENT, GL_DIFFUSE, or GL_SPECULAR
     /// @param Color - [in] what color you want it to be
-    void				LightColor( int Light, int Type, const Renderer::Color& Color ) const;
+    void				light_color( int light, int type, const Renderer::Color& color ) const;
 
     /// @brief glDepthFunc
-    static void			DepthFunc( int Func )
+    static void			depth_func( int func )
     {
-        glDepthFunc( Func );
+        glDepthFunc( func );
     }
 
     /// @brief glBlendFunc
-    static void			BlendFunc( int SFactor, int DFactor )
+    static void			blend_func( int s_factor, int d_factor )
     {
-        glBlendFunc( SFactor, DFactor );
+        glBlendFunc( s_factor, d_factor );
     }
 
     /// @brief glStencilFunc
-    static void			StencilFunc( int Func, int Ref, unsigned int Mask )
+    static void			stencil_func( int func, int ref, unsigned int mask )
     {
-        glStencilFunc( Func, Ref, Mask );
+        glStencilFunc( func, ref, mask );
     }
 
     /// @brief glColorMask
-    static void			ColorMask( bool Red, bool Green, bool Blue, bool Alpha )
+    static void			color_mask( bool red, bool green, bool blue, bool alpha )
     {
-        glColorMask( Red, Green, Blue, Alpha );
+        glColorMask( red, green, blue, alpha );
     }
 
     /// @brief glDepthMask
-    static void			DepthMask( bool Flag )
+    static void			depth_mask( bool flag )
     {
-        glDepthMask( Flag );
+        glDepthMask( flag );
     }
 
     /// @brief glStencilOp
-    static void			StencilOp( int Fail, int ZFail, int ZPass )
+    static void			stencil_op( int fail, int z_fail, int z_pass )
     {
-        glStencilOp( Fail, ZFail, ZPass );
+        glStencilOp( fail, z_fail, z_pass );
     }
 
 private:
-    void                VerifyBits( AttrBits BitField ) const;
-    bool                m_Restore;
-    int                 m_GroupBits;
+    void                verify_bits( Attr_bits bit_field ) const;
+    bool                m_restore;
+    int                 m_group_bits;
 };
 
 }

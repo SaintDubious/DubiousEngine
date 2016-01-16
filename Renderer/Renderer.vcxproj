@@ -21,32 +21,32 @@
   <ItemGroup>
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\Color.cpp" />
-    <ClCompile Include="src\OutlinedObjectRenderer.cpp" />
-    <ClCompile Include="src\ShadowRenderer.cpp" />
-    <ClCompile Include="src\VisibleModel.cpp" />
-    <ClCompile Include="src\OpenGLAttributes.cpp" />
-    <ClCompile Include="src\OpenGLCommands.cpp" />
-    <ClCompile Include="src\OpenGLContextStore.cpp" />
-    <ClCompile Include="src\OpenGLMatrix.cpp" />
+    <ClCompile Include="src\Outlined_object_renderer.cpp" />
+    <ClCompile Include="src\Shadow_renderer.cpp" />
+    <ClCompile Include="src\Visible_model.cpp" />
+    <ClCompile Include="src\Open_gl_attributes.cpp" />
+    <ClCompile Include="src\Open_gl_commands.cpp" />
+    <ClCompile Include="src\Open_gl_context_store.cpp" />
+    <ClCompile Include="src\Open_gl_matrix.cpp" />
     <ClCompile Include="src\Scene.cpp" />
-    <ClCompile Include="src\SimpleObjectRenderer.cpp" />
-    <ClCompile Include="src\VisibleObject.cpp" />
+    <ClCompile Include="src\Simple_object_renderer.cpp" />
+    <ClCompile Include="src\Visible_object.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\Color.h" />
-    <ClInclude Include="src\OutlinedObjectRenderer.h" />
-    <ClInclude Include="src\ShadowRenderer.h" />
-    <ClInclude Include="src\VisibleModel.h" />
-    <ClInclude Include="src\ObjectRenderer.h" />
-    <ClInclude Include="src\OpenGLAttributes.h" />
-    <ClInclude Include="src\OpenGLCommands.h" />
-    <ClInclude Include="src\OpenGLContextStore.h" />
-    <ClInclude Include="src\OpenGLMatrix.h" />
-    <ClInclude Include="src\OpenGLPrimitive.h" />
+    <ClInclude Include="src\Outlined_object_renderer.h" />
+    <ClInclude Include="src\Shadow_renderer.h" />
+    <ClInclude Include="src\Visible_model.h" />
+    <ClInclude Include="src\Object_renderer.h" />
+    <ClInclude Include="src\Open_gl_attributes.h" />
+    <ClInclude Include="src\Open_gl_commands.h" />
+    <ClInclude Include="src\Open_gl_context_store.h" />
+    <ClInclude Include="src\Open_gl_matrix.h" />
+    <ClInclude Include="src\Open_gl_primitive.h" />
     <ClInclude Include="src\Scene.h" />
-    <ClInclude Include="src\SimpleObjectRenderer.h" />
-    <ClInclude Include="src\VisibleObject.h" />
+    <ClInclude Include="src\Simple_object_renderer.h" />
+    <ClInclude Include="src\Visible_object.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{FFCC054D-5156-49EB-9077-E172B5E2857B}</ProjectGuid>

@@ -90,7 +90,7 @@ public:
     /// @brief called when the scroll wheel is moved
     /// @param Point - [in] the location of the mouse relative to the application window.
     /// @param WheelUp - [in] true if the wheel is scrolled up
-    std::function<void (int)>& on_mouse_Wheel() { return m_on_mouse_wheel; }
+    std::function<void (int)>& on_mouse_wheel() { return m_on_mouse_wheel; }
 
     /// @brief called when a key is pressed.  
     ///

@@ -9,64 +9,64 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\OpenGLAttributes.cpp">
-      <Filter>OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\OpenGLCommands.cpp">
-      <Filter>OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\OpenGLContextStore.cpp">
-      <Filter>OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\OpenGLMatrix.cpp">
-      <Filter>OpenGL</Filter>
-    </ClCompile>
     <ClCompile Include="src\Color.cpp" />
     <ClCompile Include="src\Camera.cpp" />
-    <ClCompile Include="src\VisibleObject.cpp" />
     <ClCompile Include="src\Scene.cpp" />
-    <ClCompile Include="src\SimpleObjectRenderer.cpp">
+    <ClCompile Include="src\Visible_model.cpp" />
+    <ClCompile Include="src\Open_gl_attributes.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Open_gl_commands.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Open_gl_context_store.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Open_gl_matrix.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Visible_object.cpp" />
+    <ClCompile Include="src\Simple_object_renderer.cpp">
       <Filter>ObjectRenderers</Filter>
     </ClCompile>
-    <ClCompile Include="src\VisibleModel.cpp" />
-    <ClCompile Include="src\ShadowRenderer.cpp">
+    <ClCompile Include="src\Outlined_object_renderer.cpp">
       <Filter>ObjectRenderers</Filter>
     </ClCompile>
-    <ClCompile Include="src\OutlinedObjectRenderer.cpp">
+    <ClCompile Include="src\Shadow_renderer.cpp">
       <Filter>ObjectRenderers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\OpenGLAttributes.h">
-      <Filter>OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="src\OpenGLCommands.h">
-      <Filter>OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="src\OpenGLContextStore.h">
-      <Filter>OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="src\OpenGLMatrix.h">
-      <Filter>OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="src\OpenGLPrimitive.h">
-      <Filter>OpenGL</Filter>
-    </ClInclude>
     <ClInclude Include="src\Color.h" />
     <ClInclude Include="src\Camera.h" />
-    <ClInclude Include="src\ObjectRenderer.h">
-      <Filter>ObjectRenderers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\VisibleObject.h" />
     <ClInclude Include="src\Scene.h" />
-    <ClInclude Include="src\SimpleObjectRenderer.h">
+    <ClInclude Include="src\Visible_model.h" />
+    <ClInclude Include="src\Open_gl_attributes.h">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Open_gl_commands.h">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Open_gl_context_store.h">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Open_gl_matrix.h">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Open_gl_primitive.h">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Visible_object.h" />
+    <ClInclude Include="src\Object_renderer.h">
       <Filter>ObjectRenderers</Filter>
     </ClInclude>
-    <ClInclude Include="src\VisibleModel.h" />
-    <ClInclude Include="src\ShadowRenderer.h">
+    <ClInclude Include="src\Simple_object_renderer.h">
       <Filter>ObjectRenderers</Filter>
     </ClInclude>
-    <ClInclude Include="src\OutlinedObjectRenderer.h">
+    <ClInclude Include="src\Outlined_object_renderer.h">
+      <Filter>ObjectRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Shadow_renderer.h">
       <Filter>ObjectRenderers</Filter>
     </ClInclude>
   </ItemGroup>
