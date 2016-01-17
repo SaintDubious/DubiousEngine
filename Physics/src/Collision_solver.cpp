@@ -143,7 +143,8 @@ bool nearest_simplex_4( std::vector<Math::Vector>& simplex, Math::Vector& direct
     const Math::Vector& ad_x_ab = Math::cross_product( ad, ab );
     if (Math::dot_product( ad_x_ab, ao ) > 0) {
         direction = ad_x_ab;
-        simplex[1] = simplex[2];
+        simplex[1] = simplex[0];
+        simplex[0] = simplex[2];
         simplex[2] = simplex[3];
         simplex.pop_back();
         return false;

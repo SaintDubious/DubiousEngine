@@ -12,6 +12,7 @@ namespace Math {
 template <int T> class PointT;
 template <int T> bool operator==( const PointT<T>& a, const PointT<T>& b );
 template <int T> bool operator!=( const PointT<T>& a, const PointT<T>& b );
+template <int T> std::ostream& operator<<(std::ostream& o, const PointT<T>& a);
 
 /// @brief A 3D Point
 ///
@@ -52,6 +53,7 @@ public:
 private:
     friend bool operator== <>( const PointT<T>& a, const PointT<T>& b );
     friend bool operator!= <>( const PointT<T>& a, const PointT<T>& b );
+    friend std::ostream& operator<< <>(std::ostream& o, const PointT<T>& a);
 
     Triple              m_coords;
 };
@@ -103,6 +105,14 @@ template<int T>
 bool operator!=( const PointT<T>& a, const PointT<T>& b )
 {
     return a.m_coords != b.m_coords;
+}
+
+//////////////////////////////////////////////////////////////
+template<int T> 
+std::ostream& operator<<(std::ostream& o, const PointT<T>& a)
+{
+    o << a.m_coords;
+    return o;
 }
 
 typedef PointT<0> Point;

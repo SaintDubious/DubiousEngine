@@ -4,6 +4,7 @@
 #include "Triple.h"
 
 namespace Math_test { class Quaternion_test; }
+namespace Physics_test { class Collision_solver_test; }
 
 //////////////////////////////////////////////////////////////
 namespace Dubious {
@@ -39,6 +40,7 @@ template <int T> class QuaternionT;
 template <int T> bool operator==( const QuaternionT<T>& a, const QuaternionT<T>& b );
 template <int T> bool operator!=( const QuaternionT<T>& a, const QuaternionT<T>& b );
 template <int T> QuaternionT<T> operator*( const QuaternionT<T>& a, const QuaternionT<T>& b );
+template <int T> std::ostream& operator<<(std::ostream& o, const QuaternionT<T>& q);
 
 /// @brief Unit Quaternion
 ///
@@ -88,10 +90,12 @@ public:
 
 private:
     friend class Math_test::Quaternion_test;
+    friend class Physics_test::Collision_solver_test;
     friend class Coordinate_space;
     friend bool operator== <>( const QuaternionT<T>& a, const QuaternionT<T>& b );
     friend bool operator!= <>( const QuaternionT<T>& a, const QuaternionT<T>& b );
     friend QuaternionT<T> operator* <>( const QuaternionT<T>& a, const QuaternionT<T>& b );
+    friend std::ostream& operator<< <>(std::ostream& o, const QuaternionT<T>& q);
 
     QuaternionT( float real, const Triple& imaginary )
         : m_real( real )
@@ -135,6 +139,14 @@ QuaternionT<T> operator*( const QuaternionT<T>& a, const QuaternionT<T>& b )
  //   result.normalize();
 
     return result;
+}
+
+//////////////////////////////////////////////////////////////
+template <int T> 
+std::ostream& operator<<(std::ostream& o, const QuaternionT<T>& q)
+{
+    o << "(" << q.m_real << ", " << q.m_imaginary << "))";
+    return o;
 }
 
 typedef QuaternionT<0> Quaternion;

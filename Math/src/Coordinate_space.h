@@ -4,6 +4,8 @@
 #include "Point.h"
 #include "Quaternion.h"
 
+namespace Physics_test { class Collision_solver_test; }
+
 //////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Math {
@@ -22,6 +24,8 @@ namespace Math {
 ///	finger is pointing along positive Z (at you).
 class Coordinate_space {
 public:
+    Coordinate_space() = default;
+
     /// @brief Get 3 axis
     ///
     /// It's common to want the X, Y, and Z axis that make up 
@@ -79,9 +83,13 @@ public:
     /// @returns The same vector in local coordinate space
     Local_vector	    transform( const Vector& v ) const;
 
-private:
-    
+private:    
+    friend class Physics_test::Collision_solver_test;
+
     friend bool         operator== ( const Coordinate_space& a, const Coordinate_space& b );
+    friend std::ostream& operator<<(std::ostream& o, const Coordinate_space& c);
+
+    Coordinate_space( const Point& p, const Quaternion& r );
 
     Point               m_position;
     Quaternion          m_rotation;

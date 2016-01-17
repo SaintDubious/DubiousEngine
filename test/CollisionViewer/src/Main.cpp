@@ -223,42 +223,42 @@ void on_key_down( SDL_Keycode key, unsigned short mod )
         break;
     case SDLK_w:
         {
-            Math::Vector D( 0, 0, -1 );
+            Math::Vector D( 0, 0, -0.1 );
             selected_visible_object->coordinate_space().translate( D );
             selected_physics_object->coordinate_space().translate( D );
         }
         break;
     case SDLK_a:
         {
-            Math::Vector D( -1, 0, 0 );
+            Math::Vector D( -0.1, 0, 0 );
             selected_visible_object->coordinate_space().translate( D );
             selected_physics_object->coordinate_space().translate( D );
         }
         break;
     case SDLK_s:
         {
-            Math::Vector D( 0, 0, 1 );
+            Math::Vector D( 0, 0, 0.1 );
             selected_visible_object->coordinate_space().translate( D );
             selected_physics_object->coordinate_space().translate( D );
         }
         break;
     case SDLK_d:
         {
-            Math::Vector D( 1, 0, 0 );
+            Math::Vector D( 0.1, 0, 0 );
             selected_visible_object->coordinate_space().translate( D );
             selected_physics_object->coordinate_space().translate( D );
         }
         break;
     case SDLK_z:
         {
-            Math::Vector D( 0, 1, 0 );
+            Math::Vector D( 0, 0.1, 0 );
             selected_visible_object->coordinate_space().translate( D );
             selected_physics_object->coordinate_space().translate( D );
         }
         break;
     case SDLK_x:
         {
-            Math::Vector D( 0, -1, 0 );
+            Math::Vector D( 0, -0.1, 0 );
             selected_visible_object->coordinate_space().translate( D );
             selected_physics_object->coordinate_space().translate( D );
         }

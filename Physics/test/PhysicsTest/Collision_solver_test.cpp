@@ -4,6 +4,7 @@
 #include <Physics_object.h>
 #include <Collision_solver.h>
 #include <Triple.h>
+#include <Coordinate_space.h>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace Dubious::Physics;
@@ -34,6 +35,11 @@ public:
         b.coordinate_space().rotate( Quaternion( Vector( 0, 1, 0 ), to_radians( 30 ) ) );
         Assert::IsTrue( solver.intersection( a, b ) == true );
         b.coordinate_space().rotate( Quaternion( Vector( 1, 0, 0 ), to_radians( 30 ) ) );
+        Assert::IsTrue( solver.intersection( a, b ) == true );
+
+        // Test that failed in CollisionViewer
+        a.coordinate_space() = Coordinate_space( Point(1, 4, -1), Quaternion(-0.191323161, Triple(0.479090452, 0.852346003, 0.0858706832)) );
+        b.coordinate_space() = Coordinate_space( Point(2, 2, -1), Quaternion(-0.737145424, Triple(-0.451694548, 0.245187759, 0.438716054)) );
         Assert::IsTrue( solver.intersection( a, b ) == true );
     }
 

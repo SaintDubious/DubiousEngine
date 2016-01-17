@@ -7,6 +7,13 @@ namespace Dubious {
 namespace Math {
 
 //////////////////////////////////////////////////////////////
+Coordinate_space::Coordinate_space( const Point& p, const Quaternion& r )
+    : m_position( p )
+    , m_rotation( r )
+{
+}
+
+//////////////////////////////////////////////////////////////
 void Coordinate_space::get_matrix( float matrix[16] ) const
 {
     m_rotation.get_matrix( matrix );
@@ -80,7 +87,7 @@ bool operator== ( const Coordinate_space& a, const Coordinate_space& b )
 //////////////////////////////////////////////////////////////
 std::ostream& operator<<(std::ostream& o, const Coordinate_space& c)
 {
-    o << "Q: " << "P: ";
+    o << "P: " << c.m_position << " R: " << c.m_rotation;
     return o;
 }
 
