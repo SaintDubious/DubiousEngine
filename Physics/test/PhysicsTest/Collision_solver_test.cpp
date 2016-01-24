@@ -38,9 +38,12 @@ public:
         Assert::IsTrue( solver.intersection( a, b ) == true );
 
         // Test that failed in CollisionViewer
-        a.coordinate_space() = Coordinate_space( Point(1, 4, -1), Quaternion(-0.191323161, Triple(0.479090452, 0.852346003, 0.0858706832)) );
-        b.coordinate_space() = Coordinate_space( Point(2, 2, -1), Quaternion(-0.737145424, Triple(-0.451694548, 0.245187759, 0.438716054)) );
+        a.coordinate_space() = Coordinate_space( Point(1, 4, -1), Quaternion(-0.191323161f, Triple(0.479090452f, 0.852346003f, 0.0858706832f)) );
+        b.coordinate_space() = Coordinate_space( Point(2, 2, -1), Quaternion(-0.737145424f, Triple(-0.451694548f, 0.245187759f, 0.438716054f)) );
         Assert::IsTrue( solver.intersection( a, b ) == true );
+        a.coordinate_space() = Coordinate_space( Point(0.200000003f, 0, -0.400000006f), Quaternion(0.874503672f, Triple(-0.214069009f, -0.331128120f, 0.283099681f)) );
+        b.coordinate_space() = Coordinate_space( Point(3, 0, 0),                        Quaternion(-0.805550456f, Triple(0.0f, 0.592838526f, 0.0f)) );
+        Assert::IsTrue( solver.intersection( a, b ) == false );
     }
 
 };

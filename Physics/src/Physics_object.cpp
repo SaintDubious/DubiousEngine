@@ -16,15 +16,10 @@ Physics_object::Physics_object( const std::shared_ptr<Physics_model>& model )
 namespace {
 void copy_model_to_vectors( const Physics_model& model, Math::Coordinate_space coords, std::vector<Math::Vector>& vectors )
 {
-    Math::Local_vector offset = model.offset() - Math::Local_point();
-    for (const auto& point : model.points()) {
-        Math::Vector new_vect = coords.transform( offset + (point-Math::Local_point()) );
+    for (const auto& v : model.vectors()) {
+        Math::Vector new_vect = coords.transform( v );
         new_vect = new_vect + (coords.position() - Math::Point());
         vectors.push_back( new_vect );
-    }
-    coords.translate( offset );
-    for (const auto& kid : model.kids()) {
-        copy_model_to_vectors( *kid, coords, vectors );
     }
 }
 }

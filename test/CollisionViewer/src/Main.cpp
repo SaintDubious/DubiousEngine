@@ -60,11 +60,24 @@ int main( int argc, char** argv )
 {
     try {
         std::cout << "Starting test\n";
+
+        std::unique_ptr<const Utility::Ac3d_file> model_file;
+        if (argc == 2) {
+            model_file = Utility::Ac3d_file_reader::read_file( Utility::File_path( argv[1] ) );
+        }
+
         sdl.create_root_window( "Collision Viewer", WIDTH, HEIGHT, false );
 
-        std::shared_ptr<Renderer::Visible_model> visible_model( new Renderer::Visible_model( Math::Triple( 1, 1, 1 ), false ) );
-        std::shared_ptr<Physics::Physics_model> physics_model( new Physics::Physics_model( Math::Triple( 1, 1, 1 ) ) );
-
+        std::shared_ptr<Renderer::Visible_model> visible_model;
+        std::shared_ptr<Physics::Physics_model> physics_model;
+        if (model_file) {
+            visible_model.reset( new Renderer::Visible_model( *model_file, false ) );
+            physics_model.reset( new Physics::Physics_model( *model_file ) );
+        }
+        else {
+            visible_model.reset( new Renderer::Visible_model( Math::Triple( 1, 1, 1 ), false ) );
+            physics_model.reset( new Physics::Physics_model( Math::Triple( 1, 1, 1 ) ) );
+        }
         visible_object_1 = std::shared_ptr<Renderer::Visible_object>( new Renderer::Visible_object(visible_model, visible_model) );
         visible_object_1->coordinate_space().translate( Math::Vector( 0, 0, 0 ) );
         physics_object_1 = std::shared_ptr<Physics::Physics_object>( new Physics::Physics_object( physics_model ) );
@@ -221,44 +234,69 @@ void on_key_down( SDL_Keycode key, unsigned short mod )
             }
         }
         break;
+    case SDLK_p:
+        {
+            int collisions = 0;
+            int misses = 0;
+            int PROFILE_COUNT = 10000;
+            std::cout << "Profiling : " << PROFILE_COUNT << " runs\n";
+            Utility::Timer t;
+
+            for (int i=0; i<PROFILE_COUNT; ++i) {
+                Math::Quaternion Q( Math::Vector( 0, 1, 0 ), 0.1f ); 
+                physics_object_1->coordinate_space().rotate( Q );
+                physics_object_2->coordinate_space().rotate( Q );
+                if (solver.intersection( *physics_object_1, *physics_object_2 )) {
+                    ++collisions;
+                }
+                else {
+                    ++misses;
+                }
+            }
+            visible_object_1->coordinate_space() = physics_object_1->coordinate_space();
+            visible_object_2->coordinate_space() = physics_object_2->coordinate_space();
+
+            std::cout << "Took: " << t.elapsed() << " milliseconds\n";
+            std::cout << collisions << " collisions and " << misses << " misses\n";
+        }
     case SDLK_w:
         {
-            Math::Vector D( 0, 0, -0.1 );
+            Math::Vector D( 0, 0, -0.1f );
             selected_visible_object->coordinate_space().translate( D );
             selected_physics_object->coordinate_space().translate( D );
         }
         break;
     case SDLK_a:
         {
-            Math::Vector D( -0.1, 0, 0 );
+            Math::Vector D( -0.1f, 0, 0 );
             selected_visible_object->coordinate_space().translate( D );
             selected_physics_object->coordinate_space().translate( D );
         }
         break;
     case SDLK_s:
         {
-            Math::Vector D( 0, 0, 0.1 );
+            Math::Vector D( 0, 0, 0.1f );
             selected_visible_object->coordinate_space().translate( D );
             selected_physics_object->coordinate_space().translate( D );
         }
         break;
     case SDLK_d:
         {
-            Math::Vector D( 0.1, 0, 0 );
+            Math::Vector D( 0.1f, 0, 0 );
             selected_visible_object->coordinate_space().translate( D );
             selected_physics_object->coordinate_space().translate( D );
         }
         break;
     case SDLK_z:
         {
-            Math::Vector D( 0, 0.1, 0 );
+            Math::Vector D( 0, 0.1f, 0 );
             selected_visible_object->coordinate_space().translate( D );
             selected_physics_object->coordinate_space().translate( D );
         }
         break;
     case SDLK_x:
         {
-            Math::Vector D( 0, -0.1, 0 );
+            Math::Vector D( 0, -0.1f, 0 );
             selected_visible_object->coordinate_space().translate( D );
             selected_physics_object->coordinate_space().translate( D );
         }

@@ -1,5 +1,6 @@
 #include "Collision_solver.h"
 #include "Physics_object.h"
+#include "Physics_model.h"
 
 #include <Vector_math.h>
 
@@ -15,6 +16,21 @@ Math::Vector support( const Physics_object& object, const Math::Vector& directio
     Math::Vector result;
     float max_dot = std::numeric_limits<float>::lowest();
     for (const auto& v : object.cached_collision_vectors()) {
+        float dot = Math::dot_product( v, direction );
+        if (dot > max_dot) {
+            max_dot = dot;
+            result = v;
+        }
+    }
+    return result;
+}
+
+//////////////////////////////////////////////////////////////
+Math::Local_vector support( const Physics_model& model, const Math::Local_vector& direction )
+{
+    Math::Local_vector result;
+    float max_dot = std::numeric_limits<float>::lowest();
+    for (const auto& v : model.vectors()) {
         float dot = Math::dot_product( v, direction );
         if (dot > max_dot) {
             max_dot = dot;
@@ -171,8 +187,81 @@ bool Nearestsimplex( std::vector<Math::Vector>& simplex, Math::Vector& direction
 }
 
 //////////////////////////////////////////////////////////////
+bool model_intersection( const Physics_model& a, const Math::Coordinate_space& ca, 
+                         const Physics_model& b, const Math::Coordinate_space& cb )
+{
+    if (a.vectors().empty() || b.vectors().empty()) {
+        return false;
+    }
+    Math::Vector direction( 1, 0, 0 );
+    Math::Vector simplex_point = (ca.transform(support( a, ca.transform(direction) ))    + (ca.position()-Math::Point())) - 
+                                 (cb.transform(support( b, cb.transform(direction*-1) )) + (cb.position()-Math::Point()));
+    std::vector<Math::Vector> simplex;
+    simplex.push_back( simplex_point );
+    direction = Math::Vector() - simplex_point;
+    
+    // In a perfect world this would be an infinite loop. However in reality, we can get 
+    // into situations where we keep selecting the same faces over and over. If we don't
+    // converge on a solution in 20 steps then just give up
+    for (int i=0; i<20; ++i) {
+        simplex_point = (ca.transform(support( a, ca.transform(direction) ))    + (ca.position()-Math::Point())) - 
+                        (cb.transform(support( b, cb.transform(direction*-1) )) + (cb.position()-Math::Point()));
+        // If this next check is < 0 then touching will be considered
+        // a collision. If it's <= 0 then thouching will not be a collision
+        // .... I think. Not very well tested
+        if (Math::dot_product( simplex_point, direction ) <= 0) {
+            return false;
+        }
+        simplex.push_back( simplex_point );
+        if (Nearestsimplex( simplex, direction )) {
+            return true;
+        }
+    }
+    return false;
+}
+
+//////////////////////////////////////////////////////////////
+bool intersection_recurse_b( const Physics_model& a, const Math::Coordinate_space& ca, 
+                             const Physics_model& b, const Math::Coordinate_space& cb )
+{
+    bool ret_val = false;
+    if (model_intersection( a, ca, b, cb )) {
+        ret_val = true;
+    }
+    for (const auto& kid : b.kids()) {
+        if (intersection_recurse_b( a, ca, *kid, cb )) {
+            ret_val = true;
+        }
+    }
+
+    return ret_val;
+}
+
+//////////////////////////////////////////////////////////////
+bool intersection_recurse_a( const Physics_model& a, const Math::Coordinate_space& ca, 
+                             const Physics_model& b, const Math::Coordinate_space& cb )
+{
+    bool ret_val = false;
+    if (intersection_recurse_b( a, ca, b, cb )) {
+        ret_val = true;
+    }
+    for (const auto& kid : a.kids()) {
+        if (intersection_recurse_a( *kid, ca, b, cb )) {
+            ret_val = true;
+        }
+    }
+
+    return ret_val;
+}
+
+//////////////////////////////////////////////////////////////
 bool Collision_solver::intersection( const Physics_object& a, const Physics_object& b )
 {
+
+
+    return intersection_recurse_a( *a.model(), a.coordinate_space(), *b.model(), b.coordinate_space() );
+    
+/*
     a.cache_collision_vectors();
     b.cache_collision_vectors();
 
@@ -194,8 +283,7 @@ bool Collision_solver::intersection( const Physics_object& a, const Physics_obje
             return true;
         }
     }
-    
-    return false;
+    */
 }
 
 }}

@@ -28,8 +28,11 @@ public:
 
     void                cache_collision_vectors() const;
 
+    std::shared_ptr<Physics_model> model() const { return m_model; }
+
     /// @brief Accessor
     Math::Coordinate_space& coordinate_space() { return m_coordinate_space; }
+    const Math::Coordinate_space& coordinate_space() const { return m_coordinate_space; }
 
     const std::vector<Math::Vector>& cached_collision_vectors() const { return m_cached_collision_vectors; }
 
