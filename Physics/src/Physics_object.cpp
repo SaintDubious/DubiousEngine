@@ -7,8 +7,9 @@ namespace Dubious {
 namespace Physics {
 
 //////////////////////////////////////////////////////////////
-Physics_object::Physics_object( const std::shared_ptr<Physics_model>& model )
+Physics_object::Physics_object( const std::shared_ptr<Physics_model>& model, float mass )
     : m_model( model )
+    , m_mass( mass )
 {
 }
 

@@ -80,12 +80,12 @@ int main( int argc, char** argv )
         }
         visible_object_1 = std::shared_ptr<Renderer::Visible_object>( new Renderer::Visible_object(visible_model, visible_model) );
         visible_object_1->coordinate_space().translate( Math::Vector( 0, 0, 0 ) );
-        physics_object_1 = std::shared_ptr<Physics::Physics_object>( new Physics::Physics_object( physics_model ) );
+        physics_object_1 = std::shared_ptr<Physics::Physics_object>( new Physics::Physics_object( physics_model, 1 ) );
         physics_object_1->coordinate_space().translate( Math::Vector( 0, 0, 0 ) );
 
         visible_object_2 = std::shared_ptr<Renderer::Visible_object>( new Renderer::Visible_object(visible_model, visible_model) );
         visible_object_2->coordinate_space().translate( Math::Vector( 3, 0, 0 ) );
-        physics_object_2 = std::shared_ptr<Physics::Physics_object>( new Physics::Physics_object( physics_model ) );
+        physics_object_2 = std::shared_ptr<Physics::Physics_object>( new Physics::Physics_object( physics_model, 1 ) );
         physics_object_2->coordinate_space().translate( Math::Vector( 3, 0, 0 ) );
 
         selected_visible_object = visible_object_1;

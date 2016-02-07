@@ -19,8 +19,8 @@ public:
 	{
         Collision_solver solver;
         std::shared_ptr<Physics_model> model( new Physics_model( Triple( 1, 1, 1 ) ) );
-        Physics_object a( model );
-        Physics_object b( model );
+        Physics_object a( model, 1 );
+        Physics_object b( model, 1 );
 
         b.coordinate_space().translate( Vector( 3, 0, 0 ) );
         Assert::IsTrue( solver.intersection( a, b ) == false );

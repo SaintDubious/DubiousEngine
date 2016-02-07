@@ -20,7 +20,7 @@ class Physics_model;
 class Physics_object {
 public:
     /// @brief Constructor
-    Physics_object( const std::shared_ptr<Physics_model>& model );
+    Physics_object( const std::shared_ptr<Physics_model>& model, float mass );
 
     Physics_object( const Physics_object& ) = delete;
 
@@ -34,6 +34,10 @@ public:
     Math::Coordinate_space& coordinate_space() { return m_coordinate_space; }
     const Math::Coordinate_space& coordinate_space() const { return m_coordinate_space; }
 
+    float               mass() const { return m_mass; }
+    Math::Vector        velocity() const { return m_velocity; }
+    Math::Vector        force() const { return m_force; }
+
     const std::vector<Math::Vector>& cached_collision_vectors() const { return m_cached_collision_vectors; }
 
 private:
@@ -42,6 +46,13 @@ private:
     Math::Coordinate_space m_coordinate_space;
     mutable Math::Coordinate_space m_cached_coordinate_space;
     mutable std::vector<Math::Vector> m_cached_collision_vectors;
+
+    // Linear Physics
+    float               m_mass;
+    Math::Vector        m_velocity;
+    Math::Vector        m_force;
+
+    // Angular Physics
 };
 
 }}
