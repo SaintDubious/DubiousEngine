@@ -32,13 +32,6 @@ public:
     /// @param File - [in] The file object
     Physics_model( const Utility::Ac3d_file& File );
 
-    /// @brief Construct a cube
-    ///
-    /// Builds a cube of the given dimensions with the origin
-    /// centered.
-    /// @param Dimensions - [in] The Dimensions
-    Physics_model( const Math::Triple& Dimensions );
-
     Physics_model& operator=( const Physics_model& ) = delete;
 
     const std::vector<Math::Local_vector>& vectors() const { return m_vectors; }

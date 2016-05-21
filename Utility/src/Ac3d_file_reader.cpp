@@ -102,7 +102,7 @@ const std::string MATERIAL		= "MATERIAL";
 //////////////////////////////////////////////////////////////
 std::unique_ptr<Ac3d_model> read_model( std::ifstream& input, bool& loc_present )
 {
-    std::unique_ptr<Ac3d_model> model( new Ac3d_model );
+    std::unique_ptr<Ac3d_model> model = std::make_unique<Ac3d_model>();
     std::string object_type;
     input >> object_type;
     while (true) {
@@ -210,7 +210,56 @@ std::unique_ptr<const Ac3d_file> Ac3d_file_reader::read_file( const File_path& f
     }
     assert( loc && "You forgot to re-center the child components" );
 
-    return std::unique_ptr<const Ac3d_file>( new Ac3d_file( materials, std::move(model) ) );
+    return std::make_unique<const Ac3d_file>( std::move(materials), std::move(model) );
+}
+
+//////////////////////////////////////////////////////////////
+namespace {
+Ac3d_model::Surface build_surface( int p0, int p1, int p2 )
+{
+    Ac3d_model::Surface new_surface;
+    new_surface.material_index = 0;
+    new_surface.p0 = p0;
+    new_surface.p1 = p1;
+    new_surface.p2 = p2;
+    return new_surface;
+}
+
+}
+
+//////////////////////////////////////////////////////////////
+std::unique_ptr<const Ac3d_file> Ac3d_file_reader::test_cube( float edge_length )
+{
+    std::unique_ptr<Ac3d_model> model = std::make_unique<Ac3d_model>();
+    
+    // The code for this comes from looking at an AC3D file
+    // for a cube.
+    model->points().push_back( Math::Local_point( -edge_length, -edge_length, -edge_length ) );
+    model->points().push_back( Math::Local_point(  edge_length, -edge_length, -edge_length ) );
+    model->points().push_back( Math::Local_point(  edge_length, -edge_length,  edge_length ) );
+    model->points().push_back( Math::Local_point( -edge_length, -edge_length,  edge_length ) );
+    model->points().push_back( Math::Local_point( -edge_length,  edge_length,  edge_length ) );
+    model->points().push_back( Math::Local_point(  edge_length,  edge_length,  edge_length ) );
+    model->points().push_back( Math::Local_point(  edge_length,  edge_length, -edge_length ) );
+    model->points().push_back( Math::Local_point( -edge_length,  edge_length, -edge_length ) );
+
+    model->surfaces().push_back( build_surface( 6, 2, 1 ) );
+    model->surfaces().push_back( build_surface( 2, 6, 5 ) );
+    model->surfaces().push_back( build_surface( 4, 0, 3 ) );
+    model->surfaces().push_back( build_surface( 0, 4, 7 ) );
+    model->surfaces().push_back( build_surface( 6, 0, 7 ) );
+    model->surfaces().push_back( build_surface( 0, 6, 1 ) );
+    model->surfaces().push_back( build_surface( 2, 4, 3 ) );
+    model->surfaces().push_back( build_surface( 4, 2, 5 ) );
+    model->surfaces().push_back( build_surface( 4, 6, 7 ) );
+    model->surfaces().push_back( build_surface( 6, 4, 5 ) );
+    model->surfaces().push_back( build_surface( 2, 0, 1 ) );
+    model->surfaces().push_back( build_surface( 0, 2, 3 ) );                
+
+    std::vector<Ac3d_material> materials;
+    materials.push_back( Ac3d_material::Color( 1.0f, 1.0f, 1.0f ) );
+
+    return std::make_unique<const Ac3d_file>( std::move(materials), std::move(model) );
 }
 
 }}

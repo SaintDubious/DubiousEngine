@@ -13,19 +13,6 @@ Physics_model::Physics_model( const Utility::Ac3d_file& file )
 }
 
 //////////////////////////////////////////////////////////////
-Physics_model::Physics_model( const Math::Triple& Dimensions )
-{
-    m_vectors.push_back( Math::Local_vector( -Dimensions.m_x, -Dimensions.m_y, -Dimensions.m_z ) );
-    m_vectors.push_back( Math::Local_vector(  Dimensions.m_x, -Dimensions.m_y, -Dimensions.m_z ) );
-    m_vectors.push_back( Math::Local_vector(  Dimensions.m_x, -Dimensions.m_y,  Dimensions.m_z ) );
-    m_vectors.push_back( Math::Local_vector( -Dimensions.m_x, -Dimensions.m_y,  Dimensions.m_z ) );
-    m_vectors.push_back( Math::Local_vector( -Dimensions.m_x,  Dimensions.m_y,  Dimensions.m_z ) );
-    m_vectors.push_back( Math::Local_vector(  Dimensions.m_x,  Dimensions.m_y,  Dimensions.m_z ) );
-    m_vectors.push_back( Math::Local_vector(  Dimensions.m_x,  Dimensions.m_y, -Dimensions.m_z ) );
-    m_vectors.push_back( Math::Local_vector( -Dimensions.m_x,  Dimensions.m_y, -Dimensions.m_z ) );
-}
-
-//////////////////////////////////////////////////////////////
 void Physics_model::construct( const Math::Local_vector& offset, const Utility::Ac3d_model& model )
 {
     Math::Local_vector new_offset = offset + (model.offset()-Math::Local_point());

@@ -38,15 +38,6 @@ public:
     /// @param IncludeEdges - [in] Set true to build edges
     Visible_model( const Utility::Ac3d_file& File, bool include_edges );
 
-    /// @brief Construct a cube
-    ///
-    /// Builds a cube of the given dimensions with the origin
-    /// centered. If IncludeEdges is true then it will build
-    /// edge information, used in shadow rendering
-    /// @param Dimensions - [in] The Dimensions
-    /// @param IncludeEdges - [in] Set true to build edges
-    Visible_model( const Math::Triple& dimensions, bool include_edges );
-
     Visible_model( const Visible_model& ) = delete;
     Visible_model& operator=( const Visible_model& ) = delete;
 

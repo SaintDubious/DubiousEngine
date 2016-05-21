@@ -66,21 +66,21 @@ int main( int argc, char** argv )
         std::unique_ptr<const Utility::Ac3d_file> model_file = Utility::Ac3d_file_reader::read_file( Utility::File_path( visual_model_file ) );
         std::unique_ptr<const Utility::Ac3d_file> shadow_file = Utility::Ac3d_file_reader::read_file( Utility::File_path( shadow_model_file ) );
 
-        std::shared_ptr<Renderer::Visible_model> floor_model( new Renderer::Visible_model( *floor_file, false ) );
-        std::shared_ptr<Renderer::Visible_model> model( new Renderer::Visible_model( *model_file, false ) );
-        std::shared_ptr<Renderer::Visible_model> shadow_model( new Renderer::Visible_model( *shadow_file, true ) );
+        std::shared_ptr<Renderer::Visible_model> floor_model = std::make_shared<Renderer::Visible_model>( *floor_file, false );
+        std::shared_ptr<Renderer::Visible_model> model = std::make_shared<Renderer::Visible_model>( *model_file, false );
+        std::shared_ptr<Renderer::Visible_model> shadow_model = std::make_shared<Renderer::Visible_model>( *shadow_file, true );
 
-        std::shared_ptr<Renderer::Visible_object> floor_object( new Renderer::Visible_object(floor_model, std::shared_ptr<Renderer::Visible_model>()) );
-        object = std::shared_ptr<Renderer::Visible_object>( new Renderer::Visible_object(model, shadow_model) );
+        std::shared_ptr<Renderer::Visible_object> floor_object = std::make_shared<Renderer::Visible_object>(floor_model, std::shared_ptr<Renderer::Visible_model>());
+        object = std::make_shared<Renderer::Visible_object>( model, shadow_model);
 
         floor_object->coordinate_space().translate( Math::Vector( 0, -5, 0 ) );
         object->coordinate_space().translate( Math::Vector( 0, 0, 0 ) );
 
-        std::shared_ptr<Renderer::Open_gl_context_store> context_store( new Renderer::Open_gl_context_store );
-        scene = std::unique_ptr<Renderer::Scene>( new Renderer::Scene(context_store) );
+        std::shared_ptr<Renderer::Open_gl_context_store> context_store = std::make_shared<Renderer::Open_gl_context_store>();
+        scene = std::make_unique<Renderer::Scene>( context_store );
         simple_renderer.reset( new Renderer::Simple_object_renderer( context_store ) );
         outlined_renderer.reset( new Renderer::Outlined_object_renderer( context_store ) );
-        std::shared_ptr<Renderer::Shadow_renderer> shadow_renderer( new Renderer::Shadow_renderer() );
+        std::shared_ptr<Renderer::Shadow_renderer> shadow_renderer = std::make_shared<Renderer::Shadow_renderer>();
         floor_object->renderer() = simple_renderer;
         object->renderer() = outlined_renderer;
         object->shadow_renderer() = shadow_renderer;
@@ -92,7 +92,7 @@ int main( int argc, char** argv )
         scene->add_object( floor_object );
         scene->add_object( object );
 
-        camera = std::unique_ptr<Renderer::Camera>( new Renderer::Camera( 0, 0, WIDTH,HEIGHT, 80.0f ) );
+        camera = std::make_unique<Renderer::Camera>( 0, 0, WIDTH,HEIGHT, 80.0f );
         camera->z_axis_offset() = 20;
         
         frame_rate_timer.start();

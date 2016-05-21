@@ -65,34 +65,31 @@ int main( int argc, char** argv )
         if (argc == 2) {
             model_file = Utility::Ac3d_file_reader::read_file( Utility::File_path( argv[1] ) );
         }
+        else {
+            model_file = Utility::Ac3d_file_reader::test_cube( 1.0f );
+        }
 
         sdl.create_root_window( "Collision Viewer", WIDTH, HEIGHT, false );
 
         std::shared_ptr<Renderer::Visible_model> visible_model;
         std::shared_ptr<Physics::Physics_model> physics_model;
-        if (model_file) {
-            visible_model.reset( new Renderer::Visible_model( *model_file, false ) );
-            physics_model.reset( new Physics::Physics_model( *model_file ) );
-        }
-        else {
-            visible_model.reset( new Renderer::Visible_model( Math::Triple( 1, 1, 1 ), false ) );
-            physics_model.reset( new Physics::Physics_model( Math::Triple( 1, 1, 1 ) ) );
-        }
-        visible_object_1 = std::shared_ptr<Renderer::Visible_object>( new Renderer::Visible_object(visible_model, visible_model) );
+        visible_model.reset( new Renderer::Visible_model( *model_file, false ) );
+        physics_model.reset( new Physics::Physics_model( *model_file ) );
+        visible_object_1 = std::make_shared<Renderer::Visible_object>( visible_model, visible_model );
         visible_object_1->coordinate_space().translate( Math::Vector( 0, 0, 0 ) );
-        physics_object_1 = std::shared_ptr<Physics::Physics_object>( new Physics::Physics_object( physics_model, 1 ) );
+        physics_object_1 = std::make_shared<Physics::Physics_object>( physics_model, 1.0f );
         physics_object_1->coordinate_space().translate( Math::Vector( 0, 0, 0 ) );
 
-        visible_object_2 = std::shared_ptr<Renderer::Visible_object>( new Renderer::Visible_object(visible_model, visible_model) );
+        visible_object_2 = std::make_shared<Renderer::Visible_object>( visible_model, visible_model );
         visible_object_2->coordinate_space().translate( Math::Vector( 3, 0, 0 ) );
-        physics_object_2 = std::shared_ptr<Physics::Physics_object>( new Physics::Physics_object( physics_model, 1 ) );
+        physics_object_2 = std::make_shared<Physics::Physics_object>( physics_model, 1.0f );
         physics_object_2->coordinate_space().translate( Math::Vector( 3, 0, 0 ) );
 
         selected_visible_object = visible_object_1;
         selected_physics_object = physics_object_1;
 
-        std::shared_ptr<Renderer::Open_gl_context_store> context_store( new Renderer::Open_gl_context_store );
-        scene = std::unique_ptr<Renderer::Scene>( new Renderer::Scene(context_store) );
+        std::shared_ptr<Renderer::Open_gl_context_store> context_store = std::make_shared<Renderer::Open_gl_context_store>();
+        scene = std::make_unique<Renderer::Scene>( context_store );
         simple_renderer.reset( new Renderer::Simple_object_renderer( context_store ) );
 
         visible_object_1->renderer() = simple_renderer;
@@ -106,7 +103,7 @@ int main( int argc, char** argv )
         scene->add_object( visible_object_1 );
         scene->add_object( visible_object_2 );
 
-        camera = std::unique_ptr<Renderer::Camera>( new Renderer::Camera( 0, 0, WIDTH,HEIGHT, 80.0f ) );
+        camera = std::make_unique<Renderer::Camera>( 0, 0, WIDTH,HEIGHT, 80.0f );
         camera->z_axis_offset() = 20;
 
         sdl.on_quit() = on_quit;

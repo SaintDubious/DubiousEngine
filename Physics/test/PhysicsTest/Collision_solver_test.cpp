@@ -5,10 +5,12 @@
 #include <Collision_solver.h>
 #include <Triple.h>
 #include <Coordinate_space.h>
+#include <Ac3d_file_reader.h>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace Dubious::Physics;
 using namespace Dubious::Math;
+using namespace Dubious::Utility;
 
 namespace Physics_test
 {		
@@ -18,7 +20,9 @@ public:
 	TEST_METHOD(collision_solver_intersection)
 	{
         Collision_solver solver;
-        std::shared_ptr<Physics_model> model( new Physics_model( Triple( 1, 1, 1 ) ) );
+        std::unique_ptr<const Ac3d_file> model_file = Ac3d_file_reader::test_cube( 1.0f ); 
+
+        std::shared_ptr<Physics_model> model = std::make_shared<Physics_model>( *model_file );
         Physics_object a( model, 1 );
         Physics_object b( model, 1 );
 

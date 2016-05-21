@@ -53,40 +53,6 @@ void Visible_model::construct( const Utility::Ac3d_model& ac3d_model, const std:
 }
 
 //////////////////////////////////////////////////////////////
-Visible_model::Visible_model( const Math::Triple& dimensions, bool include_edges )
-{
-    // The code for this comes from looking at an AC3D file
-    // for a cube.
-    m_points.push_back( Math::Local_point( -dimensions.m_x, -dimensions.m_y, -dimensions.m_z ) );
-    m_points.push_back( Math::Local_point(  dimensions.m_x, -dimensions.m_y, -dimensions.m_z ) );
-    m_points.push_back( Math::Local_point(  dimensions.m_x, -dimensions.m_y,  dimensions.m_z ) );
-    m_points.push_back( Math::Local_point( -dimensions.m_x, -dimensions.m_y,  dimensions.m_z ) );
-    m_points.push_back( Math::Local_point( -dimensions.m_x,  dimensions.m_y,  dimensions.m_z ) );
-    m_points.push_back( Math::Local_point(  dimensions.m_x,  dimensions.m_y,  dimensions.m_z ) );
-    m_points.push_back( Math::Local_point(  dimensions.m_x,  dimensions.m_y, -dimensions.m_z ) );
-    m_points.push_back( Math::Local_point( -dimensions.m_x,  dimensions.m_y, -dimensions.m_z ) );
-
-    m_surfaces.push_back( build_surface( m_points, 6, 2, 1 ) );
-    m_surfaces.push_back( build_surface( m_points, 2, 6, 5 ) );
-    m_surfaces.push_back( build_surface( m_points, 4, 0, 3 ) );
-    m_surfaces.push_back( build_surface( m_points, 0, 4, 7 ) );
-    m_surfaces.push_back( build_surface( m_points, 6, 0, 7 ) );
-    m_surfaces.push_back( build_surface( m_points, 0, 6, 1 ) );
-    m_surfaces.push_back( build_surface( m_points, 2, 4, 3 ) );
-    m_surfaces.push_back( build_surface( m_points, 4, 2, 5 ) );
-    m_surfaces.push_back( build_surface( m_points, 4, 6, 7 ) );
-    m_surfaces.push_back( build_surface( m_points, 6, 4, 5 ) );
-    m_surfaces.push_back( build_surface( m_points, 2, 0, 1 ) );
-    m_surfaces.push_back( build_surface( m_points, 0, 2, 3 ) );
-
-    m_color = Color( 1.0, 1.0, 1.0, 1.0 );
-//	compute_point_normals();
-    if (include_edges) {
-        build_edges();
-    }
-}
-
-//////////////////////////////////////////////////////////////
 void Visible_model::compute_point_normals()
 {
     for( size_t i=0; i<m_points.size(); ++i ){
