@@ -6,6 +6,8 @@
 #include "Open_gl_commands.h"
 #include "Open_gl_primitive.h"
 
+#include <Vector_math.h>
+
 //////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Renderer {
@@ -31,7 +33,7 @@ void Simple_object_renderer::render( const std::shared_ptr<Visible_object>& obje
 
     unsigned int gl_handle = m_context_store->get_call_list( iter->second );
     Open_gl_matrix gl_matrix;
-    Open_gl_commands::translate( object->coordinate_space().position() - Math::Point() );
+    Open_gl_commands::translate( Math::to_vector(object->coordinate_space().position()) );
     float m[16];
     object->coordinate_space().get_matrix( m );
     Open_gl_commands::mult_matrix( m );
@@ -43,7 +45,7 @@ namespace {
 void render_model( Visible_model& model )
 {
     Open_gl_matrix LocalMatrix;
-    Open_gl_commands::translate( model.offset() - Math::Local_point() );
+    Open_gl_commands::translate( Math::to_vector(model.offset()) );
     const std::vector<Math::Local_point>& points( model.points() );
     Open_gl_commands::material( GL_AMBIENT, model.color() );
     Open_gl_commands::material( GL_DIFFUSE, model.color() );

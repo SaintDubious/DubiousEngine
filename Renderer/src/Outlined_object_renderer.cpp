@@ -7,6 +7,8 @@
 #include "Open_gl_attributes.h"
 #include "Visible_model.h"
 
+#include <Vector_math.h>
+
 //////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Renderer {
@@ -39,7 +41,7 @@ void Outlined_object_renderer::render( const std::shared_ptr<Visible_object>& ob
 
     // move the GL Context to the correct position and rotation
     Open_gl_matrix gl_matrix;
-    Open_gl_commands::translate( object->coordinate_space().position() - Math::Point() );
+    Open_gl_commands::translate( Math::to_vector(object->coordinate_space().position()) );
     float m[16];
     object->coordinate_space().get_matrix( m );
     Open_gl_commands::mult_matrix( m );
@@ -70,7 +72,7 @@ namespace {
 void render_model( Visible_model& model, bool outline_pass )
 {
     Open_gl_matrix local_matrix;
-    Open_gl_commands::translate( model.offset() - Math::Local_point() );
+    Open_gl_commands::translate( Math::to_vector(model.offset()) );
     const std::vector<Math::Local_point>& points( model.points() );
     if (!outline_pass) {
         Open_gl_commands::material( GL_AMBIENT, model.color() );

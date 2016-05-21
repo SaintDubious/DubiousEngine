@@ -154,6 +154,11 @@ public:
     /// @param edge - [in] edge length
     /// @returns a pointer to the file information
     static std::unique_ptr<const Ac3d_file> test_cube( float edge_length );
+
+    /// @brief Create a test model that has 3 cubes in a group
+    /// @param edge - [in] edge length
+    /// @returns a pointer to the file information
+    static std::unique_ptr<const Ac3d_file> test_cube_group( float edge_length );
 };
 
 }

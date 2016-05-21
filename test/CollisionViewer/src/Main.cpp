@@ -66,7 +66,7 @@ int main( int argc, char** argv )
             model_file = Utility::Ac3d_file_reader::read_file( Utility::File_path( argv[1] ) );
         }
         else {
-            model_file = Utility::Ac3d_file_reader::test_cube( 1.0f );
+            model_file = Utility::Ac3d_file_reader::test_cube_group( 0.5f );
         }
 
         sdl.create_root_window( "Collision Viewer", WIDTH, HEIGHT, false );

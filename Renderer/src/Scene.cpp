@@ -7,6 +7,8 @@
 #include "Shadow_renderer.h"
 #include "Visible_object.h"
 
+#include <Vector_math.h>
+
 //////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Renderer {
@@ -50,7 +52,7 @@ void Scene::render( Camera& camera )
     for (auto& object : m_objects) {
         std::shared_ptr<Shadow_renderer> renderer = object->shadow_renderer();
         if (renderer) {
-            renderer->render_shadow_volume( object, Math::Local_point()+object->coordinate_space().transform( m_scene_light.position-Math::Point() ) );
+            renderer->render_shadow_volume( object, Math::to_point(object->coordinate_space().transform( Math::to_vector(m_scene_light.position) )) );
         }
     }
     attribs.color_mask( true, true, true, true );

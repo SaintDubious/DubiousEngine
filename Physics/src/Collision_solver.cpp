@@ -194,8 +194,8 @@ bool model_intersection( const Physics_model& a, const Math::Coordinate_space& c
         return false;
     }
     Math::Vector direction( 1, 0, 0 );
-    Math::Vector simplex_point = (ca.transform(support( a, ca.transform(direction) ))    + (ca.position()-Math::Point())) - 
-                                 (cb.transform(support( b, cb.transform(direction*-1) )) + (cb.position()-Math::Point()));
+    Math::Vector simplex_point = (ca.transform(support( a, ca.transform(direction) ))    + (Math::to_vector(ca.position()))) - 
+                                 (cb.transform(support( b, cb.transform(direction*-1) )) + (Math::to_vector(cb.position())));
     std::vector<Math::Vector> simplex;
     simplex.push_back( simplex_point );
     direction = Math::Vector() - simplex_point;
@@ -204,8 +204,8 @@ bool model_intersection( const Physics_model& a, const Math::Coordinate_space& c
     // into situations where we keep selecting the same faces over and over. If we don't
     // converge on a solution in 20 steps then just give up
     for (int i=0; i<20; ++i) {
-        simplex_point = (ca.transform(support( a, ca.transform(direction) ))    + (ca.position()-Math::Point())) - 
-                        (cb.transform(support( b, cb.transform(direction*-1) )) + (cb.position()-Math::Point()));
+        simplex_point = (ca.transform(support( a, ca.transform(direction) ))    + (Math::to_vector(ca.position()))) - 
+                        (cb.transform(support( b, cb.transform(direction*-1) )) + (Math::to_vector(cb.position())));
         // If this next check is < 0 then touching will be considered
         // a collision. If it's <= 0 then thouching will not be a collision
         // .... I think. Not very well tested

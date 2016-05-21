@@ -4,6 +4,8 @@
 #include "Open_gl_matrix.h"
 #include "Open_gl_commands.h"
 
+#include <Vector_math.h>
+
 //////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Renderer {
@@ -15,8 +17,8 @@ void draw_shadow_volume( const Math::Local_point& shadow_end, const Math::Local_
     Math::Local_point position = sil.position + offset;
     for (const auto& edge : sil.edges) {
         Open_gl_primitive Prim( Open_gl_primitive::TRIANGLE_STRIP );
-        Math::Local_vector p1 = edge.first - Math::Local_point();
-        Math::Local_vector p2 = edge.second - Math::Local_point();
+        Math::Local_vector p1 = Math::to_vector(edge.first);
+        Math::Local_vector p2 = Math::to_vector(edge.second);
 
         Prim.vertex( position );
         Prim.vertex( position+p2 );
@@ -24,7 +26,7 @@ void draw_shadow_volume( const Math::Local_point& shadow_end, const Math::Local_
         Prim.vertex( shadow_end );
     }
     for (const auto& kid : sil.kids) {
-        draw_shadow_volume( shadow_end, position - Math::Local_point(), kid );
+        draw_shadow_volume( shadow_end, Math::to_vector(position), kid );
     }
 }
 }
@@ -41,16 +43,16 @@ void Shadow_renderer::render_shadow_volume( const std::shared_ptr<Visible_object
     object->coordinate_space().get_matrix( m );
     Open_gl_commands::mult_matrix( m );
 
-    Math::Local_vector light_vect = Math::Local_unit_vector(ligh_position - Math::Local_point());
+    Math::Local_vector light_vect = Math::Local_unit_vector(Math::to_vector(ligh_position));
     light_vect = light_vect * -100;
 
     Open_gl_commands::cull_face( GL_FRONT );
     Open_gl_attributes::stencil_op( GL_KEEP, GL_INCR, GL_KEEP );
-    draw_shadow_volume( Math::Local_point()+light_vect, Math::Local_vector(), sil );
+    draw_shadow_volume( Math::to_point(light_vect), Math::Local_vector(), sil );
 
     Open_gl_commands::cull_face( GL_BACK );
     Open_gl_attributes::stencil_op( GL_KEEP, GL_DECR, GL_KEEP );
-    draw_shadow_volume( Math::Local_point()+light_vect, Math::Local_vector(), sil );
+    draw_shadow_volume( Math::to_point(light_vect), Math::Local_vector(), sil );
 }
 
 }

@@ -1,7 +1,8 @@
 #include "Physics_object.h"
 #include "Physics_model.h"
-#include "Vector.h"
 
+#include <Vector.h>
+#include <Vector_math.h>
 //////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Physics {
@@ -19,7 +20,7 @@ void copy_model_to_vectors( const Physics_model& model, Math::Coordinate_space c
 {
     for (const auto& v : model.vectors()) {
         Math::Vector new_vect = coords.transform( v );
-        new_vect = new_vect + (coords.position() - Math::Point());
+        new_vect = new_vect + Math::to_vector(coords.position());
         vectors.push_back( new_vect );
     }
 }

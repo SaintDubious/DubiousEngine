@@ -225,13 +225,9 @@ Ac3d_model::Surface build_surface( int p0, int p1, int p2 )
     return new_surface;
 }
 
-}
-
-//////////////////////////////////////////////////////////////
-std::unique_ptr<const Ac3d_file> Ac3d_file_reader::test_cube( float edge_length )
+std::unique_ptr<Ac3d_model> build_cube( float edge_length )
 {
     std::unique_ptr<Ac3d_model> model = std::make_unique<Ac3d_model>();
-    
     // The code for this comes from looking at an AC3D file
     // for a cube.
     model->points().push_back( Math::Local_point( -edge_length, -edge_length, -edge_length ) );
@@ -255,6 +251,33 @@ std::unique_ptr<const Ac3d_file> Ac3d_file_reader::test_cube( float edge_length 
     model->surfaces().push_back( build_surface( 6, 4, 5 ) );
     model->surfaces().push_back( build_surface( 2, 0, 1 ) );
     model->surfaces().push_back( build_surface( 0, 2, 3 ) );                
+    return model;
+}
+
+}
+
+//////////////////////////////////////////////////////////////
+std::unique_ptr<const Ac3d_file> Ac3d_file_reader::test_cube( float edge_length )
+{
+    std::unique_ptr<Ac3d_model> model = build_cube( edge_length );
+    std::vector<Ac3d_material> materials;
+    materials.push_back( Ac3d_material::Color( 1.0f, 1.0f, 1.0f ) );
+
+    return std::make_unique<const Ac3d_file>( std::move(materials), std::move(model) );
+}
+
+std::unique_ptr<const Ac3d_file> Ac3d_file_reader::test_cube_group( float edge_length )
+{
+    std::unique_ptr<Ac3d_model> model = std::make_unique<Ac3d_model>();
+    std::unique_ptr<Ac3d_model> child = build_cube( edge_length );
+    child->offset() = Math::Local_point( 1.0f, 0, 0 );
+    model->push_kid( std::move(child) );
+    child = build_cube( edge_length );
+    child->offset() = Math::Local_point( 0, 1.0f, 0 );
+    model->push_kid( std::move(child) );
+    child = build_cube( edge_length );
+    child->offset() = Math::Local_point( 0, 0, 1.0f );
+    model->push_kid( std::move(child) );
 
     std::vector<Ac3d_material> materials;
     materials.push_back( Ac3d_material::Color( 1.0f, 1.0f, 1.0f ) );

@@ -2,6 +2,7 @@
 #include "Physics_object.h"
 
 #include <Vector.h>
+#include <Vector_math.h>
 #include <Point.h>
 
 #include <tuple>
@@ -37,7 +38,7 @@ Vector_tuple evaluate_rk4(const Vector_tuple &start, const Math::Vector& acceler
 // http://gafferongames.com/game-physics/integration-basics/
 Vector_tuple integrate_rk4( const Math::Point& position, const Math::Vector& velocity, const Math::Vector& acceleration, float elapsed )
 {
-	Vector_tuple state( position-Math::Point(), velocity );
+	Vector_tuple state( Math::to_vector(position), velocity );
 
 	Vector_tuple a = evaluate_rk4( state, acceleration, 0, std::make_tuple(Math::Vector(),Math::Vector()) );
 	Vector_tuple b = evaluate_rk4( state, acceleration, elapsed*0.5f, a );
@@ -72,7 +73,7 @@ void Integrator::update( std::list<std::shared_ptr<Physics_object>>& objects, fl
             Math::Vector new_position;
             Math::Vector new_velocity;
             std::tie(new_position, new_velocity) = integrate_linear( *object, m_step_size );
-            object->coordinate_space().position() = Math::Point() + new_position;
+            object->coordinate_space().position() = Math::to_point(new_position);
             object->velocity() = new_velocity;
         }
 
