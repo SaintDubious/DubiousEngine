@@ -5,8 +5,6 @@
 #include <Vector_math.h>
 #include <Point.h>
 
-#include <tuple>
-
 //////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Physics {
@@ -19,47 +17,69 @@ Integrator::Integrator( float step_size )
 
 namespace {
 
-typedef std::tuple<Math::Vector, Math::Vector> Vector_tuple;
+class Linear_state {
+public:
+    Linear_state( const Math::Vector& position, const Math::Vector& momentum, float mass )
+        : m_position( position )
+        , m_momentum( momentum )
+        , m_mass( mass )
+    {
+        m_velocity = m_momentum/m_mass;
+    }
+
+    const Math::Vector& position() const { return m_position; }
+    const Math::Vector& momentum() const { return m_momentum; }
+    const Math::Vector& velocity() const { return m_velocity; }
+    float               mass() const { return m_mass; }
+
+private:
+    Math::Vector    m_position;
+    Math::Vector    m_momentum;
+    Math::Vector    m_velocity;
+    float           m_mass;
+};
+
+struct Linear_derivative {
+    Math::Vector    m_velocity;
+    Math::Vector    m_force;
+};
 
 //////////////////////////////////////////////////////////////
-Vector_tuple evaluate_rk4(const Vector_tuple &start, const Math::Vector& acceleration, float dt, const Vector_tuple &derivative)
+Linear_derivative evaluate_linear(const Linear_state& initial, float dt, const Linear_derivative& derivative )
 {
-	Vector_tuple state;
-	std::get<0>(state) = std::get<0>(start) + std::get<0>(derivative) * dt;
-	std::get<1>(state) = std::get<1>(start) + std::get<1>(derivative) * dt;
+    Linear_state state(
+        initial.position() + derivative.m_velocity * dt,
+        initial.momentum() + derivative.m_force * dt,
+        initial.mass()
+    );
 
-	// Acceleration is constant over the time step because 
-	// the force has only been applied during the control phase.
-	return std::make_tuple( std::get<1>(state), acceleration );
+    Linear_derivative output;
+    output.m_velocity = state.velocity();
+    output.m_force    = derivative.m_force;
+
+    return output;
 }
 
 //////////////////////////////////////////////////////////////
-// Perfrom RK4 integration.  See:
-// http://gafferongames.com/game-physics/integration-basics/
-Vector_tuple integrate_rk4( const Math::Point& position, const Math::Vector& velocity, const Math::Vector& acceleration, float elapsed )
+void linear_rk4( Linear_state& state, Math::Vector& force, float dt )
 {
-	Vector_tuple state( Math::to_vector(position), velocity );
+    Linear_derivative a, b, c, d;
 
-	Vector_tuple a = evaluate_rk4( state, acceleration, 0, std::make_tuple(Math::Vector(),Math::Vector()) );
-	Vector_tuple b = evaluate_rk4( state, acceleration, elapsed*0.5f, a );
-	Vector_tuple c = evaluate_rk4( state, acceleration, elapsed*0.5f, b );
-	Vector_tuple d = evaluate_rk4( state, acceleration, elapsed, c );
+    Linear_derivative start_derivative;
+    start_derivative.m_force = force;
+    a = evaluate_linear( state, 0.0f, start_derivative );
+    b = evaluate_linear( state, dt*0.5f, a );
+    c = evaluate_linear( state, dt*0.5f, b );
+    d = evaluate_linear( state, dt, c );
 
-	Math::Vector dx_dt = (std::get<0>(a) + (std::get<0>(b) + std::get<0>(c))*2.0f + std::get<0>(d)) * (1.0f/6.0f);
-	Math::Vector dv_dt = (std::get<1>(a) + (std::get<1>(b) + std::get<1>(c))*2.0f + std::get<1>(d)) * (1.0f/6.0f);
+    Math::Vector dxdt = (a.m_velocity + (b.m_velocity + c.m_velocity)*2.0f + d.m_velocity) * 1.0f / 6.0f;
+    Math::Vector dpdt = (a.m_force +    (b.m_force +    c.m_force)*2.0f +    d.m_force) * 1.0f / 6.0f;
 
-	std::get<0>(state) = std::get<0>(state) + (dx_dt * elapsed);
-	std::get<1>(state) = std::get<1>(state) + (dv_dt * elapsed);
-
-	return state;
-}
-
-//////////////////////////////////////////////////////////////
-Vector_tuple integrate_linear( const Physics_object& physics_object, float elapsed )
-{
-	return integrate_rk4( physics_object.coordinate_space().position(), 
-                         physics_object.velocity(), 
-                         physics_object.force() * (1.0f/physics_object.mass()), elapsed );
+    state = Linear_state( 
+        state.position() + dxdt*dt,
+        state.momentum() + dpdt*dt,
+        state.mass()
+    );
 }
 
 }
@@ -70,17 +90,22 @@ void Integrator::update( std::list<std::shared_ptr<Physics_object>>& objects, fl
     m_elapsed += elapsed;
     while (m_elapsed > m_step_size) {
         for (auto& object : objects) {
-            Math::Vector new_position;
-            Math::Vector new_velocity;
-            std::tie(new_position, new_velocity) = integrate_linear( *object, m_step_size );
-            object->coordinate_space().position() = Math::to_point(new_position);
-            object->velocity() = new_velocity;
+            integrate_linear( *object, m_step_size );
         }
 
         m_elapsed -= m_step_size;
     }
 }
 
-
+//////////////////////////////////////////////////////////////
+void Integrator::integrate_linear( Physics_object& physics_object, float dt ) const
+{
+    Linear_state state( Math::to_vector(physics_object.coordinate_space().position()),
+                        physics_object.velocity()*physics_object.mass(),
+                        physics_object.mass() );
+	linear_rk4( state, physics_object.force(), dt );
+    physics_object.coordinate_space().position() = Math::to_point(state.position());
+    physics_object.velocity() = state.velocity();
+}
 
 }}

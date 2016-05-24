@@ -35,13 +35,14 @@ public:
     const Math::Coordinate_space& coordinate_space() const { return m_coordinate_space; }
 
     float               mass() const { return m_mass; }
-    Math::Vector        velocity() const { return m_velocity; }
-    Math::Vector        force() const { return m_force; }
+    const Math::Vector& velocity() const { return m_velocity; }
+    Math::Vector&       velocity() { return m_velocity; }
+    const Math::Vector& force() const { return m_force; }
+    Math::Vector&       force() { return m_force; }
 
     const std::vector<Math::Vector>& cached_collision_vectors() const { return m_cached_collision_vectors; }
 
 private:
-
     std::shared_ptr<Physics_model> m_model;
     Math::Coordinate_space m_coordinate_space;
     mutable Math::Coordinate_space m_cached_coordinate_space;
