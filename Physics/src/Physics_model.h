@@ -34,6 +34,7 @@ public:
 
     Physics_model& operator=( const Physics_model& ) = delete;
 
+    float               radius() const { return m_radius; }
     const std::vector<Math::Local_vector>& vectors() const { return m_vectors; }
     const std::vector<std::unique_ptr<Physics_model>>& kids() const { return m_kids; }
 
@@ -41,7 +42,7 @@ private:
     Physics_model() = default;
     void                construct( const Math::Local_vector& offset, const Utility::Ac3d_model& AC3DModel );
 
-
+    float               m_radius = 0;
     std::vector<Math::Local_vector> m_vectors;
     std::vector<std::unique_ptr<Physics_model>> m_kids;
 

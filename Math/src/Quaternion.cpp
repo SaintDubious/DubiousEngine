@@ -56,17 +56,31 @@ QuaternionT<T> QuaternionT<T>::conjugate() const
 template <int T>
 void QuaternionT<T>::normalize()
 {
-    float magnitude = sqrt( m_real*m_real + 
-                            m_imaginary.m_x*m_imaginary.m_x +
-                            m_imaginary.m_y*m_imaginary.m_y +
-                            m_imaginary.m_z*m_imaginary.m_z );
-    if (equals(magnitude, 0)) {
+    float mag = magnitude();
+    if (equals(mag, 0)) {
         throw std::runtime_error( "Quaternion has 0 magnitude" );
     }
-    m_real = m_real/magnitude;
-    m_imaginary = Triple( m_imaginary.m_x/magnitude, 
-                          m_imaginary.m_y/magnitude, 
-                          m_imaginary.m_z/magnitude );
+    m_real = m_real/mag;
+    m_imaginary = Triple( m_imaginary.m_x/mag, 
+                          m_imaginary.m_y/mag, 
+                          m_imaginary.m_z/mag );
+}
+
+//////////////////////////////////////////////////////////////
+template <int T>
+float QuaternionT<T>::magnitude() const
+{
+    return sqrt(magnitude_squared());
+}
+
+//////////////////////////////////////////////////////////////
+template <int T>
+float QuaternionT<T>::magnitude_squared() const
+{
+    return m_real*m_real + 
+           m_imaginary.m_x*m_imaginary.m_x +
+           m_imaginary.m_y*m_imaginary.m_y +
+           m_imaginary.m_z*m_imaginary.m_z;
 }
 
 template class QuaternionT<0>;

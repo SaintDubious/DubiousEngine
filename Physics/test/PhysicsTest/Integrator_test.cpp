@@ -33,5 +33,20 @@ public:
         Assert::IsTrue( object.velocity() == Vector( 1.0f, 0, 0 ) );
         Assert::IsTrue( object.coordinate_space().position() == Point( 0.5f, 0, 0 ) );
     }
+
+	TEST_METHOD(integrator_angular)
+	{
+        std::unique_ptr<const Ac3d_file> model_file = Ac3d_file_reader::test_cube( 1.0f );
+        std::shared_ptr<Physics_model> model = std::make_shared<Physics_model>( *model_file );
+        Physics_object object( model, 1.0f );
+
+        Integrator integrator( 0.5f );
+        integrator.integrate_angular( object, 0.5 );
+        Assert::IsTrue( object.angular_velocity() == Vector() );
+
+        object.torque() = Vector( 1, 0, 0 );
+        integrator.integrate_angular( object, 0.5 );
+        Assert::IsTrue( object.angular_velocity() == Vector( 0.416666687f, 0, 0 ) );
+    }
 };
 }

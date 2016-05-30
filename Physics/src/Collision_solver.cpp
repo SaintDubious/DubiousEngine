@@ -11,21 +11,6 @@ namespace Dubious {
 namespace Physics {
 
 //////////////////////////////////////////////////////////////
-Math::Vector support( const Physics_object& object, const Math::Vector& direction )
-{
-    Math::Vector result;
-    float max_dot = std::numeric_limits<float>::lowest();
-    for (const auto& v : object.cached_collision_vectors()) {
-        float dot = Math::dot_product( v, direction );
-        if (dot > max_dot) {
-            max_dot = dot;
-            result = v;
-        }
-    }
-    return result;
-}
-
-//////////////////////////////////////////////////////////////
 Math::Local_vector support( const Physics_model& model, const Math::Local_vector& direction )
 {
     Math::Local_vector result;
@@ -257,33 +242,7 @@ bool intersection_recurse_a( const Physics_model& a, const Math::Coordinate_spac
 //////////////////////////////////////////////////////////////
 bool Collision_solver::intersection( const Physics_object& a, const Physics_object& b )
 {
-
-
     return intersection_recurse_a( *a.model(), a.coordinate_space(), *b.model(), b.coordinate_space() );
-    
-/*
-    a.cache_collision_vectors();
-    b.cache_collision_vectors();
-
-    Math::Vector direction( 1, 0, 0 );
-    Math::Vector simplex_point = support( a, direction ) - support( b, direction*-1 );
-    std::vector<Math::Vector> simplex;
-    simplex.push_back( simplex_point );
-    direction = Math::Vector() - simplex_point;
-    while (true) {
-        simplex_point = support( a, direction ) - support( b, direction*-1 );
-        // If this next check is < 0 then touching will be considered
-        // a collision. If it's <= 0 then thouching will not be a collision
-        // .... I think. Not very well tested
-        if (Math::dot_product( simplex_point, direction ) <= 0) {
-            return false;
-        }
-        simplex.push_back( simplex_point );
-        if (Nearestsimplex( simplex, direction )) {
-            return true;
-        }
-    }
-    */
 }
 
 }}

@@ -24,6 +24,7 @@ private:
     friend class Physics_test::Integrator_test;
 
     void                integrate_linear( Physics_object& physics_object, float dt ) const;
+    void                integrate_angular( Physics_object& physics_object, float dt ) const;
 
     float               m_step_size;
     float               m_elapsed = 0.0f;

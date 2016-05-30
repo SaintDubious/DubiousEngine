@@ -2,6 +2,7 @@
 #define INCLUDED_MATH_QUATERNION
 
 #include "Triple.h"
+#include "Vector.h"
 
 namespace Math_test { class Quaternion_test; }
 namespace Physics_test { class Collision_solver_test; }
@@ -39,7 +40,10 @@ namespace Matrix_index
 template <int T> class QuaternionT;
 template <int T> bool operator==( const QuaternionT<T>& a, const QuaternionT<T>& b );
 template <int T> bool operator!=( const QuaternionT<T>& a, const QuaternionT<T>& b );
+template <int T> QuaternionT<T> operator+( const QuaternionT<T>& a, const QuaternionT<T>& b );
 template <int T> QuaternionT<T> operator*( const QuaternionT<T>& a, const QuaternionT<T>& b );
+template <int T> QuaternionT<T> operator*( const VectorT<T>& a, const QuaternionT<T>& b );
+template <int T> QuaternionT<T> operator*( const QuaternionT<T>& a, float b );
 template <int T> std::ostream& operator<<(std::ostream& o, const QuaternionT<T>& q);
 
 /// @brief Unit Quaternion
@@ -51,6 +55,13 @@ template <int T> std::ostream& operator<<(std::ostream& o, const QuaternionT<T>&
 /// http://www.cprogramming.com/tutorial/3d/quaternions.html
 /// http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/slerp/
 /// http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToAngle/index.htm
+///
+/// I'm not sure exactly when to make sure it's a Unit Quaternion and when it can
+/// be just a regular one. Operations like scalar multiply will result in a
+/// non-Unit Quaternion. I gather from docs that only a Unit Quaternion represents
+/// a rotation. The Physics Integrator has steps where non-Unit Quaternions emerge
+/// and are used to create rotations. Maybe they have to then be normalized in the
+/// end? Maybe this class should have a plain and unit version like my Vectors?
 template <int T>
 class QuaternionT {
 public:
@@ -88,21 +99,41 @@ public:
     /// @param matrix - [out] Will be filled with the rotation matrix
     void                get_matrix( float matrix[16] ) const;
 
+    /// @brief Normalize the Quaternion
+    ///
+    /// As per the class comment, I'm not entirely sure when this needs
+    /// to be Unit and when it can be a plain Quaternion. This method
+    /// will make it a Unit Quaternion
+    void                normalize();
+
+    /// @brief Quaternion magnitude (like length)
+    ///
+    /// @returns magnitude
+    float               magnitude() const;
+
+    /// @brief Quaternion magnitude squared
+    ///
+    /// Same as with the Vecrot.length_squared. Sometimes you want
+    /// a comparable magnitude without the cost of a sqrt
+    /// @returns magnitude squared
+    float               magnitude_squared() const;
+
 private:
     friend class Math_test::Quaternion_test;
     friend class Physics_test::Collision_solver_test;
     friend class Coordinate_space;
     friend bool operator== <>( const QuaternionT<T>& a, const QuaternionT<T>& b );
     friend bool operator!= <>( const QuaternionT<T>& a, const QuaternionT<T>& b );
+    friend QuaternionT<T> operator+ <>( const QuaternionT<T>& a, const QuaternionT<T>& b );
     friend QuaternionT<T> operator* <>( const QuaternionT<T>& a, const QuaternionT<T>& b );
+    friend QuaternionT<T> operator* <>( const VectorT<T>& a, const QuaternionT<T>& b );
+    friend QuaternionT<T> operator* <>( const QuaternionT<T>& a, float b );
     friend std::ostream& operator<< <>(std::ostream& o, const QuaternionT<T>& q);
 
     QuaternionT( float real, const Triple& imaginary )
         : m_real( real )
         , m_imaginary( imaginary )
     {}
-
-    void                normalize();
 
     float               m_real = 1.0f;
     Triple              m_imaginary;
@@ -126,6 +157,18 @@ bool operator!=( const QuaternionT<T>& a, const QuaternionT<T>& b )
 
 //////////////////////////////////////////////////////////////
 template <int T> 
+QuaternionT<T> operator+( const QuaternionT<T>& a, const QuaternionT<T>& b )
+{
+    QuaternionT<T> result;
+
+    result.m_real       = a.m_real+b.m_real;
+    result.m_imaginary  = a.m_imaginary+b.m_imaginary;
+
+    return result;
+}
+
+//////////////////////////////////////////////////////////////
+template <int T> 
 QuaternionT<T> operator*( const QuaternionT<T>& a, const QuaternionT<T>& b )
 {
     QuaternionT<T> result;
@@ -134,9 +177,27 @@ QuaternionT<T> operator*( const QuaternionT<T>& a, const QuaternionT<T>& b )
     result.m_imaginary.m_x = a.m_real*b.m_imaginary.m_x + a.m_imaginary.m_x*b.m_real          + a.m_imaginary.m_y*b.m_imaginary.m_z - a.m_imaginary.m_z*b.m_imaginary.m_y;
     result.m_imaginary.m_y = a.m_real*b.m_imaginary.m_y - a.m_imaginary.m_x*b.m_imaginary.m_z + a.m_imaginary.m_y*b.m_real          + a.m_imaginary.m_z*b.m_imaginary.m_x;
     result.m_imaginary.m_z = a.m_real*b.m_imaginary.m_z + a.m_imaginary.m_x*b.m_imaginary.m_y - a.m_imaginary.m_y*b.m_imaginary.m_x + a.m_imaginary.m_z*b.m_real;
-    // I'm not sure if we need to normalize or not after a multiplication.
-    // Holding the code handy just in case
- //   result.normalize();
+
+    return result;
+}
+
+//////////////////////////////////////////////////////////////
+template <int T> 
+QuaternionT<T> operator*( const VectorT<T>& a, const QuaternionT<T>& b )
+{ 
+    return Quaternion( 0, Triple( a.x(), a.y(), a.z() ) ) * b;
+}
+
+//////////////////////////////////////////////////////////////
+template <int T> 
+QuaternionT<T> operator*( const QuaternionT<T>& a, float b )
+{
+    QuaternionT<T> result;
+
+    result.m_real           = a.m_real * b;
+    result.m_imaginary.m_x  = a.m_imaginary.m_x * b;
+    result.m_imaginary.m_y  = a.m_imaginary.m_y * b;
+    result.m_imaginary.m_z  = a.m_imaginary.m_z * b;
 
     return result;
 }
@@ -145,7 +206,7 @@ QuaternionT<T> operator*( const QuaternionT<T>& a, const QuaternionT<T>& b )
 template <int T> 
 std::ostream& operator<<(std::ostream& o, const QuaternionT<T>& q)
 {
-    o << "(" << q.m_real << ", " << q.m_imaginary << "))";
+    o << "(" << q.m_real << ", " << q.m_imaginary << ")";
     return o;
 }
 

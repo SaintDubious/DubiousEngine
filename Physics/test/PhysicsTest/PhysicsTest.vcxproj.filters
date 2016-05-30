@@ -6,5 +6,6 @@
   <ItemGroup>
     <ClCompile Include="Collision_solver_test.cpp" />
     <ClCompile Include="Integrator_test.cpp" />
+    <ClCompile Include="Physics_model_test.cpp" />
   </ItemGroup>
 </Project>

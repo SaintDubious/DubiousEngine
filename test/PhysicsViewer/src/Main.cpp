@@ -127,16 +127,19 @@ void on_idle()
 {
     integrator.update( physics_objects, frame_timer.restart()/1000.0f );
     // run physics and copy results to visible object
-    Math::Point new_position = physics_objects.front()->coordinate_space().position();
+    Math::Point new_position         = physics_objects.front()->coordinate_space().position();
+    Math::Quaternion new_orientation = physics_objects.front()->coordinate_space().rotation();
     if (new_position.y() < 0.0f) {
         new_position = Math::Point( new_position.x(), 0.0f, new_position.z() );
         physics_objects.front()->coordinate_space().position() = new_position;
         physics_objects.front()->velocity() = Math::Vector();
     }
     visible_objects.front()->coordinate_space().position() = new_position;
+    visible_objects.front()->coordinate_space().rotation() = new_orientation;
 
     // reset forces to default
-    physics_objects.front()->force() = Math::Vector( 0, -9.8f, 0 );
+    physics_objects.front()->force()  = Math::Vector( 0, -9.8f, 0 );
+    physics_objects.front()->torque() = Math::Vector();
 
     scene->render( *camera );
     SDL_Delay( 10 );
@@ -210,6 +213,14 @@ void on_key_down( SDL_Keycode key, unsigned short mod )
     {
     case SDLK_q:
         sdl.stop();
+        break;
+    case SDLK_a:
+        physics_objects.front()->torque() = Math::Vector( 1, 0, 0 );
+        break;
+    case SDLK_s:
+        physics_objects.front()->torque() = Math::Vector( static_cast<float>(rand())/RAND_MAX, 
+                                                          static_cast<float>(rand())/RAND_MAX, 
+                                                          static_cast<float>(rand())/RAND_MAX );
         break;
     }
 }

@@ -12,6 +12,10 @@ Physics_object::Physics_object( const std::shared_ptr<Physics_model>& model, flo
     : m_model( model )
     , m_mass( mass )
 {
+    // This is a cheat. We just use moment of inertia of a sphere
+    // 2/5 * m * r * r
+    // https://en.wikipedia.org/wiki/List_of_moments_of_inertia
+    m_moment_of_inertia = (2.0f/5.0f) * m_mass * m_model->radius() * m_model->radius();
 }
 
 //////////////////////////////////////////////////////////////
@@ -24,17 +28,6 @@ void copy_model_to_vectors( const Physics_model& model, Math::Coordinate_space c
         vectors.push_back( new_vect );
     }
 }
-}
-
-//////////////////////////////////////////////////////////////
-void Physics_object::cache_collision_vectors() const
-{
-    if (m_coordinate_space == m_cached_coordinate_space && !m_cached_collision_vectors.empty()) {
-        return;
-    }
-    m_cached_collision_vectors.clear();
-    copy_model_to_vectors( *m_model, m_coordinate_space, m_cached_collision_vectors );
-    m_cached_coordinate_space = m_coordinate_space;
 }
 
 }}

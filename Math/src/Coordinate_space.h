@@ -44,6 +44,10 @@ public:
     const Point&        position() const { return m_position; }
     Point&              position() { return m_position; }
 
+    /// @brief Rotation accessor
+    const Quaternion&   rotation() const { return m_rotation; }
+    Quaternion&         rotation() { return m_rotation; }
+
     /// @brief Move by the amount specified
     ///
     /// This version takes a global vector, therefore it moves

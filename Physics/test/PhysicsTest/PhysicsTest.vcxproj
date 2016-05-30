@@ -163,6 +163,7 @@
   <ItemGroup>
     <ClCompile Include="Collision_solver_test.cpp" />
     <ClCompile Include="Integrator_test.cpp" />
+    <ClCompile Include="Physics_model_test.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
