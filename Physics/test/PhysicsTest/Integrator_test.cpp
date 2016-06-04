@@ -47,6 +47,11 @@ public:
         object.torque() = Vector( 1, 0, 0 );
         integrator.integrate_angular( object, 0.5 );
         Assert::IsTrue( object.angular_velocity() == Vector( 0.416666687f, 0, 0 ) );
+
+        object.angular_velocity() = Vector();
+        object.coordinate_space().rotation() = Quaternion( Unit_vector( 0, 1, 0 ), to_radians( 90 ) );
+        integrator.integrate_angular( object, 0.5 );
+        Assert::IsTrue( object.angular_velocity() == Vector( 0.416666687f, 0, 0 ) );
     }
 };
 }
