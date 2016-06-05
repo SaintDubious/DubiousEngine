@@ -57,7 +57,8 @@ private:
 // of 2 to 4 points, representing a line, triangle, or tetrahedron.
 // I made it a separate class mostly so that it can be used in the 
 // constructor of the Polytope created in the EPA step which follows
-// after a collision is found.
+// after a collision is found. In order to be used to construct the
+// polytope, it must exist GJK as a tetrahedron. 
 class Simplex {
 public:
     //////////////////////////////////////////////////////////////
@@ -90,6 +91,8 @@ public:
 private:
 
     //////////////////////////////////////////////////////////////
+    // Due to the tests that created this line segment, the origin
+    // must be somewhere between A and B, so this is pretty trivial
     bool nearest_2( Math::Vector& direction )
     {
         const Math::Vector& a = m_v[1].v();
@@ -99,11 +102,6 @@ private:
         const Math::Vector& ab = b - a;
         const Math::Vector& ao = origin - a;
         direction = Math::cross_product( Math::cross_product( ab, ao ), ab );
-        if (direction == Math::Vector()) {
-            // If the cross product is (0,0,0) then the origin lies on this
-            // line. No need to go any further.
-            return true;
-        }
         return false;
     }
 
@@ -147,13 +145,7 @@ private:
         // The point lies inside the triangle
         // Now the question is if it's above or below
         float side_check = Math::dot_product( ab_x_ac, ao );
-        if (Math::equals( side_check, 0 )) {
-            // If the side check finds that the point lies 
-            // within this triangle then there's no need
-            // to continue
-            return true;
-        }
-        else if ( side_check > 0) {
+        if ( side_check > 0) {
             // This direction is above the triangle (ie on the same side
             // as the triangle normal). We keep everything the same and
             // use the direction as the triangle normal
@@ -243,19 +235,27 @@ bool model_intersection( const Physics_model& a, const Math::Coordinate_space& c
     // In a perfect world this would be an infinite loop. However in reality, we can get 
     // into situations where we keep selecting the same faces over and over. If we don't
     // converge on a solution in 20 steps then just give up
-    for (int i=0; i<20; ++i) {
+    int i=0;
+    for (i=0; i<20; ++i) {
         global_point  = ca.transform(support( a, ca.transform(direction) ))    + (Math::to_vector(ca.position()));
         simplex_point = global_point - (cb.transform(support( b, cb.transform(direction*-1) )) + (Math::to_vector(cb.position())));
         // If this next check is < 0 then touching will be considered
-        // a collision. If it's <= 0 then touching will not be a collision
-        // .... I think. Not very well tested
-        if (Math::dot_product( simplex_point, direction ) <= 0) {
+        // a collision. If it's <= 0 then touching will not be a collision.
+        // For EPA to work, our GJK must exit with a tetrahedron. Therefore
+        // if a contact point is directly on a line or triangle simplex (ie
+        // a touching collision) that must be considered a collision in order
+        // to keep building up to the tetrahedron. So this needs to be < 0
+        if (Math::dot_product( simplex_point, direction ) < 0) {
             return false;
         }
         simplex.push_back( Vector_pair( simplex_point, global_point ) );
         if (simplex.nearest( direction )) {
             return true;
         }
+    }
+    // for debugging
+    if (i>=20) {
+        int debug = 5;
     }
     return false;
 }

@@ -201,6 +201,20 @@ void on_mouse_wheel( int y )
 }
 
 //////////////////////////////////////////////////////////////
+void run_test()
+{
+    std::cout << "Object 1: " << physics_object_1->coordinate_space() << "\n"
+                << "Object 2: " << physics_object_2->coordinate_space() << "\n";
+    bool Intersection = solver.intersection( *physics_object_1, *physics_object_2 );
+    if (Intersection) {
+        std::cout << "Objects intersect\n";
+    }
+    else {
+        std::cout << "Objects do not intersect\n";
+    }
+}
+
+//////////////////////////////////////////////////////////////
 void on_key_down( SDL_Keycode key, unsigned short mod )
 {
     switch( key )
@@ -219,17 +233,7 @@ void on_key_down( SDL_Keycode key, unsigned short mod )
         std::cout << "Object 2 Selected\n";
         break;
     case SDLK_t:
-        {
-            std::cout << "Object 1: " << physics_object_1->coordinate_space() << "\n"
-                      << "Object 2: " << physics_object_2->coordinate_space() << "\n";
-            bool Intersection = solver.intersection( *physics_object_1, *physics_object_2 );
-            if (Intersection) {
-                std::cout << "Objects intersect\n";
-            }
-            else {
-                std::cout << "Objects do not intersect\n";
-            }
-        }
+        run_test();
         break;
     case SDLK_p:
         {
@@ -261,6 +265,7 @@ void on_key_down( SDL_Keycode key, unsigned short mod )
             Math::Vector D( 0, 0, -0.1f );
             selected_visible_object->coordinate_space().translate( D );
             selected_physics_object->coordinate_space().translate( D );
+            run_test();
         }
         break;
     case SDLK_a:
@@ -268,6 +273,7 @@ void on_key_down( SDL_Keycode key, unsigned short mod )
             Math::Vector D( -0.1f, 0, 0 );
             selected_visible_object->coordinate_space().translate( D );
             selected_physics_object->coordinate_space().translate( D );
+            run_test();
         }
         break;
     case SDLK_s:
@@ -275,6 +281,7 @@ void on_key_down( SDL_Keycode key, unsigned short mod )
             Math::Vector D( 0, 0, 0.1f );
             selected_visible_object->coordinate_space().translate( D );
             selected_physics_object->coordinate_space().translate( D );
+            run_test();
         }
         break;
     case SDLK_d:
@@ -282,6 +289,7 @@ void on_key_down( SDL_Keycode key, unsigned short mod )
             Math::Vector D( 0.1f, 0, 0 );
             selected_visible_object->coordinate_space().translate( D );
             selected_physics_object->coordinate_space().translate( D );
+            run_test();
         }
         break;
     case SDLK_z:
@@ -289,6 +297,7 @@ void on_key_down( SDL_Keycode key, unsigned short mod )
             Math::Vector D( 0, 0.1f, 0 );
             selected_visible_object->coordinate_space().translate( D );
             selected_physics_object->coordinate_space().translate( D );
+            run_test();
         }
         break;
     case SDLK_x:
@@ -296,6 +305,7 @@ void on_key_down( SDL_Keycode key, unsigned short mod )
             Math::Vector D( 0, -0.1f, 0 );
             selected_visible_object->coordinate_space().translate( D );
             selected_physics_object->coordinate_space().translate( D );
+            run_test();
         }
         break;
     case SDLK_r:
@@ -307,6 +317,7 @@ void on_key_down( SDL_Keycode key, unsigned short mod )
                                               Math::to_radians(360.0f*static_cast<float>(rand())/static_cast<float>(RAND_MAX)) );
             selected_visible_object->coordinate_space().rotate( Q );
             selected_physics_object->coordinate_space().rotate( Q );
+            run_test();
         }
         break;
     }
