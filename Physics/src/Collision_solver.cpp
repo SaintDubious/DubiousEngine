@@ -5,6 +5,7 @@
 #include <Vector_math.h>
 
 #include <vector>
+#include <list>
 
 //////////////////////////////////////////////////////////////
 namespace Dubious {
@@ -88,6 +89,9 @@ public:
         }
     }
 
+    //////////////////////////////////////////////////////////////
+    const std::vector<Vector_pair>& v() const { return m_v; }
+
 private:
 
     //////////////////////////////////////////////////////////////
@@ -102,6 +106,17 @@ private:
         const Math::Vector& ab = b - a;
         const Math::Vector& ao = origin - a;
         direction = Math::cross_product( Math::cross_product( ab, ao ), ab );
+        if (direction == Math::Vector()) {
+            // The point is actually on the line. In this case the direction 
+            // will be an empty vector, which doesn't make any sense. Select any
+            // vector perpendicular to the line
+            if (Math::equals( fabs(ao.y()), 0 ) && Math::equals( fabs(ao.x()), 0 )) {
+                direction = Math::Vector( 0, 1, 0 );
+            }
+            else {
+                direction = Math::Vector( ao.y(), -ao.x(), 0 );
+            } 
+        }
         return false;
     }
 
@@ -221,7 +236,8 @@ private:
 // collision point and normal.
 // Children of models a and b are tested in other functions
 bool model_intersection( const Physics_model& a, const Math::Coordinate_space& ca, 
-                         const Physics_model& b, const Math::Coordinate_space& cb )
+                         const Physics_model& b, const Math::Coordinate_space& cb,
+                         Simplex& simplex )
 {
     if (a.vectors().empty() || b.vectors().empty()) {
         return false;
@@ -229,7 +245,14 @@ bool model_intersection( const Physics_model& a, const Math::Coordinate_space& c
     Math::Vector direction( 1, 0, 0 );
     Math::Vector global_point  = ca.transform(support( a, ca.transform(direction) ))    + (Math::to_vector(ca.position()));
     Math::Vector simplex_point = global_point - (cb.transform(support( b, cb.transform(direction*-1) )) + (Math::to_vector(cb.position())));
-    Simplex simplex( Vector_pair( simplex_point, global_point ) );
+    if (simplex_point == Math::Vector()) {
+        // an empty simplex_point will result in an invalid direction, so try
+        // another one.
+        direction = Math::Vector( 0, 1, 0 );
+        global_point  = ca.transform(support( a, ca.transform(direction) ))    + (Math::to_vector(ca.position()));
+        simplex_point = global_point - (cb.transform(support( b, cb.transform(direction*-1) )) + (Math::to_vector(cb.position())));
+    }
+    simplex = Simplex( Vector_pair( simplex_point, global_point ) );
     direction = simplex_point * -1;
     
     // In a perfect world this would be an infinite loop. However in reality, we can get 
@@ -261,11 +284,57 @@ bool model_intersection( const Physics_model& a, const Math::Coordinate_space& c
 }
 
 //////////////////////////////////////////////////////////////
+class Polytope {
+public:
+    Polytope( const Simplex& simplex )
+    {
+        if (simplex.v().size() != 4) {
+            throw std::runtime_error( "Attempting to create polytope from simplex that is not tetrahedron" );
+        }
+        const Vector_pair& a = simplex.v()[3];
+        const Vector_pair& b = simplex.v()[2];
+        const Vector_pair& c = simplex.v()[1];
+        const Vector_pair& d = simplex.v()[0];
+        m_triangles.push_back( Triangle( a, b, c ) );
+        m_triangles.push_back( Triangle( a, c, d ) );
+        m_triangles.push_back( Triangle( a, d, b ) );
+        m_triangles.push_back( Triangle( b, d, c ) );
+    }
+
+private:
+
+    //////////////////////////////////////////////////////////////
+    struct Triangle {
+        Triangle( const Vector_pair& p1, const Vector_pair& p2, const Vector_pair& p3 )
+            : a( p1 )
+            , b( p2 )
+            , c( p3 ) 
+        {
+            normal = Math::cross_product( b.v()-a.v(), c.v()-a.v() );
+        }
+
+        Vector_pair     a;
+        Vector_pair     b;
+        Vector_pair     c;
+        Math::Unit_vector normal;
+    };
+
+    //////////////////////////////////////////////////////////////
+    struct Edge {
+    };
+
+    std::list<Triangle> m_triangles;
+};
+
+//////////////////////////////////////////////////////////////
 bool intersection_recurse_b( const Physics_model& a, const Math::Coordinate_space& ca, 
                              const Physics_model& b, const Math::Coordinate_space& cb )
 {
     bool ret_val = false;
-    if (model_intersection( a, ca, b, cb )) {
+    Math::Vector tmp;
+    Simplex simplex( Vector_pair(tmp,tmp) );
+    if (model_intersection( a, ca, b, cb, simplex )) {
+        Polytope polytope( simplex );
         ret_val = true;
     }
     for (const auto& kid : b.kids()) {
