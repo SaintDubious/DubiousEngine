@@ -244,16 +244,16 @@ bool model_intersection( const Physics_model& a, const Math::Coordinate_space& c
     }
     Math::Vector direction( 1, 0, 0 );
     Math::Vector global_point  = ca.transform(support( a, ca.transform(direction) ))    + (Math::to_vector(ca.position()));
-    Math::Vector simplex_point = global_point - (cb.transform(support( b, cb.transform(direction*-1) )) + (Math::to_vector(cb.position())));
-    if (simplex_point == Math::Vector()) {
+    Math::Vector support_point = global_point - (cb.transform(support( b, cb.transform(direction*-1) )) + (Math::to_vector(cb.position())));
+    if (support_point == Math::Vector()) {
         // an empty simplex_point will result in an invalid direction, so try
         // another one.
         direction = Math::Vector( 0, 1, 0 );
         global_point  = ca.transform(support( a, ca.transform(direction) ))    + (Math::to_vector(ca.position()));
-        simplex_point = global_point - (cb.transform(support( b, cb.transform(direction*-1) )) + (Math::to_vector(cb.position())));
+        support_point = global_point - (cb.transform(support( b, cb.transform(direction*-1) )) + (Math::to_vector(cb.position())));
     }
-    simplex = Simplex( Vector_pair( simplex_point, global_point ) );
-    direction = simplex_point * -1;
+    simplex = Simplex( Vector_pair( support_point, global_point ) );
+    direction = support_point * -1;
     
     // In a perfect world this would be an infinite loop. However in reality, we can get 
     // into situations where we keep selecting the same faces over and over. If we don't
@@ -261,17 +261,17 @@ bool model_intersection( const Physics_model& a, const Math::Coordinate_space& c
     int i=0;
     for (i=0; i<20; ++i) {
         global_point  = ca.transform(support( a, ca.transform(direction) ))    + (Math::to_vector(ca.position()));
-        simplex_point = global_point - (cb.transform(support( b, cb.transform(direction*-1) )) + (Math::to_vector(cb.position())));
+        support_point = global_point - (cb.transform(support( b, cb.transform(direction*-1) )) + (Math::to_vector(cb.position())));
         // If this next check is < 0 then touching will be considered
         // a collision. If it's <= 0 then touching will not be a collision.
         // For EPA to work, our GJK must exit with a tetrahedron. Therefore
         // if a contact point is directly on a line or triangle simplex (ie
         // a touching collision) that must be considered a collision in order
         // to keep building up to the tetrahedron. So this needs to be < 0
-        if (Math::dot_product( simplex_point, direction ) < 0) {
+        if (Math::dot_product( support_point, direction ) < 0) {
             return false;
         }
-        simplex.push_back( Vector_pair( simplex_point, global_point ) );
+        simplex.push_back( Vector_pair( support_point, global_point ) );
         if (simplex.nearest( direction )) {
             return true;
         }
@@ -301,8 +301,6 @@ public:
         m_triangles.push_back( Triangle( b, d, c ) );
     }
 
-private:
-
     //////////////////////////////////////////////////////////////
     struct Triangle {
         Triangle( const Vector_pair& p1, const Vector_pair& p2, const Vector_pair& p3 )
@@ -320,11 +318,90 @@ private:
     };
 
     //////////////////////////////////////////////////////////////
+    Triangle find_closest_triangle( float& distance )
+    {
+        distance = std::numeric_limits<float>::max();
+        Triangle ret = m_triangles.front();
+        for (const auto& t : m_triangles) {
+            float dot = Math::dot_product( t.a.v(), Math::Vector(t.normal) );
+            if ( dot < distance) {
+                ret = t;
+                distance = dot;
+            }
+        }
+        return ret;
+    }
+
+    //////////////////////////////////////////////////////////////
+    void push_back( Vector_pair&& v )
+    {
+        m_edges.clear();
+        for (auto iter=m_triangles.cbegin(), end=m_triangles.cend(); iter!=end; ) {
+            if (Math::dot_product( Math::Vector(iter->normal), v.v()-iter->a.v() ) > 0) {
+                // This triangle can be "seen" from the new point, it needs to
+                // be removed.
+                push_edge( Edge( iter->a, iter->b ) );
+                push_edge( Edge( iter->b, iter->c ) );
+                push_edge( Edge( iter->c, iter->a ) );
+                iter = m_triangles.erase( iter );
+            }
+            else {
+                ++iter;
+            }
+        } 
+        for (const auto& e : m_edges) {
+            m_triangles.push_back( Triangle( v, e.a, e.b ) );
+        }               
+    }
+
+private:
+
+
+    //////////////////////////////////////////////////////////////
     struct Edge {
+        Edge( const Vector_pair& p1, const Vector_pair& p2 )
+            : a( p1 )
+            , b( p2 )
+        {}
+        Vector_pair a;
+        Vector_pair b;
     };
 
+    //////////////////////////////////////////////////////////////
+    void push_edge( const Edge& edge )
+    {
+        for (auto iter=m_edges.cbegin(), end=m_edges.cend(); iter!=end; ++iter) {
+            if (iter->a.v() == edge.b.v() && iter->b.v() == edge.a.v()) {
+                m_edges.erase( iter );
+                return;
+            }
+        }
+        m_edges.push_back( edge );
+    }
+
     std::list<Triangle> m_triangles;
+    std::list<Edge> m_edges;
 };
+
+//////////////////////////////////////////////////////////////
+// Perform EPA to find the point of collision
+void find_collision_point( const Physics_model& a, const Math::Coordinate_space& ca, 
+                           const Physics_model& b, const Math::Coordinate_space& cb,
+                           const Simplex& simplex )
+{
+    Polytope polytope( simplex );
+    while (true) {
+        float min_distance;
+        const Polytope::Triangle& triangle = polytope.find_closest_triangle( min_distance );
+        Math::Vector direction( triangle.normal );
+        Math::Vector global_point  = ca.transform(support( a, ca.transform(direction) ))    + (Math::to_vector(ca.position()));
+        Math::Vector support_point = global_point - (cb.transform(support( b, cb.transform(direction*-1) )) + (Math::to_vector(cb.position())));
+        if (Math::dot_product(support_point,Math::Vector(triangle.normal)) <= min_distance+0.0001f) {
+            return;
+        }
+        polytope.push_back( Vector_pair( support_point, global_point ) );
+    }
+}
 
 //////////////////////////////////////////////////////////////
 bool intersection_recurse_b( const Physics_model& a, const Math::Coordinate_space& ca, 
@@ -334,7 +411,7 @@ bool intersection_recurse_b( const Physics_model& a, const Math::Coordinate_spac
     Math::Vector tmp;
     Simplex simplex( Vector_pair(tmp,tmp) );
     if (model_intersection( a, ca, b, cb, simplex )) {
-        Polytope polytope( simplex );
+        find_collision_point( a, ca, b, cb, simplex );
         ret_val = true;
     }
     for (const auto& kid : b.kids()) {
