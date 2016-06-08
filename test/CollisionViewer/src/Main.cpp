@@ -11,6 +11,9 @@
 #include <Outlined_object_renderer.h>
 #include <Shadow_renderer.h>
 #include <Open_gl_context_store.h>
+#include <Open_gl_commands.h>
+#include <Open_gl_attributes.h>
+#include <Open_gl_primitive.h>
 #include <Vector_math.h>
 #include <Timer.h>
 #include <Collision_solver.h>
@@ -46,6 +49,7 @@ std::unique_ptr<Renderer::Camera>   camera;
 Utility::Sdl_manager::Mouse_point   left_down_point;
 bool					            left_button_down;
 std::shared_ptr<Renderer::Simple_object_renderer> simple_renderer;
+std::vector<Physics::Collision_solver::Contact> contact_manifold;
 
 Physics::Collision_solver           solver;
 std::shared_ptr<Renderer::Visible_object>  visible_object_1;
@@ -66,7 +70,7 @@ int main( int argc, char** argv )
             model_file = Utility::Ac3d_file_reader::read_file( Utility::File_path( argv[1] ) );
         }
         else {
-            model_file = Utility::Ac3d_file_reader::test_cube_group( 0.5f );
+            model_file = Utility::Ac3d_file_reader::test_cube( 0.5f );
         }
 
         sdl.create_root_window( "Collision Viewer", WIDTH, HEIGHT, false );
@@ -141,6 +145,33 @@ void on_idle()
 //    pObject->coordinate_space().rotate( Q );
     scene->render( *camera );
 
+    // Draw the contact info on top
+    Renderer::Open_gl_attributes attribs( Renderer::Open_gl_attributes::ENABLE_BIT | Renderer::Open_gl_attributes::HINT_BIT | Renderer::Open_gl_attributes::POLYGON_BIT, false );
+    Renderer::Open_gl_commands::line_width( 2 );
+    Renderer::Open_gl_commands::polygon_mode( GL_BACK, GL_LINE );
+    Renderer::Open_gl_commands::cull_face( GL_FRONT );
+    attribs.depth_func( GL_ALWAYS );
+
+    glColor3f( 1.0f, 0, 0 );
+    glPointSize( 5.0f );
+
+    for (const auto& c : contact_manifold) {
+        {
+            Renderer::Open_gl_primitive prim( Renderer::Open_gl_primitive::POINTS );
+            prim.vertex( c.contact_point );
+        }
+        Renderer::Open_gl_primitive prim( Renderer::Open_gl_primitive::LINES );
+        prim.vertex( c.contact_point );
+        prim.vertex( c.contact_point + c.normal );
+
+    }
+
+    // reset some of the quirky settings
+    // failure to do this results in weirdness
+    Renderer::Open_gl_commands::polygon_mode( GL_BACK, GL_FILL );
+    
+
+
     // no reason to push the CPU to 100%
     SDL_Delay( 10 );
 }
@@ -205,9 +236,11 @@ void run_test()
 {
     std::cout << "Object 1: " << physics_object_1->coordinate_space() << "\n"
                 << "Object 2: " << physics_object_2->coordinate_space() << "\n";
-    bool Intersection = solver.intersection( *physics_object_1, *physics_object_2 );
+    contact_manifold.clear();
+    bool Intersection = solver.intersection( *physics_object_1, *physics_object_2, contact_manifold );
     if (Intersection) {
-        std::cout << "Objects intersect\n";
+        std::cout << "Objects intersect\n"
+                  << " " << contact_manifold.front().contact_point << "\n";
     }
     else {
         std::cout << "Objects do not intersect\n";
@@ -247,7 +280,8 @@ void on_key_down( SDL_Keycode key, unsigned short mod )
                 Math::Quaternion Q( Math::Vector( 0, 1, 0 ), 0.1f ); 
                 physics_object_1->coordinate_space().rotate( Q );
                 physics_object_2->coordinate_space().rotate( Q );
-                if (solver.intersection( *physics_object_1, *physics_object_2 )) {
+                contact_manifold.clear();
+                if (solver.intersection( *physics_object_1, *physics_object_2, contact_manifold )) {
                     ++collisions;
                 }
                 else {

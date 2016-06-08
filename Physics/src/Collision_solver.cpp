@@ -6,6 +6,7 @@
 
 #include <vector>
 #include <list>
+#include <tuple>
 
 //////////////////////////////////////////////////////////////
 namespace Dubious {
@@ -42,7 +43,7 @@ class Vector_pair {
 public:
     Vector_pair( const Math::Vector& v, const Math::Vector& global_v )
         : m_v( v )
-        , m_global_v( v )
+        , m_global_v( global_v )
     {}
 
     const Math::Vector& v() const { return m_v; }
@@ -384,10 +385,30 @@ private:
 };
 
 //////////////////////////////////////////////////////////////
+// Taken from http://hacktank.net/blog/?p=119 , which was apparently
+// taken from Crister Erickson's Real-Time Collision Detection
+std::tuple<float,float,float> barycentric(const Math::Vector &p, const Math::Vector &a, const Math::Vector &b, const Math::Vector &c ) 
+{
+     Math::Vector v0 = b - a;
+     Math::Vector v1 = c - a;
+     Math::Vector v2 = p - a;
+     float d00 = Math::dot_product( v0, v0 );
+     float d01 = Math::dot_product( v0, v1 );
+     float d11 = Math::dot_product( v1, v1 );
+     float d20 = Math::dot_product( v2, v0 );
+     float d21 = Math::dot_product( v2, v1 );
+     float denom = d00 * d11 - d01 * d01;
+     float v = (d11 * d20 - d01 * d21) / denom;
+     float w = (d00 * d21 - d01 * d20) / denom;
+     float u = 1.0f - v - w;
+     return std::make_tuple( u, v, w );
+}
+
+//////////////////////////////////////////////////////////////
 // Perform EPA to find the point of collision
 void find_collision_point( const Physics_model& a, const Math::Coordinate_space& ca, 
                            const Physics_model& b, const Math::Coordinate_space& cb,
-                           const Simplex& simplex )
+                           const Simplex& simplex, Collision_solver::Contact& contact )
 {
     Polytope polytope( simplex );
     while (true) {
@@ -397,6 +418,15 @@ void find_collision_point( const Physics_model& a, const Math::Coordinate_space&
         Math::Vector global_point  = ca.transform(support( a, ca.transform(direction) ))    + (Math::to_vector(ca.position()));
         Math::Vector support_point = global_point - (cb.transform(support( b, cb.transform(direction*-1) )) + (Math::to_vector(cb.position())));
         if (Math::dot_product(support_point,Math::Vector(triangle.normal)) <= min_distance+0.0001f) {
+            contact.penetration_depth = min_distance;
+            Math::Vector contact_point = Math::Vector( triangle.normal ) * min_distance;
+            float u, v, w;
+            std::tie(u,v,w) = barycentric( contact_point, triangle.a.v(), triangle.b.v(), triangle.c.v() );
+            contact_point = triangle.a.global_v() * u +
+                            triangle.b.global_v() * v +
+                            triangle.c.global_v() * w;
+            contact.normal = triangle.normal;
+            contact.contact_point = Math::to_point( contact_point );
             return;
         }
         polytope.push_back( Vector_pair( support_point, global_point ) );
@@ -405,17 +435,20 @@ void find_collision_point( const Physics_model& a, const Math::Coordinate_space&
 
 //////////////////////////////////////////////////////////////
 bool intersection_recurse_b( const Physics_model& a, const Math::Coordinate_space& ca, 
-                             const Physics_model& b, const Math::Coordinate_space& cb )
+                             const Physics_model& b, const Math::Coordinate_space& cb, 
+                             std::vector<Collision_solver::Contact>& contact_manifold )
 {
     bool ret_val = false;
     Math::Vector tmp;
     Simplex simplex( Vector_pair(tmp,tmp) );
     if (model_intersection( a, ca, b, cb, simplex )) {
-        find_collision_point( a, ca, b, cb, simplex );
+        Collision_solver::Contact contact;
+        find_collision_point( a, ca, b, cb, simplex, contact );
+        contact_manifold.push_back( contact );
         ret_val = true;
     }
     for (const auto& kid : b.kids()) {
-        if (intersection_recurse_b( a, ca, *kid, cb )) {
+        if (intersection_recurse_b( a, ca, *kid, cb, contact_manifold )) {
             ret_val = true;
         }
     }
@@ -425,14 +458,15 @@ bool intersection_recurse_b( const Physics_model& a, const Math::Coordinate_spac
 
 //////////////////////////////////////////////////////////////
 bool intersection_recurse_a( const Physics_model& a, const Math::Coordinate_space& ca, 
-                             const Physics_model& b, const Math::Coordinate_space& cb )
+                             const Physics_model& b, const Math::Coordinate_space& cb,
+                             std::vector<Collision_solver::Contact>& contact_manifold )
 {
     bool ret_val = false;
-    if (intersection_recurse_b( a, ca, b, cb )) {
+    if (intersection_recurse_b( a, ca, b, cb, contact_manifold )) {
         ret_val = true;
     }
     for (const auto& kid : a.kids()) {
-        if (intersection_recurse_a( *kid, ca, b, cb )) {
+        if (intersection_recurse_a( *kid, ca, b, cb, contact_manifold )) {
             ret_val = true;
         }
     }
@@ -443,9 +477,9 @@ bool intersection_recurse_a( const Physics_model& a, const Math::Coordinate_spac
 }
 
 //////////////////////////////////////////////////////////////
-bool Collision_solver::intersection( const Physics_object& a, const Physics_object& b )
+bool Collision_solver::intersection( const Physics_object& a, const Physics_object& b, std::vector<Contact>& contact_manifold )
 {
-    return intersection_recurse_a( *a.model(), a.coordinate_space(), *b.model(), b.coordinate_space() );
+    return intersection_recurse_a( *a.model(), a.coordinate_space(), *b.model(), b.coordinate_space(), contact_manifold );
 }
 
 }}

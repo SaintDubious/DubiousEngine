@@ -1,6 +1,11 @@
 #ifndef INCLUDED_PHYSICS_COLLISIONSOLVER
 #define INCLUDED_PHYSICS_COLLISIONSOLVER
 
+#include <Vector.h>
+#include <Point.h>
+
+#include <vector>
+
 //////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Physics {
@@ -26,6 +31,12 @@ public:
 
     Collision_solver& operator=( const Collision_solver& ) = delete;
 
+    struct Contact {
+        Math::Point     contact_point;
+        Math::Unit_vector normal;
+        float           penetration_depth;
+    };
+
     /// @brief find the intersection of 2 objects
     ///
     /// This is the main entry point to the collision solver.
@@ -34,7 +45,7 @@ public:
     /// @param a - [in] the first object
     /// @param b - [in] the second object
     /// @returns true if they collide
-    bool                intersection( const Physics_object& a, const Physics_object& b );
+    bool                intersection( const Physics_object& a, const Physics_object& b, std::vector<Contact>& contact_manifold );
 
 };
 
