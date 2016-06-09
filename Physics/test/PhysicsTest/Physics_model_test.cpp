@@ -16,7 +16,7 @@ public:
 		
 	TEST_METHOD(radius_test)
 	{
-        std::unique_ptr<const Ac3d_file> model_file = Ac3d_file_reader::test_cube( 1.0f ); 
+        std::unique_ptr<const Ac3d_file> model_file = Ac3d_file_reader::test_cube( 1.0f, 1.0f, 1.0f ); 
 
         std::shared_ptr<Physics_model> model = std::make_shared<Physics_model>( *model_file );
         Assert::IsTrue( equals( model->radius(), sqrt(3.0f) ) );

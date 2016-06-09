@@ -17,7 +17,7 @@ public:
 		
 	TEST_METHOD(visible_model_construction)
 	{
-        std::unique_ptr<const Ac3d_file> model_file = Ac3d_file_reader::test_cube( 1.0f ); 
+        std::unique_ptr<const Ac3d_file> model_file = Ac3d_file_reader::test_cube( 1.0f, 1.0f, 1.0f ); 
         Visible_model m1( *model_file, false );
         Assert::IsTrue( m1.m_points.size() == 8 );
         Assert::IsTrue( m1.m_surfaces.size() == 12 );

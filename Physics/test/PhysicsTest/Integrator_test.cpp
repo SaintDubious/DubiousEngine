@@ -17,7 +17,7 @@ public:
 		
 	TEST_METHOD(integrator_linear)
 	{
-        std::unique_ptr<const Ac3d_file> model_file = Ac3d_file_reader::test_cube( 1.0f );
+        std::unique_ptr<const Ac3d_file> model_file = Ac3d_file_reader::test_cube( 1.0f, 1.0f, 1.0f );
         std::shared_ptr<Physics_model> model = std::make_shared<Physics_model>( *model_file );
         Physics_object object( model, 1.0f );
 
@@ -36,7 +36,7 @@ public:
 
 	TEST_METHOD(integrator_angular)
 	{
-        std::unique_ptr<const Ac3d_file> model_file = Ac3d_file_reader::test_cube( 1.0f );
+        std::unique_ptr<const Ac3d_file> model_file = Ac3d_file_reader::test_cube( 1.0f, 1.0f, 1.0f );
         std::shared_ptr<Physics_model> model = std::make_shared<Physics_model>( *model_file );
         Physics_object object( model, 1.0f );
 

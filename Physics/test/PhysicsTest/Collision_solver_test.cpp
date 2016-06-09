@@ -21,7 +21,7 @@ public:
 	{
         Collision_solver solver;
         std::vector<Collision_solver::Contact> contact_manifold;
-        std::unique_ptr<const Ac3d_file> model_file = Ac3d_file_reader::test_cube( 1.0f ); 
+        std::unique_ptr<const Ac3d_file> model_file = Ac3d_file_reader::test_cube( 1.0f, 1.0f, 1.0f ); 
 
         std::shared_ptr<Physics_model> model = std::make_shared<Physics_model>( *model_file );
         Physics_object a( model, 1 );

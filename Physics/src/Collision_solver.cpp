@@ -352,7 +352,7 @@ public:
         } 
         for (const auto& e : m_edges) {
             m_triangles.push_back( Triangle( v, e.a, e.b ) );
-        }               
+        }
     }
 
 private:

@@ -64,7 +64,7 @@ int main( int argc, char** argv )
             model_file = Utility::Ac3d_file_reader::read_file( Utility::File_path( argv[1] ) );
         }
         else {
-            model_file = Utility::Ac3d_file_reader::test_cube( 0.5f );
+            model_file = Utility::Ac3d_file_reader::test_cube( 0.5f, 0.5f, 0.5f );
         }
 
         sdl.create_root_window( "Physics Viewer", WIDTH, HEIGHT, false );
