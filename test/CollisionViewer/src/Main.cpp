@@ -71,7 +71,7 @@ int main( int argc, char** argv )
             model_file = Utility::Ac3d_file_reader::read_file( Utility::File_path( argv[1] ) );
         }
         else {
-            model_file = Utility::Ac3d_file_reader::test_cube( 5.0f, 0.5f, 5.0f );
+            model_file = Utility::Ac3d_file_reader::test_cube( 0.5f, 0.5f, 0.5f );
         }
 
         sdl.create_root_window( "Collision Viewer", WIDTH, HEIGHT, false );
@@ -159,11 +159,12 @@ void on_idle()
     for (const auto& c : contact_manifold) {
         {
             Renderer::Open_gl_primitive prim( Renderer::Open_gl_primitive::POINTS );
-            prim.vertex( c.contact_point );
+            prim.vertex( c.contact_point_a );
+            prim.vertex( c.contact_point_b );
         }
         Renderer::Open_gl_primitive prim( Renderer::Open_gl_primitive::LINES );
-        prim.vertex( c.contact_point );
-        prim.vertex( c.contact_point + Math::Vector(c.normal)*c.penetration_depth );
+        prim.vertex( c.contact_point_a );
+        prim.vertex( c.contact_point_a + Math::Vector(c.normal)*c.penetration_depth );
 
     }
 
@@ -241,7 +242,7 @@ void run_test()
     bool Intersection = solver.intersection( *physics_object_1, *physics_object_2, contact_manifold );
     if (Intersection) {
         std::cout << "Objects intersect\n"
-                  << " " << contact_manifold.front().contact_point << "\n";
+                  << " " << contact_manifold.front().contact_point_a << "\n";
     }
     else {
         std::cout << "Objects do not intersect\n";

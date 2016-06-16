@@ -32,7 +32,8 @@ public:
     Collision_solver& operator=( const Collision_solver& ) = delete;
 
     struct Contact {
-        Math::Point     contact_point;
+        Math::Point     contact_point_a;
+        Math::Point     contact_point_b;
         Math::Unit_vector normal;
         float           penetration_depth;
     };

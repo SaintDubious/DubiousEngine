@@ -31,27 +31,27 @@ Math::Local_vector support( const Physics_model& model, const Math::Local_vector
 
 //////////////////////////////////////////////////////////////
 // In the EPA algorithm we need to keep track of the "Minkowski Point"
-// ie the point on the Minkowski Polytope, as well as the point in 
-// global space that corresponds to this point. It doesn't matter 
-// whether the global point corresponds to object A or B (as long 
-// as they correspond to ONLY object A or B) as it is used to find a 
-// contact point, which by definition, is the same for both of them.
+// ie the point on the Minkowski Polytope, as well as the support points 
+// in global space that corresponds to this point. 
 // The bulk of GJK and EPA will only use the v() accessor, but once
-// the contact point is found (on the Minkowski polytope), the global_v 
-// will be needed to find that point in global space
-class Vector_pair {
+// the contact point is found (on the Minkowski polytope), the support  
+// points will be needed to find that point in global space
+class Minkowski_vector {
 public:
-    Vector_pair( const Math::Vector& v, const Math::Vector& global_v )
+    Minkowski_vector( const Math::Vector& v, const Math::Vector& support_a, const Math::Vector& support_b )
         : m_v( v )
-        , m_global_v( global_v )
+        , m_support_a( support_a )
+        , m_support_b( support_b )
     {}
 
     const Math::Vector& v() const { return m_v; }
-    const Math::Vector& global_v() const { return m_global_v; }
+    const Math::Vector& support_a() const { return m_support_a; }
+    const Math::Vector& support_b() const { return m_support_b; }
 
 private:
     Math::Vector m_v;
-    Math::Vector m_global_v;
+    Math::Vector m_support_a;
+    Math::Vector m_support_b;
 };
 
 //////////////////////////////////////////////////////////////
@@ -64,13 +64,13 @@ private:
 class Simplex {
 public:
     //////////////////////////////////////////////////////////////
-    Simplex( Vector_pair&& start )
+    Simplex( Minkowski_vector&& start )
         : m_v { start }
     {
     }
 
     //////////////////////////////////////////////////////////////
-    void push_back( Vector_pair&& v )
+    void push_back( Minkowski_vector&& v )
     {
         m_v.push_back( v );
     }
@@ -91,7 +91,7 @@ public:
     }
 
     //////////////////////////////////////////////////////////////
-    const std::vector<Vector_pair>& v() const { return m_v; }
+    const std::vector<Minkowski_vector>& v() const { return m_v; }
 
 private:
 
@@ -226,7 +226,7 @@ private:
         return true;
     }
 
-    std::vector<Vector_pair> m_v;
+    std::vector<Minkowski_vector> m_v;
 };
 
 //////////////////////////////////////////////////////////////
@@ -244,16 +244,18 @@ bool model_intersection( const Physics_model& a, const Math::Coordinate_space& c
         return false;
     }
     Math::Vector direction( 1, 0, 0 );
-    Math::Vector global_point  = ca.transform(support( a, ca.transform(direction) ))    + (Math::to_vector(ca.position()));
-    Math::Vector support_point = global_point - (cb.transform(support( b, cb.transform(direction*-1) )) + (Math::to_vector(cb.position())));
+    Math::Vector support_a  = ca.transform(support( a, ca.transform(direction) ))    + (Math::to_vector(ca.position()));
+    Math::Vector support_b  = cb.transform(support( b, cb.transform(direction*-1) )) + (Math::to_vector(cb.position()));
+    Math::Vector support_point = support_a - support_b;
     if (support_point == Math::Vector()) {
         // an empty simplex_point will result in an invalid direction, so try
         // another one.
         direction = Math::Vector( 0, 1, 0 );
-        global_point  = ca.transform(support( a, ca.transform(direction) ))    + (Math::to_vector(ca.position()));
-        support_point = global_point - (cb.transform(support( b, cb.transform(direction*-1) )) + (Math::to_vector(cb.position())));
+        support_a  = ca.transform(support( a, ca.transform(direction) ))    + (Math::to_vector(ca.position()));
+        support_b  = cb.transform(support( b, cb.transform(direction*-1) )) + (Math::to_vector(cb.position()));
+        support_point = support_a - support_b;
     }
-    simplex = Simplex( Vector_pair( support_point, global_point ) );
+    simplex = Simplex( Minkowski_vector( support_point, support_a, support_b ) );
     direction = support_point * -1;
     
     // In a perfect world this would be an infinite loop. However in reality, we can get 
@@ -261,8 +263,9 @@ bool model_intersection( const Physics_model& a, const Math::Coordinate_space& c
     // converge on a solution in 20 steps then just give up
     int i=0;
     for (i=0; i<20; ++i) {
-        global_point  = ca.transform(support( a, ca.transform(direction) ))    + (Math::to_vector(ca.position()));
-        support_point = global_point - (cb.transform(support( b, cb.transform(direction*-1) )) + (Math::to_vector(cb.position())));
+        support_a  = ca.transform(support( a, ca.transform(direction) ))    + (Math::to_vector(ca.position()));
+        support_b  = cb.transform(support( b, cb.transform(direction*-1) )) + (Math::to_vector(cb.position()));
+        support_point = support_a - support_b;
         // If this next check is < 0 then touching will be considered
         // a collision. If it's <= 0 then touching will not be a collision.
         // For EPA to work, our GJK must exit with a tetrahedron. Therefore
@@ -272,7 +275,7 @@ bool model_intersection( const Physics_model& a, const Math::Coordinate_space& c
         if (Math::dot_product( support_point, direction ) < 0) {
             return false;
         }
-        simplex.push_back( Vector_pair( support_point, global_point ) );
+        simplex.push_back( Minkowski_vector( support_point, support_a, support_b ) );
         if (simplex.nearest( direction )) {
             return true;
         }
@@ -292,10 +295,10 @@ public:
         if (simplex.v().size() != 4) {
             throw std::runtime_error( "Attempting to create polytope from simplex that is not tetrahedron" );
         }
-        const Vector_pair& a = simplex.v()[3];
-        const Vector_pair& b = simplex.v()[2];
-        const Vector_pair& c = simplex.v()[1];
-        const Vector_pair& d = simplex.v()[0];
+        const Minkowski_vector& a = simplex.v()[3];
+        const Minkowski_vector& b = simplex.v()[2];
+        const Minkowski_vector& c = simplex.v()[1];
+        const Minkowski_vector& d = simplex.v()[0];
         m_triangles.push_back( Triangle( a, b, c ) );
         m_triangles.push_back( Triangle( a, c, d ) );
         m_triangles.push_back( Triangle( a, d, b ) );
@@ -304,7 +307,7 @@ public:
 
     //////////////////////////////////////////////////////////////
     struct Triangle {
-        Triangle( const Vector_pair& p1, const Vector_pair& p2, const Vector_pair& p3 )
+        Triangle( const Minkowski_vector& p1, const Minkowski_vector& p2, const Minkowski_vector& p3 )
             : a( p1 )
             , b( p2 )
             , c( p3 ) 
@@ -312,9 +315,9 @@ public:
             normal = Math::cross_product( b.v()-a.v(), c.v()-a.v() );
         }
 
-        Vector_pair     a;
-        Vector_pair     b;
-        Vector_pair     c;
+        Minkowski_vector  a;
+        Minkowski_vector  b;
+        Minkowski_vector  c;
         Math::Unit_vector normal;
     };
 
@@ -334,7 +337,7 @@ public:
     }
 
     //////////////////////////////////////////////////////////////
-    void push_back( Vector_pair&& v )
+    void push_back( Minkowski_vector&& v )
     {
         m_edges.clear();
         for (auto iter=m_triangles.cbegin(), end=m_triangles.cend(); iter!=end; ) {
@@ -360,12 +363,12 @@ private:
 
     //////////////////////////////////////////////////////////////
     struct Edge {
-        Edge( const Vector_pair& p1, const Vector_pair& p2 )
+        Edge( const Minkowski_vector& p1, const Minkowski_vector& p2 )
             : a( p1 )
             , b( p2 )
         {}
-        Vector_pair a;
-        Vector_pair b;
+        Minkowski_vector a;
+        Minkowski_vector b;
     };
 
     //////////////////////////////////////////////////////////////
@@ -415,21 +418,26 @@ void find_collision_point( const Physics_model& a, const Math::Coordinate_space&
         float min_distance;
         const Polytope::Triangle& triangle = polytope.find_closest_triangle( min_distance );
         Math::Vector direction( triangle.normal );
-        Math::Vector global_point  = ca.transform(support( a, ca.transform(direction) ))    + (Math::to_vector(ca.position()));
-        Math::Vector support_point = global_point - (cb.transform(support( b, cb.transform(direction*-1) )) + (Math::to_vector(cb.position())));
+        Math::Vector support_a  = ca.transform(support( a, ca.transform(direction) ))    + (Math::to_vector(ca.position()));
+        Math::Vector support_b  = cb.transform(support( b, cb.transform(direction*-1) )) + (Math::to_vector(cb.position()));
+        Math::Vector support_point = support_a - support_b;
         if (Math::dot_product(support_point,Math::Vector(triangle.normal)) <= min_distance+0.0001f) {
+            contact.normal = triangle.normal;
             contact.penetration_depth = min_distance;
             Math::Vector contact_point = Math::Vector( triangle.normal ) * min_distance;
             float u, v, w;
             std::tie(u,v,w) = barycentric( contact_point, triangle.a.v(), triangle.b.v(), triangle.c.v() );
-            contact_point = triangle.a.global_v() * u +
-                            triangle.b.global_v() * v +
-                            triangle.c.global_v() * w;
-            contact.normal = triangle.normal;
-            contact.contact_point = Math::to_point( contact_point );
+            contact_point = triangle.a.support_a() * u +
+                            triangle.b.support_a() * v +
+                            triangle.c.support_a() * w;
+            contact.contact_point_a = Math::to_point( contact_point );
+            contact_point = triangle.a.support_b() * u +
+                            triangle.b.support_b() * v +
+                            triangle.c.support_b() * w;
+            contact.contact_point_b = Math::to_point( contact_point );
             return;
         }
-        polytope.push_back( Vector_pair( support_point, global_point ) );
+        polytope.push_back( Minkowski_vector( support_point, support_a, support_b ) );
     }
 }
 
@@ -440,7 +448,7 @@ bool intersection_recurse_b( const Physics_model& a, const Math::Coordinate_spac
 {
     bool ret_val = false;
     Math::Vector tmp;
-    Simplex simplex( Vector_pair(tmp,tmp) );
+    Simplex simplex( Minkowski_vector(tmp,tmp,tmp) );
     if (model_intersection( a, ca, b, cb, simplex )) {
         Collision_solver::Contact contact;
         find_collision_point( a, ca, b, cb, simplex, contact );
