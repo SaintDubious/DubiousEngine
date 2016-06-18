@@ -28,9 +28,12 @@ public:
     Collision_solver() = default;
 
     Collision_solver( const Collision_solver& ) = delete;
-
     Collision_solver& operator=( const Collision_solver& ) = delete;
 
+    /// @brief Contact information
+    ///
+    /// The result of a collision will be a vector of these, the contact
+    /// manifold. Contains information relevant to the contact
     struct Contact {
         Math::Point     contact_point_a;
         Math::Point     contact_point_b;

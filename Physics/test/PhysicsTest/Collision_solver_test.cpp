@@ -53,5 +53,19 @@ public:
         Assert::IsTrue( solver.intersection( a, b, contact_manifold ) == false );
     }
 
+	TEST_METHOD(collision_solver_touching_contacts)
+	{
+        Collision_solver solver;
+        std::vector<Collision_solver::Contact> contact_manifold;
+        std::unique_ptr<const Ac3d_file> model_file = Ac3d_file_reader::test_cube( 5.0f, 0.5f, 5.0f ); 
+
+        std::shared_ptr<Physics_model> model = std::make_shared<Physics_model>( *model_file );
+        Physics_object a( model, 1 );
+        Physics_object b( model, 1 );
+
+        a.coordinate_space() = Coordinate_space( Point(0, 0, -0.1f), Quaternion(1, Triple()) );
+        b.coordinate_space() = Coordinate_space( Point(3, 0, 0),    Quaternion(1, Triple()) );
+        Assert::IsTrue( solver.intersection( a, b, contact_manifold ) == true );
+    }
 };
 }
