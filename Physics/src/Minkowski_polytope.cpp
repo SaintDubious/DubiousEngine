@@ -23,22 +23,6 @@ Minkowski_polytope::Minkowski_polytope( const Minkowski_simplex& simplex )
 }
 
 //////////////////////////////////////////////////////////////
-struct Triangle {
-    Triangle( const Minkowski_vector& p1, const Minkowski_vector& p2, const Minkowski_vector& p3 )
-        : a( p1 )
-        , b( p2 )
-        , c( p3 ) 
-    {
-        normal = Math::cross_product( b.v()-a.v(), c.v()-a.v() );
-    }
-
-    Minkowski_vector  a;
-    Minkowski_vector  b;
-    Minkowski_vector  c;
-    Math::Unit_vector normal;
-};
-
-//////////////////////////////////////////////////////////////
 std::tuple<Minkowski_polytope::Triangle,float> Minkowski_polytope::find_closest_triangle()
 {
     float distance = std::numeric_limits<float>::max();
@@ -58,7 +42,9 @@ void Minkowski_polytope::push_back( Minkowski_vector&& v )
 {
     m_edges.clear();
     for (auto iter=m_triangles.cbegin(), end=m_triangles.cend(); iter!=end; ) {
-        if (Math::dot_product( Math::Vector(iter->normal), v.v()-iter->a.v() ) > 0) {
+        // I've seen cases of touching objects where this dot product comes out
+        // to something times 10 to -7. So we can't compare against 0
+        if (Math::dot_product( Math::Vector(iter->normal), v.v()-iter->a.v() ) > 0.00001) {
             // This triangle can be "seen" from the new point, it needs to
             // be removed.
             push_edge( Edge( iter->a, iter->b ) );
