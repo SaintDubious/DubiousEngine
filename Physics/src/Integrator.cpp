@@ -93,12 +93,8 @@ public:
         , m_moment_of_inertia( moment_of_inertia )
     {
         m_velocity = m_momentum * (1.0f / moment_of_inertia );
-        // This comes directly from:
-        // http://gafferongames.com/game-physics/physics-in-3d/
-        // It doesn't seem like it should be right to me. It looks more like it's
-        // converting the velocity into object coords, which is not what I want.
-        // However for now I am just going to plug it in to see how it performs.
-        // Maybe it's just Quaternion magic.
+        // derivative of orientation quaternion is angular
+        // velocity expressed as quaternion
         m_q_velocity = m_velocity * m_orientation * 0.5;
     }
 

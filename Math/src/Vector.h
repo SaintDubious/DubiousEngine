@@ -14,6 +14,7 @@ template <int T> bool operator!=( const VectorT<T>& a, const VectorT<T>& b );
 template <int T> VectorT<T> operator+( const VectorT<T>& a, const VectorT<T>& b );
 template <int T> VectorT<T> operator-( const VectorT<T>& a, const VectorT<T>& b );
 template <int T> VectorT<T> operator*( const VectorT<T>& a, float b );
+template <int T> VectorT<T> operator*( float a, const VectorT<T>& b );
 template <int T> VectorT<T> operator/( const VectorT<T>& a, float b );
 
 /// @brief A 3D Vector
@@ -81,6 +82,7 @@ private:
     friend VectorT<T>   operator+ <>( const VectorT<T>& a, const VectorT<T>& b );
     friend VectorT<T>   operator- <>( const VectorT<T>& a, const VectorT<T>& b );
     friend VectorT<T>   operator* <>( const VectorT<T>& a, float b );
+    friend VectorT<T>   operator* <>( float a, const VectorT<T>& b );
     friend VectorT<T>   operator/ <>( const VectorT<T>& a, float b );
 
     VectorT( const Triple& coords )
@@ -123,6 +125,13 @@ template <int T>
 VectorT<T> operator*( const VectorT<T>& a, float b )
 {
     return VectorT<T>( a.m_coords.m_x*b, a.m_coords.m_y*b, a.m_coords.m_z*b );
+}
+
+//////////////////////////////////////////////////////////////
+template <int T> 
+VectorT<T> operator*( float a, const VectorT<T>& b )
+{
+    return VectorT<T>( a*b.m_coords.m_x, a*b.m_coords.m_y, a*b.m_coords.m_z );
 }
 
 //////////////////////////////////////////////////////////////

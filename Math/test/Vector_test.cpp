@@ -64,6 +64,12 @@ public:
         Assert::IsTrue(equals(q.x(), 100));
         Assert::IsTrue(equals(q.y(), 200));
         Assert::IsTrue(equals(q.z(), 300));
+
+        q = -10*r;
+        Assert::IsTrue(equals(q.x(), -100));
+        Assert::IsTrue(equals(q.y(), -200));
+        Assert::IsTrue(equals(q.z(), -300));
+
     }
 
     TEST_METHOD(vector_length)

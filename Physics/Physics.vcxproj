@@ -132,6 +132,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\Collision_solver.h" />
+    <ClInclude Include="src\Constraint_solver.h" />
     <ClInclude Include="src\Integrator.h" />
     <ClInclude Include="src\Minkowski_polytope.h" />
     <ClInclude Include="src\Minkowski_simplex.h" />
@@ -141,6 +142,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Collision_solver.cpp" />
+    <ClCompile Include="src\Constraint_solver.cpp" />
     <ClCompile Include="src\Integrator.cpp" />
     <ClCompile Include="src\Minkowski_polytope.cpp" />
     <ClCompile Include="src\Minkowski_simplex.cpp" />

@@ -49,7 +49,7 @@ public:
     /// @param a - [in] the first object
     /// @param b - [in] the second object
     /// @returns true if they collide
-    bool                intersection( const Physics_object& a, const Physics_object& b, std::vector<Contact>& contact_manifold );
+    bool                intersection( const Physics_object& a, const Physics_object& b, std::vector<Contact>& contacts );
 
 };
 

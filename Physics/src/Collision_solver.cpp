@@ -152,18 +152,18 @@ void find_collision_point( const Physics_model& a, const Math::Coordinate_space&
 //////////////////////////////////////////////////////////////
 bool intersection_recurse_b( const Physics_model& a, const Math::Coordinate_space& ca, 
                              const Physics_model& b, const Math::Coordinate_space& cb, 
-                             std::vector<Collision_solver::Contact>& contact_manifold )
+                             std::vector<Collision_solver::Contact>& contacts )
 {
     bool ret_val = false;
     Minkowski_simplex simplex( std::move(Minkowski_vector()) );
     if (model_intersection( a, ca, b, cb, simplex )) {
         Collision_solver::Contact contact;
         find_collision_point( a, ca, b, cb, simplex, contact );
-        contact_manifold.push_back( contact );
+        contacts.push_back( contact );
         ret_val = true;
     }
     for (const auto& kid : b.kids()) {
-        if (intersection_recurse_b( a, ca, *kid, cb, contact_manifold )) {
+        if (intersection_recurse_b( a, ca, *kid, cb, contacts )) {
             ret_val = true;
         }
     }
@@ -174,14 +174,14 @@ bool intersection_recurse_b( const Physics_model& a, const Math::Coordinate_spac
 //////////////////////////////////////////////////////////////
 bool intersection_recurse_a( const Physics_model& a, const Math::Coordinate_space& ca, 
                              const Physics_model& b, const Math::Coordinate_space& cb,
-                             std::vector<Collision_solver::Contact>& contact_manifold )
+                             std::vector<Collision_solver::Contact>& contacts )
 {
     bool ret_val = false;
-    if (intersection_recurse_b( a, ca, b, cb, contact_manifold )) {
+    if (intersection_recurse_b( a, ca, b, cb, contacts )) {
         ret_val = true;
     }
     for (const auto& kid : a.kids()) {
-        if (intersection_recurse_a( *kid, ca, b, cb, contact_manifold )) {
+        if (intersection_recurse_a( *kid, ca, b, cb, contacts )) {
             ret_val = true;
         }
     }
@@ -192,9 +192,9 @@ bool intersection_recurse_a( const Physics_model& a, const Math::Coordinate_spac
 }
 
 //////////////////////////////////////////////////////////////
-bool Collision_solver::intersection( const Physics_object& a, const Physics_object& b, std::vector<Contact>& contact_manifold )
+bool Collision_solver::intersection( const Physics_object& a, const Physics_object& b, std::vector<Contact>& contacts )
 {
-    return intersection_recurse_a( *a.model(), a.coordinate_space(), *b.model(), b.coordinate_space(), contact_manifold );
+    return intersection_recurse_a( *a.model(), a.coordinate_space(), *b.model(), b.coordinate_space(), contacts );
 }
 
 }}
