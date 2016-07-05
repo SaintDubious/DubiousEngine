@@ -36,6 +36,10 @@ public:
         Assert::IsTrue( velocities.a_linear == Vector( -5, 0, 0 ) );
         Assert::IsTrue( velocities.b_linear == Vector( -5, 0, 0 ) );
 
+        contacts.clear();
+        b.coordinate_space().translate( Vector( 0, 1, 0 ) );
+        Assert::IsTrue( collision_solver.intersection( a, b, contacts ) == true );
+        velocities = solver.solve( a, b, contacts );
     }
 };
 }

@@ -13,7 +13,7 @@
 #include <Open_gl_context_store.h>
 #include <Vector_math.h>
 #include <Timer.h>
-#include <Integrator.h>
+#include <Arena.h>
 #include <Physics_object.h>
 #include <Physics_model.h>
 
@@ -27,6 +27,7 @@ const float LIGHT_HEIGHT = 50.0f;
 const float PI = 3.1415926535f;
 const int WIDTH=800;
 const int HEIGHT=600;
+const int NUM_OBJECTS = 3;
 
 //////////////////////////////////////////////////////////////
 // Events
@@ -49,9 +50,9 @@ bool					            left_button_down;
 std::shared_ptr<Renderer::Simple_object_renderer> simple_renderer;
 Utility::Timer                      frame_timer;
 
-Physics::Integrator                 integrator( 1.0f/60.0f );
-std::list<std::shared_ptr<Renderer::Visible_object>>  visible_objects;
-std::list<std::shared_ptr<Physics::Physics_object>>   physics_objects;
+Physics::Arena                      arena( 1.0f/60.0f );
+std::vector<std::shared_ptr<Renderer::Visible_object>>  visible_objects;
+std::vector<std::shared_ptr<Physics::Physics_object>>   physics_objects;
 
 //////////////////////////////////////////////////////////////
 int main( int argc, char** argv )
@@ -69,37 +70,39 @@ int main( int argc, char** argv )
 
         sdl.create_root_window( "Physics Viewer", WIDTH, HEIGHT, false );
 
-        auto visible_model = std::make_shared<Renderer::Visible_model>( *model_file, false );
-        auto physics_model = std::make_shared<Physics::Physics_model>( *model_file );
-        visible_objects.push_front( std::make_shared<Renderer::Visible_object>( visible_model, visible_model ) );
-        visible_objects.front()->coordinate_space().translate( Math::Vector( 0, 0, 0 ) );
-        physics_objects.push_front( std::make_shared<Physics::Physics_object>( physics_model, 1.0f ) );
-        physics_objects.front()->coordinate_space().translate( Math::Vector( 0, 0, 0 ) );
-
         std::shared_ptr<Renderer::Open_gl_context_store> context_store = std::make_shared<Renderer::Open_gl_context_store>();
         scene = std::make_unique<Renderer::Scene>( context_store );
         simple_renderer.reset( new Renderer::Simple_object_renderer( context_store ) );
 
-        visible_objects.front()->renderer() = simple_renderer;
+        auto visible_model = std::make_shared<Renderer::Visible_model>( *model_file, false );
+        auto physics_model = std::make_shared<Physics::Physics_model>( *model_file );
+        for (int i=0; i<NUM_OBJECTS; ++i) {
+            visible_objects.push_back( std::make_shared<Renderer::Visible_object>( visible_model, visible_model ) );
+            visible_objects.back()->coordinate_space().translate( Math::Vector( 0, i*5.0f, 0 ) );
+            visible_objects.back()->renderer() = simple_renderer;
+            scene->add_object( visible_objects.back() );
 
-        scene->scene_light().position = Math::Point( 20, 20, 0 );
-        scene->scene_light().ambient = Renderer::Color( 0.2f, 0.2f, 0.2f, 1.0f );
-        scene->scene_light().diffuse = Renderer::Color( 0.5f, 0.5f, 0.5f, 1.0f );
-        scene->scene_light().specular = Renderer::Color( 0.1f, 0.1f, 0.1f, 1.0f );
+            physics_objects.push_back( std::make_shared<Physics::Physics_object>( physics_model, 1.0f ) );
+            physics_objects.back()->coordinate_space().translate( Math::Vector( 0, i*5.0f, 0 ) );
+            arena.push_back( physics_objects.back() );
+        }
 
-        scene->add_object( visible_objects.front() );
+        scene->scene_light().position   = Math::Point( 20, 20, 0 );
+        scene->scene_light().ambient    = Renderer::Color( 0.2f, 0.2f, 0.2f, 1.0f );
+        scene->scene_light().diffuse    = Renderer::Color( 0.5f, 0.5f, 0.5f, 1.0f );
+        scene->scene_light().specular   = Renderer::Color( 0.1f, 0.1f, 0.1f, 1.0f );
 
         camera = std::make_unique<Renderer::Camera>( 0, 0, WIDTH,HEIGHT, 80.0f );
         camera->z_axis_offset() = 20;
 
-        sdl.on_quit() = on_quit;
-        sdl.on_idle() = on_idle;
-        sdl.on_mouse_motion() = on_mouse_motion;
-        sdl.on_mouse_right_down() = on_mouse_right_down;
-        sdl.on_mouse_left_down() = on_mouse_left_down;
-        sdl.on_mouse_left_up() = on_mouse_left_up;
-        sdl.on_mouse_wheel() = on_mouse_wheel;
-        sdl.on_key_down() = on_key_down;
+        sdl.on_quit()                   = on_quit;
+        sdl.on_idle()                   = on_idle;
+        sdl.on_mouse_motion()           = on_mouse_motion;
+        sdl.on_mouse_right_down()       = on_mouse_right_down;
+        sdl.on_mouse_left_down()        = on_mouse_left_down;
+        sdl.on_mouse_left_up()          = on_mouse_left_up;
+        sdl.on_mouse_wheel()            = on_mouse_wheel;
+        sdl.on_key_down()               = on_key_down;
 
         frame_timer.start();
 
@@ -125,21 +128,24 @@ void on_quit()
 //////////////////////////////////////////////////////////////
 void on_idle()
 {
-    integrator.update( physics_objects, frame_timer.restart()/1000.0f );
-    // run physics and copy results to visible object
-    Math::Point new_position         = physics_objects.front()->coordinate_space().position();
-    Math::Quaternion new_orientation = physics_objects.front()->coordinate_space().rotation();
-    if (new_position.y() < 0.0f) {
-        new_position = Math::Point( new_position.x(), 0.0f, new_position.z() );
-        physics_objects.front()->coordinate_space().position() = new_position;
-        physics_objects.front()->velocity() = Math::Vector();
-    }
-    visible_objects.front()->coordinate_space().position() = new_position;
-    visible_objects.front()->coordinate_space().rotation() = new_orientation;
+    arena.run_physics( frame_timer.restart()/1000.0f );
 
-    // reset forces to default
-    physics_objects.front()->force()  = Math::Vector( 0, -9.8f, 0 );
-    physics_objects.front()->torque() = Math::Vector();
+    for (int i=0; i<NUM_OBJECTS; ++i) {
+        Math::Point new_position         = physics_objects[i]->coordinate_space().position();
+        Math::Quaternion new_orientation = physics_objects[i]->coordinate_space().rotation();
+        if (new_position.y() < 0.0f) {
+            new_position = Math::Point( new_position.x(), 0.0f, new_position.z() );
+            physics_objects[i]->coordinate_space().position() = new_position;
+            physics_objects[i]->velocity() = Math::Vector();
+        }
+        visible_objects[i]->coordinate_space().position() = new_position;
+        visible_objects[i]->coordinate_space().rotation() = new_orientation;
+
+        // reset forces to default
+    //    physics_objects.front()->force()  = Math::Vector( 0, -9.8f, 0 );
+        physics_objects.front()->force()  = Math::Vector( 0, 0, 0 );
+        physics_objects.front()->torque() = Math::Vector();
+    }
 
     scene->render( *camera );
     SDL_Delay( 10 );
@@ -180,7 +186,7 @@ void on_mouse_motion( const Utility::Sdl_manager::Mouse_point& p )
 //////////////////////////////////////////////////////////////
 void on_mouse_right_down( const Utility::Sdl_manager::Mouse_point& p )
 {
-    physics_objects.front()->force() = physics_objects.front()->force() + Math::Vector( 0, 500, 0 );
+    physics_objects[0]->force() = physics_objects[0]->force() + Math::Vector( 0, 500, 0 );
 }
 
 //////////////////////////////////////////////////////////////
@@ -215,12 +221,12 @@ void on_key_down( SDL_Keycode key, unsigned short mod )
         sdl.stop();
         break;
     case SDLK_a:
-        physics_objects.front()->torque() = Math::Vector( 1, 0, 0 );
+        physics_objects[0]->torque() = Math::Vector( 1, 0, 0 );
         break;
     case SDLK_s:
-        physics_objects.front()->torque() = Math::Vector( static_cast<float>(rand())/RAND_MAX, 
-                                                          static_cast<float>(rand())/RAND_MAX, 
-                                                          static_cast<float>(rand())/RAND_MAX );
+        physics_objects[0]->torque() = Math::Vector( static_cast<float>(rand())/RAND_MAX, 
+                                                     static_cast<float>(rand())/RAND_MAX, 
+                                                     static_cast<float>(rand())/RAND_MAX );
         break;
     }
 }

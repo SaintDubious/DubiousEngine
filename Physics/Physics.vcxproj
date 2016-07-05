@@ -131,6 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Arena.h" />
     <ClInclude Include="src\Collision_solver.h" />
     <ClInclude Include="src\Constraint_solver.h" />
     <ClInclude Include="src\Integrator.h" />
@@ -141,6 +142,7 @@
     <ClInclude Include="src\Physics_object.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Arena.cpp" />
     <ClCompile Include="src\Collision_solver.cpp" />
     <ClCompile Include="src\Constraint_solver.cpp" />
     <ClCompile Include="src\Integrator.cpp" />

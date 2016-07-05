@@ -1,7 +1,7 @@
 #ifndef INCLUDED_PHYSICS_INTEGRATOR
 #define INCLUDED_PHYSICS_INTEGRATOR
 
-#include <list>
+#include <vector>
 #include <memory>
 
 namespace Physics_test { class Integrator_test; }
@@ -40,7 +40,7 @@ public:
     /// update the list of passed in objects.
     /// @param objects - [in,out] objects to be updated. NOT CONST
     /// @param elapsed - [in] time since last call, in seconds
-    void                update( std::list<std::shared_ptr<Physics_object>>& objects, float elapsed ); 
+    void                update( std::vector<std::shared_ptr<Physics_object>>& objects, float elapsed ); 
 
 private:
     friend class Physics_test::Integrator_test;

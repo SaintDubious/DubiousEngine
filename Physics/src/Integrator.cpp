@@ -159,7 +159,7 @@ void angular_rk4( Angular_state& state, Math::Vector& torque, float dt )
 }
 
 //////////////////////////////////////////////////////////////
-void Integrator::update( std::list<std::shared_ptr<Physics_object>>& objects, float elapsed )
+void Integrator::update( std::vector<std::shared_ptr<Physics_object>>& objects, float elapsed )
 {
     m_elapsed += elapsed;
     while (m_elapsed > m_step_size) {

@@ -9,6 +9,7 @@
     <ClInclude Include="src\Minkowski_polytope.h" />
     <ClInclude Include="src\Minkowski_simplex.h" />
     <ClInclude Include="src\Constraint_solver.h" />
+    <ClInclude Include="src\Arena.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Physics_model.cpp" />
@@ -18,5 +19,6 @@
     <ClCompile Include="src\Minkowski_polytope.cpp" />
     <ClCompile Include="src\Minkowski_simplex.cpp" />
     <ClCompile Include="src\Constraint_solver.cpp" />
+    <ClCompile Include="src\Arena.cpp" />
   </ItemGroup>
 </Project>

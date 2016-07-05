@@ -18,6 +18,11 @@ class Physics_object;
 /// http://allenchou.net/game-physics-series/
 class Constraint_solver {
 public:
+    Constraint_solver() = default;
+
+    Constraint_solver( const Constraint_solver& ) = delete;
+    Constraint_solver& operator=( const Constraint_solver& ) = delete;
+
     struct Velocity_matrix {
         Math::Vector    a_linear;
         Math::Vector    a_angular;
