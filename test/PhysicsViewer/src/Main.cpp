@@ -28,6 +28,7 @@ const float PI = 3.1415926535f;
 const int WIDTH=800;
 const int HEIGHT=600;
 const int NUM_OBJECTS = 3;
+const int FIRST_OBJECT = 1; // the floor is item 0
 
 //////////////////////////////////////////////////////////////
 // Events
@@ -60,12 +61,13 @@ int main( int argc, char** argv )
     try {
         std::cout << "Starting test\n";
 
+        auto floor_file = Utility::Ac3d_file_reader::test_cube( 10.0f, 0.5f, 10.0f );
         std::unique_ptr<const Utility::Ac3d_file> model_file;
         if (argc == 2) {
             model_file = Utility::Ac3d_file_reader::read_file( Utility::File_path( argv[1] ) );
         }
         else {
-            model_file = Utility::Ac3d_file_reader::test_cube( 0.5f, 0.5f, 0.5f );
+            model_file = Utility::Ac3d_file_reader::test_cube( 2.5f, 0.5f, 0.5f );
         }
 
         sdl.create_root_window( "Physics Viewer", WIDTH, HEIGHT, false );
@@ -74,16 +76,27 @@ int main( int argc, char** argv )
         scene = std::make_unique<Renderer::Scene>( context_store );
         simple_renderer.reset( new Renderer::Simple_object_renderer( context_store ) );
 
-        auto visible_model = std::make_shared<Renderer::Visible_model>( *model_file, false );
-        auto physics_model = std::make_shared<Physics::Physics_model>( *model_file );
+        auto visible_model = std::make_shared<Renderer::Visible_model>( *floor_file, false );
+        auto physics_model = std::make_shared<Physics::Physics_model>( *floor_file );
+        visible_objects.push_back( std::make_shared<Renderer::Visible_object>( visible_model, visible_model ) );
+        visible_objects.back()->coordinate_space().translate( Math::Vector( 0, -0.5f, 0 ) );
+        visible_objects.back()->renderer() = simple_renderer;
+        scene->add_object( visible_objects.back() );
+
+        physics_objects.push_back( std::make_shared<Physics::Physics_object>( physics_model, Physics::Physics_object::STATIONARY ) );
+        physics_objects.back()->coordinate_space().translate( Math::Vector( 0, -0.5f, 0 ) );
+        arena.push_back( physics_objects.back() );
+
+        visible_model = std::make_shared<Renderer::Visible_model>( *model_file, false );
+        physics_model = std::make_shared<Physics::Physics_model>( *model_file );
         for (int i=0; i<NUM_OBJECTS; ++i) {
             visible_objects.push_back( std::make_shared<Renderer::Visible_object>( visible_model, visible_model ) );
-            visible_objects.back()->coordinate_space().translate( Math::Vector( 0, i*5.0f, 0 ) );
+            visible_objects.back()->coordinate_space().translate( Math::Vector( i*2.0f, i*5.0f+1.5f, 0 ) );
             visible_objects.back()->renderer() = simple_renderer;
             scene->add_object( visible_objects.back() );
 
             physics_objects.push_back( std::make_shared<Physics::Physics_object>( physics_model, 1.0f ) );
-            physics_objects.back()->coordinate_space().translate( Math::Vector( 0, i*5.0f, 0 ) );
+            physics_objects.back()->coordinate_space().translate( Math::Vector( i*2.0f, i*5.0f+1.5f, 0 ) );
             arena.push_back( physics_objects.back() );
         }
 
@@ -130,7 +143,7 @@ void on_idle()
 {
     arena.run_physics( frame_timer.restart()/1000.0f );
 
-    for (int i=0; i<NUM_OBJECTS; ++i) {
+    for (int i=0; i<NUM_OBJECTS+1; ++i) {
         Math::Point new_position         = physics_objects[i]->coordinate_space().position();
         Math::Quaternion new_orientation = physics_objects[i]->coordinate_space().rotation();
         if (new_position.y() < 0.0f) {
@@ -142,9 +155,9 @@ void on_idle()
         visible_objects[i]->coordinate_space().rotation() = new_orientation;
 
         // reset forces to default
-    //    physics_objects.front()->force()  = Math::Vector( 0, -9.8f, 0 );
-        physics_objects.front()->force()  = Math::Vector( 0, 0, 0 );
-        physics_objects.front()->torque() = Math::Vector();
+//        physics_objects[i]->force()  = Math::Vector( 0, -9.8f, 0 );
+        physics_objects[i]->force()  = Math::Vector( 0, 0, 0 );
+        physics_objects[i]->torque() = Math::Vector();
     }
 
     scene->render( *camera );
@@ -186,7 +199,7 @@ void on_mouse_motion( const Utility::Sdl_manager::Mouse_point& p )
 //////////////////////////////////////////////////////////////
 void on_mouse_right_down( const Utility::Sdl_manager::Mouse_point& p )
 {
-    physics_objects[0]->force() = physics_objects[0]->force() + Math::Vector( 0, 500, 0 );
+    physics_objects[FIRST_OBJECT]->force() = physics_objects[FIRST_OBJECT]->force() + Math::Vector( 0, 500, 0 );
 }
 
 //////////////////////////////////////////////////////////////
@@ -221,10 +234,10 @@ void on_key_down( SDL_Keycode key, unsigned short mod )
         sdl.stop();
         break;
     case SDLK_a:
-        physics_objects[0]->torque() = Math::Vector( 1, 0, 0 );
+        physics_objects[FIRST_OBJECT]->torque() = Math::Vector( 1, 0, 0 );
         break;
     case SDLK_s:
-        physics_objects[0]->torque() = Math::Vector( static_cast<float>(rand())/RAND_MAX, 
+        physics_objects[FIRST_OBJECT]->torque() = Math::Vector( static_cast<float>(rand())/RAND_MAX, 
                                                      static_cast<float>(rand())/RAND_MAX, 
                                                      static_cast<float>(rand())/RAND_MAX );
         break;

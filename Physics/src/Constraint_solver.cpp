@@ -26,11 +26,17 @@ float lagrangian_multiplier( const Math::Vector& n, const Math::Vector& r_a, con
     float inverse_tensor_a = 1.0f/inertial_tensor_a;
     float inverse_tensor_b = 1.0f/inertial_tensor_b;
 
-    Math::Vector negra_x_n = Math::cross_product( -1*r_a, n );
-    Math::Vector rb_x_n = Math::cross_product( r_b, n );
-
-    float denom = Math::dot_product( -1*n*inverse_m_a, -1*n ) + Math::dot_product( negra_x_n*inverse_tensor_a, negra_x_n) +
-                  Math::dot_product(n*inverse_m_b, n)         + Math::dot_product( rb_x_n*inverse_tensor_b, rb_x_n);
+    float denom_a = 0;
+    if (!Physics_object::is_stationary(mass_a)) {
+        Math::Vector negra_x_n = Math::cross_product( -1*r_a, n );
+        denom_a = Math::dot_product( -1*n*inverse_m_a, -1*n ) + Math::dot_product( negra_x_n*inverse_tensor_a, negra_x_n);
+    }
+    float denom_b = 0;
+    if (!Physics_object::is_stationary(mass_b)) {
+        Math::Vector rb_x_n = Math::cross_product( r_b, n );
+        denom_b = Math::dot_product(n*inverse_m_b, n) + Math::dot_product( rb_x_n*inverse_tensor_b, rb_x_n);
+    }
+    float denom = denom_a + denom_b;
     float lambda = -j_dot_v / denom;
 
     return lambda;
@@ -41,16 +47,19 @@ Constraint_solver::Velocity_matrix delta_v( float lambda, const Math::Vector& n,
                                             float mass_a, float inertial_tensor_a,
                                             float mass_b, float inertial_tensor_b )
 {
-    float inverse_m_a = 1.0f/mass_a;
-    float inverse_m_b = 1.0f/mass_b;
-    float inverse_tensor_a = 1.0f/inertial_tensor_a;
-    float inverse_tensor_b = 1.0f/inertial_tensor_b;
-    
     Constraint_solver::Velocity_matrix result;
-    result.a_linear  = -1*n * inverse_m_a * lambda;
-    result.a_angular = inverse_tensor_a * (Math::cross_product( -1* r_a, n)) * lambda;
-    result.b_linear  = n * inverse_m_b * lambda;
-    result.b_angular = inverse_tensor_b * (Math::cross_product( r_b, n)) * lambda;
+    if (!Physics_object::is_stationary(mass_a)) {
+        float inverse_m_a = 1.0f/mass_a;
+        float inverse_tensor_a = 1.0f/inertial_tensor_a;
+        result.a_linear  = -1*n * inverse_m_a * lambda;
+        result.a_angular = inverse_tensor_a * (Math::cross_product( -1* r_a, n)) * lambda;
+    }
+    if (!Physics_object::is_stationary(mass_b)) {
+        float inverse_m_b = 1.0f/mass_b;
+        float inverse_tensor_b = 1.0f/inertial_tensor_b;
+        result.b_linear  = n * inverse_m_b * lambda;
+        result.b_angular = inverse_tensor_b * (Math::cross_product( r_b, n)) * lambda;
+    }
 
     return result;
 }

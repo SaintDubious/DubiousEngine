@@ -164,8 +164,10 @@ void Integrator::update( std::vector<std::shared_ptr<Physics_object>>& objects, 
     m_elapsed += elapsed;
     while (m_elapsed > m_step_size) {
         for (auto& object : objects) {
-            integrate_linear( *object, m_step_size );
-            integrate_angular( *object, m_step_size );
+            if (!Physics_object::is_stationary(object->mass())) {
+                integrate_linear( *object, m_step_size );
+                integrate_angular( *object, m_step_size );
+            }
         }
 
         m_elapsed -= m_step_size;

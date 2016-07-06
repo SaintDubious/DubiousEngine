@@ -28,6 +28,9 @@ public:
 
     std::shared_ptr<Physics_model> model() const { return m_model; }
 
+    static const float STATIONARY;
+    static bool is_stationary( float mass ) { return mass < 0; }
+
     /// @brief Accessor
     Math::Coordinate_space& coordinate_space() { return m_coordinate_space; }
     const Math::Coordinate_space& coordinate_space() const { return m_coordinate_space; }

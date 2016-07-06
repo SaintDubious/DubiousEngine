@@ -7,6 +7,8 @@
 namespace Dubious {
 namespace Physics {
 
+const float Physics_object::STATIONARY = -1;
+
 //////////////////////////////////////////////////////////////
 Physics_object::Physics_object( const std::shared_ptr<Physics_model>& model, float mass )
     : m_model( model )
