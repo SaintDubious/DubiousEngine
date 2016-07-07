@@ -18,7 +18,7 @@ class Physics_object;
 /// http://allenchou.net/game-physics-series/
 class Constraint_solver {
 public:
-    Constraint_solver() = default;
+    Constraint_solver( float time_step );
 
     Constraint_solver( const Constraint_solver& ) = delete;
     Constraint_solver& operator=( const Constraint_solver& ) = delete;
@@ -31,6 +31,8 @@ public:
     };
     Velocity_matrix solve( const Physics_object& a, const Physics_object& b, std::vector<Collision_solver::Contact>& contacts );
 private:
+    
+    float               m_time_step;
 };
 
 }}

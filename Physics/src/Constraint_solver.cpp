@@ -7,13 +7,45 @@
 namespace Dubious {
 namespace Physics {
 
+Constraint_solver::Constraint_solver( float time_step )
+    : m_time_step( time_step )
+{
+}
+
 namespace {
+
+float baumgarte_term( float dt, const Math::Vector& n, const Math::Point& p_a, const Math::Point& p_b )
+{
+    // BETA is the number you can play with to try different things. In my simple 
+    // test with stacked blocks, when it was 0.01 they would very slowly penetrate.
+    // When it was 0.9 they hopped up and down until the stack fell.
+    const float BETA = 0.2f;
+    float d = Math::dot_product( (p_b - p_a), n );
+    // According to Allen Chou's web page, the Baumgarte term should be negative.
+    // However when I use negative, my colliders end up sucking into each other
+    // and generally going haywire. 
+    return (BETA/dt) * d;
+}
+
+float restitution_term( const Math::Vector& n, 
+                        const Math::Vector& r_a, const Math::Vector& r_b,
+                        const Math::Vector& v_a, const Math::Vector& av_a, 
+                        const Math::Vector& v_b, const Math::Vector& av_b)
+{
+    const float COEFFICIENT_OF_RESTITUTION = 0.1f;
+    Math::Vector a_part = -1*v_a - Math::cross_product( av_a, r_a );
+    Math::Vector b_part =    v_b + Math::cross_product( av_b, r_b );
+
+    return Math::dot_product( (a_part+b_part) * COEFFICIENT_OF_RESTITUTION, n );
+}
 
 // The lagrangian multiplier (denoted by lambda) is a scalar derived from a heck of a
 // lot of really big matrices. I'm trying my hardest to not have to create a matrix
 // class for this thing, so I went ahead and unwrapped it all into a bunch of vector
 // dot products.
-float lagrangian_multiplier( const Math::Vector& n, const Math::Vector& r_a, const Math::Vector& r_b,
+float lagrangian_multiplier( float dt, const Math::Vector& n, 
+                             const Math::Point& p_a, const Math::Point& p_b,
+                             const Math::Vector& r_a, const Math::Vector& r_b,
                              const Math::Vector& v_a, const Math::Vector& av_a, 
                              float mass_a, float inertial_tensor_a,
                              const Math::Vector& v_b, const Math::Vector& av_b,
@@ -37,7 +69,9 @@ float lagrangian_multiplier( const Math::Vector& n, const Math::Vector& r_a, con
         denom_b = Math::dot_product(n*inverse_m_b, n) + Math::dot_product( rb_x_n*inverse_tensor_b, rb_x_n);
     }
     float denom = denom_a + denom_b;
-    float lambda = -j_dot_v / denom;
+    float baumgarte = baumgarte_term( dt, n, p_a, p_b ); 
+    float restitution = restitution_term( n, r_a, r_b, v_a, av_a, v_b, av_b );
+    float lambda = -(j_dot_v + baumgarte + restitution)  / denom;
 
     return lambda;
 }  
@@ -79,7 +113,8 @@ Constraint_solver::Velocity_matrix Constraint_solver::solve( const Physics_objec
 
 
 
-        Constraint_solver::Velocity_matrix delta = delta_v( lagrangian_multiplier( c.normal, r_a, r_b, 
+        Constraint_solver::Velocity_matrix delta = delta_v( lagrangian_multiplier( m_time_step, 
+                                    c.normal, c.contact_point_a, c.contact_point_b, r_a, r_b, 
                                     a.velocity(), a.angular_velocity(), a.mass(), a.moment_of_inertia(),
                                     b.velocity(), b.angular_velocity(), b.mass(), b.moment_of_inertia()), 
                                     c.normal, r_a, r_b, a.mass(), a.moment_of_inertia(), b.mass(), b.moment_of_inertia() );

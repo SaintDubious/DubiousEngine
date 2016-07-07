@@ -91,11 +91,13 @@ int main( int argc, char** argv )
         physics_model = std::make_shared<Physics::Physics_model>( *model_file );
         for (int i=0; i<NUM_OBJECTS; ++i) {
             visible_objects.push_back( std::make_shared<Renderer::Visible_object>( visible_model, visible_model ) );
+//            visible_objects.back()->coordinate_space().translate( Math::Vector( 0, i*5.0f+1.5f, 0 ) );
             visible_objects.back()->coordinate_space().translate( Math::Vector( i*2.0f, i*5.0f+1.5f, 0 ) );
             visible_objects.back()->renderer() = simple_renderer;
             scene->add_object( visible_objects.back() );
 
             physics_objects.push_back( std::make_shared<Physics::Physics_object>( physics_model, 1.0f ) );
+//            physics_objects.back()->coordinate_space().translate( Math::Vector( 0, i*5.0f+1.5f, 0 ) );
             physics_objects.back()->coordinate_space().translate( Math::Vector( i*2.0f, i*5.0f+1.5f, 0 ) );
             arena.push_back( physics_objects.back() );
         }
@@ -155,8 +157,8 @@ void on_idle()
         visible_objects[i]->coordinate_space().rotation() = new_orientation;
 
         // reset forces to default
-//        physics_objects[i]->force()  = Math::Vector( 0, -9.8f, 0 );
-        physics_objects[i]->force()  = Math::Vector( 0, 0, 0 );
+        physics_objects[i]->force()  = Math::Vector( 0, -9.8f, 0 );
+//        physics_objects[i]->force()  = Math::Vector( 0, 0, 0 );
         physics_objects[i]->torque() = Math::Vector();
     }
 

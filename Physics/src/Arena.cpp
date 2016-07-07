@@ -7,6 +7,7 @@ namespace Physics {
 
 Arena::Arena( float step_size )
     : m_integrator( step_size )
+    , m_constraint_solver( step_size )
     , m_step_size( step_size )
 {
 }
