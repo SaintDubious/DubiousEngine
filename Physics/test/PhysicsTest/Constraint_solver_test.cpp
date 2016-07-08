@@ -22,7 +22,7 @@ public:
 	{
         Collision_solver collision_solver;
         Constraint_solver solver( 1.0f/60.0f );
-        std::vector<Collision_solver::Contact> contacts;
+        std::vector<Contact_manifold::Contact> contacts;
         std::unique_ptr<const Ac3d_file> model_file = Ac3d_file_reader::test_cube( 1.0f, 1.0f, 1.0f ); 
 
         std::shared_ptr<Physics_model> model = std::make_shared<Physics_model>( *model_file );

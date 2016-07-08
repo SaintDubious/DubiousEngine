@@ -25,8 +25,15 @@ void Arena::run_physics( float elapsed )
         std::shared_ptr<Physics_object> a = m_objects[i];
         for (size_t j=i+1; j<m_objects.size(); ++j) {
             std::shared_ptr<Physics_object> b = m_objects[j];
-            std::vector<Collision_solver::Contact> contacts;
+            std::vector<Contact_manifold::Contact> contacts;
             if (m_collision_solver.intersection( *a, *b, contacts )) {
+
+                auto contact_manifold = m_manifolds.find( std::make_tuple(a,b) );
+                if (contact_manifold == m_manifolds.end()) {
+                    contact_manifold = m_manifolds.insert( std::make_pair(std::make_tuple(a,b), Contact_manifold( a, b )) ).first;
+                }
+                contact_manifold->second.insert( contacts );
+
                 Constraint_solver::Velocity_matrix velocities;
                 velocities = m_constraint_solver.solve( *a, *b, contacts );
 
@@ -34,6 +41,9 @@ void Arena::run_physics( float elapsed )
                 a->angular_velocity()   = velocities.a_angular;
                 b->velocity()           = velocities.b_linear;
                 b->angular_velocity()   = velocities.b_angular;
+            }
+            else {
+                m_manifolds.erase( std::make_tuple(a,b) );
             }
         }
     }

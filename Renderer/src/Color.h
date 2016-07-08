@@ -1,6 +1,8 @@
 #ifndef INCLUDED_RENDERER_COLOR
 #define INCLUDED_RENDERER_COLOR
 
+#include <Utils.h>
+
 //////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Renderer {
@@ -53,6 +55,15 @@ private:
     float               m_blue  = 0.0f;
     float               m_alpha = 1.0f;
 };
+
+//////////////////////////////////////////////////////////////
+inline bool operator==( const Color& a, const Color& b )
+{
+    return Math::equals(a.red(), b.red()) &&
+           Math::equals(a.green(), b.green()) &&
+           Math::equals(a.blue(), b.blue()) &&
+           Math::equals(a.alpha(), b.alpha());
+}
 
 }
 }

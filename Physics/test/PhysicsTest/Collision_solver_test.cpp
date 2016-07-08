@@ -20,7 +20,7 @@ public:
 	TEST_METHOD(collision_solver_intersection)
 	{
         Collision_solver solver;
-        std::vector<Collision_solver::Contact> contacts;
+        std::vector<Contact_manifold::Contact> contacts;
         std::unique_ptr<const Ac3d_file> model_file = Ac3d_file_reader::test_cube( 1.0f, 1.0f, 1.0f ); 
 
         std::shared_ptr<Physics_model> model = std::make_shared<Physics_model>( *model_file );
@@ -56,7 +56,7 @@ public:
 	TEST_METHOD(collision_solver_touching_contacts)
 	{
         Collision_solver solver;
-        std::vector<Collision_solver::Contact> contacts;
+        std::vector<Contact_manifold::Contact> contacts;
         std::unique_ptr<const Ac3d_file> model_file = Ac3d_file_reader::test_cube( 5.0f, 0.5f, 5.0f ); 
 
         std::shared_ptr<Physics_model> model = std::make_shared<Physics_model>( *model_file );

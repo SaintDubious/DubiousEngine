@@ -1,7 +1,11 @@
 #ifndef INCLUDED_PHYSICS_CONSTRAINTSOLVER
 #define INCLUDED_PHYSICS_CONSTRAINTSOLVER
 
-#include "Collision_solver.h"
+#include "Contact_manifold.h"
+
+#include <Vector.h>
+
+#include <vector>
 
 //////////////////////////////////////////////////////////////
 namespace Dubious {
@@ -29,7 +33,7 @@ public:
         Math::Vector    b_linear;
         Math::Vector    b_angular;
     };
-    Velocity_matrix solve( const Physics_object& a, const Physics_object& b, std::vector<Collision_solver::Contact>& contacts );
+    Velocity_matrix solve( const Physics_object& a, const Physics_object& b, std::vector<Contact_manifold::Contact>& contacts );
 private:
     
     float               m_time_step;

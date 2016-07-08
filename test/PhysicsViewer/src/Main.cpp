@@ -11,6 +11,10 @@
 #include <Outlined_object_renderer.h>
 #include <Shadow_renderer.h>
 #include <Open_gl_context_store.h>
+#include <Open_gl_commands.h>
+#include <Open_gl_attributes.h>
+#include <Open_gl_primitive.h>
+#include <Open_gl_matrix.h>
 #include <Vector_math.h>
 #include <Timer.h>
 #include <Arena.h>
@@ -67,7 +71,7 @@ int main( int argc, char** argv )
             model_file = Utility::Ac3d_file_reader::read_file( Utility::File_path( argv[1] ) );
         }
         else {
-            model_file = Utility::Ac3d_file_reader::test_cube( 2.5f, 0.5f, 0.5f );
+            model_file = Utility::Ac3d_file_reader::test_cube( 0.5f, 0.5f, 0.5f );
         }
 
         sdl.create_root_window( "Physics Viewer", WIDTH, HEIGHT, false );
@@ -89,16 +93,24 @@ int main( int argc, char** argv )
 
         visible_model = std::make_shared<Renderer::Visible_model>( *model_file, false );
         physics_model = std::make_shared<Physics::Physics_model>( *model_file );
+        Renderer::Color object_color = Renderer::Color::RED;
         for (int i=0; i<NUM_OBJECTS; ++i) {
             visible_objects.push_back( std::make_shared<Renderer::Visible_object>( visible_model, visible_model ) );
-//            visible_objects.back()->coordinate_space().translate( Math::Vector( 0, i*5.0f+1.5f, 0 ) );
-            visible_objects.back()->coordinate_space().translate( Math::Vector( i*2.0f, i*5.0f+1.5f, 0 ) );
+            visible_objects.back()->base_color() = object_color;
+            if (object_color == Renderer::Color::RED) {
+                object_color = Renderer::Color::BLUE;
+            }
+            else {
+                object_color = Renderer::Color::RED;
+            }
+            visible_objects.back()->coordinate_space().translate( Math::Vector( 0, i*5.0f+1.5f, 0 ) );
+//            visible_objects.back()->coordinate_space().translate( Math::Vector( i*2.0f, i*5.0f+1.5f, 0 ) );
             visible_objects.back()->renderer() = simple_renderer;
             scene->add_object( visible_objects.back() );
 
             physics_objects.push_back( std::make_shared<Physics::Physics_object>( physics_model, 1.0f ) );
-//            physics_objects.back()->coordinate_space().translate( Math::Vector( 0, i*5.0f+1.5f, 0 ) );
-            physics_objects.back()->coordinate_space().translate( Math::Vector( i*2.0f, i*5.0f+1.5f, 0 ) );
+            physics_objects.back()->coordinate_space().translate( Math::Vector( 0, i*5.0f+1.5f, 0 ) );
+//            physics_objects.back()->coordinate_space().translate( Math::Vector( i*2.0f, i*5.0f+1.5f, 0 ) );
             arena.push_back( physics_objects.back() );
         }
 
@@ -163,6 +175,33 @@ void on_idle()
     }
 
     scene->render( *camera );
+
+
+    // Draw the contact info on top
+    Renderer::Open_gl_attributes attribs( Renderer::Open_gl_attributes::ENABLE_BIT | Renderer::Open_gl_attributes::HINT_BIT | Renderer::Open_gl_attributes::POLYGON_BIT, false );
+    Renderer::Open_gl_commands::line_width( 2 );
+    Renderer::Open_gl_commands::polygon_mode( GL_BACK, GL_LINE );
+    Renderer::Open_gl_commands::cull_face( GL_FRONT );
+    attribs.depth_func( GL_ALWAYS );
+
+    glColor3f( 1.0f, 0, 0 );
+    glPointSize( 5.0f );
+
+    for (const auto& manifold : arena.manifolds()) {
+        for (const auto& c : manifold.second.contacts()) {
+            {
+                Renderer::Open_gl_primitive prim( Renderer::Open_gl_primitive::POINTS );
+                prim.vertex( c.contact_point_a );
+                prim.vertex( c.contact_point_b );
+            }
+            Renderer::Open_gl_primitive prim( Renderer::Open_gl_primitive::LINES );
+            prim.vertex( c.contact_point_a );
+            prim.vertex( c.contact_point_a + Math::Vector(c.normal)*c.penetration_depth );
+
+        }
+
+    }
+
     SDL_Delay( 10 );
 }
 

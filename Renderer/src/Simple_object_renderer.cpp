@@ -37,6 +37,8 @@ void Simple_object_renderer::render( const std::shared_ptr<Visible_object>& obje
     float m[16];
     object->coordinate_space().get_matrix( m );
     Open_gl_commands::mult_matrix( m );
+    Open_gl_commands::material( GL_AMBIENT, object->base_color() );
+    Open_gl_commands::material( GL_DIFFUSE, object->base_color() );
     Open_gl_commands::call_list( gl_handle );	
 }
 
@@ -47,8 +49,6 @@ void render_model( Visible_model& model )
     Open_gl_matrix LocalMatrix;
     Open_gl_commands::translate( Math::to_vector(model.offset()) );
     const std::vector<Math::Local_point>& points( model.points() );
-    Open_gl_commands::material( GL_AMBIENT, model.color() );
-    Open_gl_commands::material( GL_DIFFUSE, model.color() );
     for (const auto& surface : model.surfaces()) {
         const Math::Local_point& a( points[surface.p0] );
         const Math::Local_point& b( points[surface.p1] );

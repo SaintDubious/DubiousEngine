@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <memory>
+#include <map>
 
 //////////////////////////////////////////////////////////////
 namespace Dubious {
@@ -40,6 +41,14 @@ public:
     /// @brief Add a physics object to the Arena
     /// @param obj - [in] the object to add
     void                push_back( std::shared_ptr<Physics_object> obj );
+
+    /// @brief Manifold accessor
+    ///
+    /// Not sure if this is useful in any situation EXCEPT the one
+    /// in which I'm trying to debug by drawing the contacts
+    const std::map<std::tuple<std::shared_ptr<Physics_object>,
+                              std::shared_ptr<Physics_object>>, 
+                   Contact_manifold>& manifolds() const { return m_manifolds; }
 private:
 
     Integrator          m_integrator;
@@ -48,6 +57,9 @@ private:
     float               m_step_size;
 
     std::vector<std::shared_ptr<Physics_object>> m_objects;
+    std::map<std::tuple<std::shared_ptr<Physics_object>,
+                        std::shared_ptr<Physics_object>>, 
+             Contact_manifold> m_manifolds;
 };
 
 }}

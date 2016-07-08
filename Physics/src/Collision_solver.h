@@ -1,8 +1,7 @@
 #ifndef INCLUDED_PHYSICS_COLLISIONSOLVER
 #define INCLUDED_PHYSICS_COLLISIONSOLVER
 
-#include <Vector.h>
-#include <Point.h>
+#include "Contact_manifold.h"
 
 #include <vector>
 
@@ -30,17 +29,6 @@ public:
     Collision_solver( const Collision_solver& ) = delete;
     Collision_solver& operator=( const Collision_solver& ) = delete;
 
-    /// @brief Contact information
-    ///
-    /// The result of a collision will be a vector of these, the contact
-    /// manifold. Contains information relevant to the contact
-    struct Contact {
-        Math::Point     contact_point_a;
-        Math::Point     contact_point_b;
-        Math::Unit_vector normal;
-        float           penetration_depth;
-    };
-
     /// @brief find the intersection of 2 objects
     ///
     /// This is the main entry point to the collision solver.
@@ -49,7 +37,7 @@ public:
     /// @param a - [in] the first object
     /// @param b - [in] the second object
     /// @returns true if they collide
-    bool                intersection( const Physics_object& a, const Physics_object& b, std::vector<Contact>& contacts );
+    bool                intersection( const Physics_object& a, const Physics_object& b, std::vector<Contact_manifold::Contact>& contacts );
 
 };
 

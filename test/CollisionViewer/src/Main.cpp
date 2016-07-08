@@ -50,7 +50,7 @@ std::unique_ptr<Renderer::Camera>   camera;
 Utility::Sdl_manager::Mouse_point   left_down_point;
 bool					            left_button_down;
 std::shared_ptr<Renderer::Simple_object_renderer> simple_renderer;
-std::vector<Physics::Collision_solver::Contact> contact_manifold;
+std::vector<Physics::Contact_manifold::Contact> contact_manifold;
 
 Physics::Collision_solver           solver;
 std::shared_ptr<Renderer::Visible_object>  visible_object_1;
