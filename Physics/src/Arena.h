@@ -55,6 +55,7 @@ private:
     Collision_solver    m_collision_solver;
     Constraint_solver   m_constraint_solver;
     float               m_step_size;
+    float               m_elapsed;
 
     std::vector<std::shared_ptr<Physics_object>> m_objects;
     std::map<std::tuple<std::shared_ptr<Physics_object>,

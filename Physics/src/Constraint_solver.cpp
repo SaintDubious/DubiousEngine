@@ -19,7 +19,7 @@ float baumgarte_term( float dt, const Math::Vector& n, const Math::Point& p_a, c
     // BETA is the number you can play with to try different things. In my simple 
     // test with stacked blocks, when it was 0.01 they would very slowly penetrate.
     // When it was 0.9 they hopped up and down until the stack fell.
-    const float BETA = 0.1f;
+    const float BETA = 0.2f;
     float d = Math::dot_product( (p_b - p_a), n );
     // According to Allen Chou's web page, the Baumgarte term should be negative.
     // However when I use negative, my colliders end up sucking into each other
@@ -32,7 +32,7 @@ float restitution_term( const Math::Vector& n,
                         const Math::Vector& v_a, const Math::Vector& av_a, 
                         const Math::Vector& v_b, const Math::Vector& av_b)
 {
-    const float COEFFICIENT_OF_RESTITUTION = 0.2f;
+    const float COEFFICIENT_OF_RESTITUTION = 0.4f;
     Math::Vector a_part = -1*v_a - Math::cross_product( av_a, r_a );
     Math::Vector b_part =    v_b + Math::cross_product( av_b, r_b );
 
@@ -119,9 +119,9 @@ Constraint_solver::Velocity_matrix Constraint_solver::solve( const Physics_objec
                                     b.velocity(), b.angular_velocity(), b.mass(), b.moment_of_inertia()), 
                                     c.normal, r_a, r_b, a.mass(), a.moment_of_inertia(), b.mass(), b.moment_of_inertia() );
 
+         
+         
             
-
-
         result.a_linear  = result.a_linear  + delta.a_linear;
         result.a_angular = result.a_angular + delta.a_angular;
         result.b_linear  = result.b_linear  + delta.b_linear;

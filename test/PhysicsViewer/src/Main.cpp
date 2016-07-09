@@ -31,7 +31,7 @@ const float LIGHT_HEIGHT = 50.0f;
 const float PI = 3.1415926535f;
 const int WIDTH=800;
 const int HEIGHT=600;
-const int NUM_OBJECTS = 3;
+const int NUM_OBJECTS = 20;
 const int FIRST_OBJECT = 1; // the floor is item 0
 
 //////////////////////////////////////////////////////////////
@@ -103,13 +103,13 @@ int main( int argc, char** argv )
             else {
                 object_color = Renderer::Color::RED;
             }
-            visible_objects.back()->coordinate_space().translate( Math::Vector( 0, i*5.0f+1.5f, 0 ) );
+            visible_objects.back()->coordinate_space().translate( Math::Vector( 0, i*1.1f+1.5f, 0 ) );
 //            visible_objects.back()->coordinate_space().translate( Math::Vector( i*2.0f, i*5.0f+1.5f, 0 ) );
             visible_objects.back()->renderer() = simple_renderer;
             scene->add_object( visible_objects.back() );
 
             physics_objects.push_back( std::make_shared<Physics::Physics_object>( physics_model, 1.0f ) );
-            physics_objects.back()->coordinate_space().translate( Math::Vector( 0, i*5.0f+1.5f, 0 ) );
+            physics_objects.back()->coordinate_space().translate( Math::Vector( 0, i*1.1f+1.5f, 0 ) );
 //            physics_objects.back()->coordinate_space().translate( Math::Vector( i*2.0f, i*5.0f+1.5f, 0 ) );
             arena.push_back( physics_objects.back() );
         }

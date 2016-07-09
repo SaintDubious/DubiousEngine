@@ -16,6 +16,7 @@ template <int T> VectorT<T> operator-( const VectorT<T>& a, const VectorT<T>& b 
 template <int T> VectorT<T> operator*( const VectorT<T>& a, float b );
 template <int T> VectorT<T> operator*( float a, const VectorT<T>& b );
 template <int T> VectorT<T> operator/( const VectorT<T>& a, float b );
+template <int T> std::ostream& operator<<(std::ostream& o, const VectorT<T>& a);
 
 /// @brief A 3D Vector
 ///
@@ -84,6 +85,7 @@ private:
     friend VectorT<T>   operator* <>( const VectorT<T>& a, float b );
     friend VectorT<T>   operator* <>( float a, const VectorT<T>& b );
     friend VectorT<T>   operator/ <>( const VectorT<T>& a, float b );
+    friend std::ostream& operator<< <>(std::ostream& o, const VectorT<T>& a);
 
     VectorT( const Triple& coords )
         : m_coords( coords )
@@ -139,6 +141,14 @@ template <int T>
 VectorT<T> operator/( const VectorT<T>& a, float b )
 {
     return VectorT<T>( a.m_coords.m_x/b, a.m_coords.m_y/b, a.m_coords.m_z/b );
+}
+
+//////////////////////////////////////////////////////////////
+template <int T> 
+std::ostream& operator<<(std::ostream& o, const VectorT<T>& a)
+{
+    o << a.m_coords;
+    return o;
 }
 
 typedef VectorT<0>      Vector;
