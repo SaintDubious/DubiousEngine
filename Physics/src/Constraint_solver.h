@@ -33,7 +33,7 @@ public:
         Math::Vector    b_linear;
         Math::Vector    b_angular;
     };
-    Velocity_matrix solve( const Physics_object& a, const Physics_object& b, std::vector<Contact_manifold::Contact>& contacts );
+    Velocity_matrix solve( const Physics_object& a, const Physics_object& b, Contact_manifold& contact_manifold );
 private:
     
     float               m_time_step;

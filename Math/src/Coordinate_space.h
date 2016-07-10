@@ -88,6 +88,18 @@ public:
     /// @returns The same vector in local coordinate space
     Local_vector	    transform( const Vector& v ) const;
 
+    /// @brief Converts the local point to the global coord space.
+    ///
+    /// @param v - [in] a point in local coordinate space
+    /// @returns The same point in world coordinate space
+    Point		        transform( const Local_point& v ) const;
+
+    /// @brief Converts the point to the local coord space
+    ///
+    /// @param v - [in] a point in world coordinate space
+    /// @returns The same point in local coordinate space
+    Local_point 	    transform( const Point& p ) const;
+
 private:    
     friend class Physics_test::Collision_solver_test;
 

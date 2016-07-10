@@ -33,10 +33,19 @@ public:
     /// Contains information relevant to the contact
     struct Contact {
         Math::Point     contact_point_a;
+        Math::Local_point local_point_a;
         Math::Point     contact_point_b;
+        Math::Local_point local_point_b;
         Math::Unit_vector normal;
         float           penetration_depth;
     };
+
+    /// @brief Prunes old contact points
+    ///
+    /// The manifold contains contact points from the previous time step.
+    /// Some of these may have drifted out of contact, or they may have
+    /// moved so far that we no longer want them in our manifold.
+    void                prune_old_contacts();
 
     /// @brief Inserts contacts into the manifold;
     ///
@@ -45,10 +54,13 @@ public:
     void                insert( const std::vector<Contact>& contacts );
 
     const std::vector<Contact>& contacts() const { return m_contacts; }
+
+    float&              normal_impulse_sum() { return m_normal_impulse_sum; }
 private:
     std::shared_ptr<Physics_object> m_object_a;
     std::shared_ptr<Physics_object> m_object_b;
     std::vector<Contact> m_contacts;
+    float               m_normal_impulse_sum = 0;
 };
 
 }}

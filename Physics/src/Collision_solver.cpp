@@ -139,10 +139,12 @@ void find_collision_point( const Physics_model& a, const Math::Coordinate_space&
                             triangle.b.support_a() * v +
                             triangle.c.support_a() * w;
             contact.contact_point_a = Math::to_point( contact_point );
+            contact.local_point_a   = Math::to_point( ca.transform( contact_point ) );
             contact_point = triangle.a.support_b() * u +
                             triangle.b.support_b() * v +
                             triangle.c.support_b() * w;
             contact.contact_point_b = Math::to_point( contact_point );
+            contact.local_point_b   = Math::to_point( cb.transform( contact_point ) );
             return;
         }
         polytope.push_back( Minkowski_vector( support_point, support_a, support_b ) );

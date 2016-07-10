@@ -43,10 +43,11 @@ void Arena::run_physics( float elapsed )
                     if (contact_manifold == m_manifolds.end()) {
                         contact_manifold = m_manifolds.insert( std::make_pair(std::make_tuple(a,b), Contact_manifold( a, b )) ).first;
                     }
+                    contact_manifold->second.prune_old_contacts();
                     contact_manifold->second.insert( contacts );
 
                     Constraint_solver::Velocity_matrix velocities;
-                    velocities = m_constraint_solver.solve( *a, *b, contacts );
+                    velocities = m_constraint_solver.solve( *a, *b, contact_manifold->second );
 
                     a->velocity()           = velocities.a_linear;
                     a->angular_velocity()   = velocities.a_angular;

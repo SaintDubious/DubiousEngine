@@ -78,6 +78,24 @@ Local_vector Coordinate_space::transform( const Vector& v ) const
 }
 
 //////////////////////////////////////////////////////////////
+Point Coordinate_space::transform( const Local_point& p ) const
+{
+    // https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation
+    Quaternion qdiff( 0, Triple( p.x(), p.y(), p.z() ) );
+    Quaternion qrotated = m_rotation * qdiff * m_rotation.conjugate();
+    return Point( qrotated.m_imaginary.m_x, qrotated.m_imaginary.m_y, qrotated.m_imaginary.m_z );
+}
+
+//////////////////////////////////////////////////////////////
+Local_point Coordinate_space::transform( const Point& p ) const
+{
+    // https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation
+    Quaternion qdiff( 0, Triple( p.x(), p.y(), p.z() ) );
+    Quaternion qrotated = m_rotation.conjugate() * qdiff * m_rotation;
+    return Local_point( qrotated.m_imaginary.m_x, qrotated.m_imaginary.m_y, qrotated.m_imaginary.m_z );
+}
+
+//////////////////////////////////////////////////////////////
 bool operator== ( const Coordinate_space& a, const Coordinate_space& b )
 {
     return a.m_position == b.m_position &&

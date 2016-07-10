@@ -3,6 +3,8 @@
 
 #include <Vector_math.h>
 
+#include <algorithm>
+
 //////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Physics {
@@ -99,7 +101,7 @@ Constraint_solver::Velocity_matrix delta_v( float lambda, const Math::Vector& n,
 }
 }
                                 
-Constraint_solver::Velocity_matrix Constraint_solver::solve( const Physics_object& a, const Physics_object& b, std::vector<Contact_manifold::Contact>& contacts )
+Constraint_solver::Velocity_matrix Constraint_solver::solve( const Physics_object& a, const Physics_object& b, Contact_manifold& contact_manifold )
 {
     Constraint_solver::Velocity_matrix result;
     result.a_linear  = a.velocity();
@@ -107,17 +109,24 @@ Constraint_solver::Velocity_matrix Constraint_solver::solve( const Physics_objec
     result.b_linear  = b.velocity();
     result.b_angular = b.angular_velocity();
 
-    for (const auto& c : contacts) {
+    contact_manifold.normal_impulse_sum() = 0;
+    for (const auto& c : contact_manifold.contacts()) {
         Math::Vector r_a = c.contact_point_a - a.coordinate_space().position();
         Math::Vector r_b = c.contact_point_b - b.coordinate_space().position();
 
 
+        // normal impulse clamping
+        float lambda = lagrangian_multiplier( m_time_step, c.normal, c.contact_point_a, c.contact_point_b, 
+                                              r_a, r_b, a.velocity(), a.angular_velocity(), a.mass(), a.moment_of_inertia(),
+                                              b.velocity(), b.angular_velocity(), b.mass(), b.moment_of_inertia());
+        float normal_impulse_sum_copy = contact_manifold.normal_impulse_sum();
+        contact_manifold.normal_impulse_sum() = std::max( 0.0f, contact_manifold.normal_impulse_sum() + lambda );
+        lambda = contact_manifold.normal_impulse_sum() - normal_impulse_sum_copy;
 
-        Constraint_solver::Velocity_matrix delta = delta_v( lagrangian_multiplier( m_time_step, 
-                                    c.normal, c.contact_point_a, c.contact_point_b, r_a, r_b, 
-                                    a.velocity(), a.angular_velocity(), a.mass(), a.moment_of_inertia(),
-                                    b.velocity(), b.angular_velocity(), b.mass(), b.moment_of_inertia()), 
-                                    c.normal, r_a, r_b, a.mass(), a.moment_of_inertia(), b.mass(), b.moment_of_inertia() );
+
+
+        Constraint_solver::Velocity_matrix delta = delta_v( lambda, c.normal, r_a, r_b, a.mass(), a.moment_of_inertia(), 
+                                                            b.mass(), b.moment_of_inertia() );
 
          
          

@@ -26,22 +26,23 @@ public:
         std::unique_ptr<const Ac3d_file> model_file = Ac3d_file_reader::test_cube( 1.0f, 1.0f, 1.0f ); 
 
         std::shared_ptr<Physics_model> model = std::make_shared<Physics_model>( *model_file );
-        Physics_object a( model, 1 );
-        Physics_object b( model, 1 );
+        std::shared_ptr<Physics_object> a( new Physics_object( model, 1 ) );
+        std::shared_ptr<Physics_object> b( new Physics_object( model, 1 ) );
 
-        b.coordinate_space().translate( Vector( 2, 0, 0 ) );
-        b.velocity() = Vector( -10, 0, 0 );
-        Assert::IsTrue( collision_solver.intersection( a, b, contacts ) == true );
-        Constraint_solver::Velocity_matrix velocities = solver.solve( a, b, contacts );
+        b->coordinate_space().translate( Vector( 2, 0, 0 ) );
+        b->velocity() = Vector( -10, 0, 0 );
+        Assert::IsTrue( collision_solver.intersection( *a, *b, contacts ) == true );
+        Contact_manifold contact_manifold( a, b );
+        Constraint_solver::Velocity_matrix velocities = solver.solve( *a, *b, contact_manifold );
         // This test is in flux as I play with Baumgarte terms and coefficient of
         // restitution
 //        Assert::IsTrue( velocities.a_linear == Vector( -5, 0, 0 ) );
 //        Assert::IsTrue( velocities.b_linear == Vector( -5, 0, 0 ) );
 
         contacts.clear();
-        b.coordinate_space().translate( Vector( 0, 1, 0 ) );
-        Assert::IsTrue( collision_solver.intersection( a, b, contacts ) == true );
-        velocities = solver.solve( a, b, contacts );
+        b->coordinate_space().translate( Vector( 0, 1, 0 ) );
+        Assert::IsTrue( collision_solver.intersection( *a, *b, contacts ) == true );
+        velocities = solver.solve( *a, *b, contact_manifold );
     }
 };
 }
