@@ -92,6 +92,17 @@ public:
         Assert::IsTrue( lv == Local_vector( -1, 1, 1 ) );
     }
 
+    TEST_METHOD(coordinate_space_pointtransform)
+    {
+        Coordinate_space c;
+        c.rotate( Quaternion( Vector( 0, 1, 0 ), to_radians( 90 ) ) );
+        c.position() = Point( 5, 5, 5 );
+        Point p = c.transform( Local_point( 1, 1, 1 ) );
+        Assert::IsTrue( p == Point( 6, 6, 4 ) );
+        Local_point lp = c.transform( Point( 1, 1, 1 ) );
+        Assert::IsTrue( lp == Local_point( 4, -4, -4 ) );
+    }
+
 };
 
 }

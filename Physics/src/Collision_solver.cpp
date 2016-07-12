@@ -132,19 +132,19 @@ void find_collision_point( const Physics_model& a, const Math::Coordinate_space&
         if (Math::dot_product(support_point,Math::Vector(triangle.normal)) <= min_distance+0.0001f) {
             contact.normal = triangle.normal;
             contact.penetration_depth = min_distance;
-            Math::Vector contact_point = Math::Vector( triangle.normal ) * min_distance;
+            Math::Point contact_point = Math::to_point(Math::Vector( triangle.normal ) * min_distance);
             float u, v, w;
-            std::tie(u,v,w) = barycentric( contact_point, triangle.a.v(), triangle.b.v(), triangle.c.v() );
-            contact_point = triangle.a.support_a() * u +
-                            triangle.b.support_a() * v +
-                            triangle.c.support_a() * w;
-            contact.contact_point_a = Math::to_point( contact_point );
-            contact.local_point_a   = Math::to_point( ca.transform( contact_point ) );
-            contact_point = triangle.a.support_b() * u +
-                            triangle.b.support_b() * v +
-                            triangle.c.support_b() * w;
-            contact.contact_point_b = Math::to_point( contact_point );
-            contact.local_point_b   = Math::to_point( cb.transform( contact_point ) );
+            std::tie(u,v,w) = barycentric( Math::to_vector(contact_point), triangle.a.v(), triangle.b.v(), triangle.c.v() );
+            contact_point = Math::to_point(triangle.a.support_a() * u +
+                                           triangle.b.support_a() * v +
+                                           triangle.c.support_a() * w);
+            contact.contact_point_a = contact_point;
+            contact.local_point_a   = ca.transform( contact_point );
+            contact_point = Math::to_point(triangle.a.support_b() * u +
+                                           triangle.b.support_b() * v +
+                                           triangle.c.support_b() * w);
+            contact.contact_point_b = contact_point;
+            contact.local_point_b   = cb.transform( contact_point );
             return;
         }
         polytope.push_back( Minkowski_vector( support_point, support_a, support_b ) );

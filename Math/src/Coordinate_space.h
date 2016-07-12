@@ -90,12 +90,16 @@ public:
 
     /// @brief Converts the local point to the global coord space.
     ///
+    /// Note that this is not a vector, it's a point. As such this
+    /// takes the coordinate space position into account.
     /// @param v - [in] a point in local coordinate space
     /// @returns The same point in world coordinate space
     Point		        transform( const Local_point& v ) const;
 
     /// @brief Converts the point to the local coord space
     ///
+    /// Note that this is not a vector, it's a point. As such this
+    /// takes the coordinate space position into account.
     /// @param v - [in] a point in world coordinate space
     /// @returns The same point in local coordinate space
     Local_point 	    transform( const Point& p ) const;
