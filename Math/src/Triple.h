@@ -39,7 +39,7 @@ struct Triple {
     ///
     /// Used to make a Triple the minus of itself. Just a shorthand
     /// for Triple * -1
-    Triple operator-()
+    Triple              operator-()
     {
         return Triple( -m_x, -m_y, -m_z );
     }
