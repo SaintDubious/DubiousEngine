@@ -47,6 +47,8 @@ public:
 
         b = c-a;
         Assert::IsTrue( b == Triple(1, 10, 100) );
+
+        Assert::IsTrue( -b == Triple(-1, -10, -100) );
     }
 
 };

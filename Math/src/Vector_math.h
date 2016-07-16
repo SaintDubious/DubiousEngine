@@ -33,6 +33,22 @@ float dot_product( const Unit_vectorT<T>& a, const Unit_vectorT<T>& b )
 }
 
 //////////////////////////////////////////////////////////////
+// http://www.geometrictools.com/Documentation/DistancePointLine.pdf
+template <int T>
+float distance_to_line_segment( const PointT<T>& a, const PointT<T>& b, const PointT<T>& p )
+{
+    Vector direction = b-a;
+    float t = dot_product( direction, p-a ) / dot_product( direction, direction );
+    if (t<=0) {
+        return (p-a).length();
+    }
+    else if (t>=1) {
+        return (p-b).length();
+    }
+    return (p-(a+(direction*t))).length();
+}
+
+//////////////////////////////////////////////////////////////
 // As much as I'd like to enforce that points and vectors are
 // unique things that can't be arbitrarily converted, there
 // do exists realities when points just need to be vectors.

@@ -62,6 +62,19 @@ public:
         dot_test( Vector( 1, 1, 1 ), Vector( -1, 1, 1 ), 70.5287768017f );
     }
 
+    TEST_METHOD(distance_to_line_segment_test)
+    {
+        Point a( 1, 1, 1 );
+        Point b( 3, 3, 3 );
+
+        Assert::IsTrue( distance_to_line_segment( a, b, Point( -1, -1, -1 ) ) == sqrt(12.0f) );
+        Assert::IsTrue( distance_to_line_segment( a, b, Point( 4, 4, 4 ) ) == sqrt(3.0f) );
+        Assert::IsTrue( distance_to_line_segment( a, b, Point( 2, 2, 2 ) ) == 0.0f );
+        // from observation, I didn't prove this to myself. Looks like closest point is
+        // (1.66666, 1.666666, 1.66666)
+        Assert::IsTrue( distance_to_line_segment( a, b, Point( 2, 2, 1 ) ) == 0.816496551f );
+    }
+
 private:
 
     void cross_test( const Vector& v1, const Vector& v2, const Unit_vector& dir, float angle )
