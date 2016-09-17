@@ -73,7 +73,6 @@ private:
     void                cleanup_contacts( std::vector<Contact>& contacts );
     float               distance_squared_to_line_segment( const Math::Point& a, const Math::Point& b, const Math::Point& p ) const;
     std::tuple<bool,float> distance_squared_to_triangle( const Math::Point& a, const Math::Point& b, const Math::Point& c, const Math::Point& p ) const;
-    Math::Coordinate_space triangle_to_zy_plane( const Math::Point& a, const Math::Point& b, const Math::Point& c ) const;
     std::tuple<bool,Math::Point,Math::Point> closest_segment( const Math::Point& a, const Math::Point& b, const Math::Point& c, const Math::Point& p ) const;
 
 };

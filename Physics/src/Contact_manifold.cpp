@@ -31,7 +31,7 @@ void Contact_manifold::prune_old_contacts()
                         // check to see if it's still penetrating
                         Math::Vector penetrator = Math::to_vector(new_contact_b)-Math::to_vector(new_contact_a);
                         float dot_penetrator = Math::dot_product( Math::Vector(c.normal), Math::to_vector(new_contact_b)-Math::to_vector(new_contact_a) );
-                        if (dot_penetrator > 0.1f) {
+                        if (dot_penetrator > 0.05f) {
                             return true;
                         }
                         c.penetration_depth = dot_penetrator;
@@ -74,41 +74,6 @@ float Contact_manifold::distance_squared_to_line_segment( const Math::Point& a, 
         return (p-b).length_squared();
     }
     return (p-(a+(direction*t))).length_squared();
-}
-
-//////////////////////////////////////////////////////////////
-Math::Coordinate_space Contact_manifold::triangle_to_zy_plane( const Math::Point& a, const Math::Point& b, const Math::Point& c ) const
-{
-    Math::Coordinate_space result;
-
-    // First step, find the offset so that a is on the origin
-    result.position() = Math::to_point( Math::to_vector(a) );
-    // Next step, rotate such that z axis moves to b
-    Math::Vector b1 = b - result.position();
-    Math::Vector b1_cross_z = Math::cross_product( Math::Vector( 0, 0, 1 ), b1 );
-    float length = b1_cross_z.length();
-    if (!Math::equals(length,0)) {
-        float theta = asin(length/b1.length());
-        if (b1.z() < 0) {
-            theta = Math::PI-theta;
-        }
-        result.rotation() = Math::Quaternion( Math::Unit_vector(b1_cross_z), theta );
-    }
-
-    // Lastly, find the rotation that will move the zy plane to c
-    Math::Local_point c2 = result.transform( c );
-    if (!Math::equals( c2.x(), 0 )) {
-        length = sqrt( c2.x()*c2.x() + c2.y()*c2.y() );
-        if (!Math::equals(length,0)) {
-            float theta = -asin( c2.x()/length );
-            if (c2.y() < 0) {
-                theta = Math::PI-theta;
-            }
-            result.rotate( Math::Local_quaternion( Math::Local_unit_vector( 0, 0, 1 ), theta ) );
-        }
-    }
-
-    return result;
 }
 
 //////////////////////////////////////////////////////////////
@@ -220,7 +185,9 @@ void Contact_manifold::cleanup_contacts( std::vector<Contact>& contacts )
             furthest_index = i;
         }
     }
-    new_contacts[3] = contacts[furthest_index];
+    if (furthest != std::numeric_limits<float>::lowest()) {
+        new_contacts[3] = contacts[furthest_index];
+    }
 
     contacts = new_contacts;    
 }

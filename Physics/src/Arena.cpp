@@ -4,7 +4,7 @@
 #include <iostream>
 
 namespace {
-    const float BETA = 0.0f;
+    const float BETA = 0.05f;
     const float COEFFICIENT_OF_RESTITUTION = 0.0f;
     const float SLOP = 0.0f;
     const float CONTACT_THRESHOLD = 0.05f;
@@ -15,8 +15,7 @@ namespace Dubious {
 namespace Physics {
 
 Arena::Arena( float step_size )
-    : m_integrator( step_size )
-    , m_constraint_solver( step_size, BETA,COEFFICIENT_OF_RESTITUTION, SLOP )
+    : m_constraint_solver( step_size, BETA,COEFFICIENT_OF_RESTITUTION, SLOP )
     , m_step_size( step_size )
 {
 }

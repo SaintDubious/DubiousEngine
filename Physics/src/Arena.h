@@ -1,7 +1,6 @@
 #ifndef INCLUDED_PHYSICS_ARENA
 #define INCLUDED_PHYSICS_ARENA
 
-#include "Integrator.h"
 #include "Collision_solver.h"
 #include "Constraint_solver.h"
 
@@ -51,7 +50,6 @@ public:
                    Contact_manifold>& manifolds() const { return m_manifolds; }
 private:
 
-    Integrator          m_integrator;
     Collision_solver    m_collision_solver;
     Constraint_solver   m_constraint_solver;
     float               m_step_size;
