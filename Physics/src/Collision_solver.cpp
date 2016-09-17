@@ -131,6 +131,14 @@ void find_collision_point( const Physics_model& a, const Math::Coordinate_space&
         Math::Vector support_point = support_a - support_b;
         if (Math::dot_product(support_point,Math::Vector(triangle.normal)) <= min_distance+0.0001f) {
             contact.normal = triangle.normal;
+            // http://box2d.org/2014/02/computing-a-basis/
+            if (fabs(contact.normal.x()) >= 0.57735f) {
+                contact.tangent1 = Math::Vector( contact.normal.y(), -contact.normal.x(), 0.0f );
+            }
+            else {
+                contact.tangent1 = Math::Vector( 0.0f, contact.normal.z(), -contact.normal.y() );
+            }
+            contact.tangent2 = Math::cross_product( contact.normal, contact.tangent1 );
             contact.penetration_depth = min_distance;
             Math::Point contact_point = Math::to_point(Math::Vector( triangle.normal ) * min_distance);
             float u, v, w;

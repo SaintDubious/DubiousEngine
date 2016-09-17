@@ -85,12 +85,55 @@ float lagrangian_multiplier( float dt, float beta, float cor, float slop,
     return lambda;
 }  
 
-Constraint_solver::Velocity_matrix delta_v( float lambda, const Math::Vector& n, 
+// The lagrangian multiplier (denoted by lambda) is a scalar derived from a heck of a
+// lot of really big matrices. I'm trying my hardest to not have to create a matrix
+// class for this thing, so I went ahead and unwrapped it all into a bunch of vector
+// dot products.
+float lagrangian_multiplier_friction( 
+                             const Math::Vector& t,
+                             const Math::Vector& r_a, const Math::Vector& r_b,
+                             const Math::Vector& v_a, const Math::Vector& av_a, 
+                             float mass_a, float inertial_tensor_a,
+                             const Math::Vector& v_b, const Math::Vector& av_b,
+                             float mass_b, float inertial_tensor_b )
+{
+    float j_dot_v = Math::dot_product((-1*t), v_a) + Math::dot_product(Math::cross_product(-1*r_a,t), av_a) +
+                    Math::dot_product(t, v_b)      + Math::dot_product(Math::cross_product(r_b,t),av_b);
+    float inverse_m_a = 1.0f/mass_a;
+    float inverse_m_b = 1.0f/mass_b;
+    float inverse_tensor_a = 1.0f/inertial_tensor_a;
+    float inverse_tensor_b = 1.0f/inertial_tensor_b;
+
+    float denom_a = 0;
+    if (!Physics_object::is_stationary(mass_a)) {
+        Math::Vector negra_x_t = Math::cross_product( -1*r_a, t );
+        denom_a = Math::dot_product( -1*t*inverse_m_a, -1*t ) + Math::dot_product( negra_x_t*inverse_tensor_a, negra_x_t);
+    }
+    float denom_b = 0;
+    if (!Physics_object::is_stationary(mass_b)) {
+        Math::Vector rb_x_t = Math::cross_product( r_b, t );
+        denom_b = Math::dot_product(t*inverse_m_b, t) + Math::dot_product( rb_x_t*inverse_tensor_b, rb_x_t);
+    }
+    float denom = denom_a + denom_b;
+
+    float lambda = -(j_dot_v)  / denom;
+
+    return lambda;
+}  
+
+struct Velocity_matrix {
+    Math::Vector    a_linear;
+    Math::Vector    a_angular;
+    Math::Vector    b_linear;
+    Math::Vector    b_angular;
+};
+
+Velocity_matrix delta_v( float lambda, const Math::Vector& n, 
                                             const Math::Vector& r_a, const Math::Vector& r_b,
                                             float mass_a, float inertial_tensor_a,
                                             float mass_b, float inertial_tensor_b )
 {
-    Constraint_solver::Velocity_matrix result;
+    Velocity_matrix result;
     if (!Physics_object::is_stationary(mass_a)) {
         float inverse_m_a = 1.0f/mass_a;
         float inverse_tensor_a = 1.0f/inertial_tensor_a;
@@ -108,36 +151,63 @@ Constraint_solver::Velocity_matrix delta_v( float lambda, const Math::Vector& n,
 }
 }
       
-Constraint_solver::Velocity_matrix Constraint_solver::warm_start( Physics_object& a, Physics_object& b, Contact_manifold& contact_manifold )
+void Constraint_solver::warm_start( Physics_object& a, Physics_object& b, Contact_manifold& contact_manifold )
 {
-    Constraint_solver::Velocity_matrix result;
-    result.a_linear  = a.velocity();
-    result.a_angular = a.angular_velocity();
-    result.b_linear  = b.velocity();
-    result.b_angular = b.angular_velocity();
-
-
     for (const auto& c : contact_manifold.contacts()) {
         Math::Vector r_a = c.contact_point_a - a.coordinate_space().position();
         Math::Vector r_b = c.contact_point_b - b.coordinate_space().position();
-        Constraint_solver::Velocity_matrix delta = delta_v( c.normal_impulse, c.normal, r_a, r_b, a.mass(), a.moment_of_inertia(), 
-                                                            b.mass(), b.moment_of_inertia() );
+
+        Velocity_matrix delta  = delta_v( c.tangent_impulse, Math::Unit_vector(c.tangent1+c.tangent2), r_a, r_b, a.mass(), a.moment_of_inertia(), 
+                                          b.mass(), b.moment_of_inertia() );
+        a.velocity()           = a.velocity()          + delta.a_linear;
+        a.angular_velocity()   = a.angular_velocity()  + delta.a_angular;
+        b.velocity()           = b.velocity()          + delta.b_linear;
+        b.angular_velocity()   = b.angular_velocity()  + delta.b_angular;
+
+        delta  = delta_v( c.normal_impulse, c.normal, r_a, r_b, a.mass(), a.moment_of_inertia(), 
+                                          b.mass(), b.moment_of_inertia() );
         a.velocity()           = a.velocity()          + delta.a_linear;
         a.angular_velocity()   = a.angular_velocity()  + delta.a_angular;
         b.velocity()           = b.velocity()          + delta.b_linear;
         b.angular_velocity()   = b.angular_velocity()  + delta.b_angular;
     }
-    return result;
 }
                           
-Constraint_solver::Velocity_matrix Constraint_solver::solve( Physics_object& a, Physics_object& b, Contact_manifold& contact_manifold )
+void Constraint_solver::solve( Physics_object& a, Physics_object& b, Contact_manifold& contact_manifold )
 {
-    Constraint_solver::Velocity_matrix result;
-    result.a_linear  = a.velocity();
-    result.a_angular = a.angular_velocity();
-    result.b_linear  = b.velocity();
-    result.b_angular = b.angular_velocity();
+    for (auto& c : contact_manifold.contacts()) {
+        Math::Vector r_a = c.contact_point_a - a.coordinate_space().position();
+        Math::Vector r_b = c.contact_point_b - b.coordinate_space().position();
 
+        float lambda = lagrangian_multiplier_friction( Math::Unit_vector(c.tangent1+c.tangent2), 
+                                              r_a, r_b, a.velocity(), a.angular_velocity(), a.mass(), a.moment_of_inertia(),
+                                              b.velocity(), b.angular_velocity(), b.mass(), b.moment_of_inertia());
+        // normal impulse clamping
+        const float FRICTION = 0.3f;
+        float max_friction = FRICTION * c.normal_impulse;
+
+
+        float new_impulse = c.tangent_impulse + lambda;
+        if (new_impulse < -max_friction) {
+            new_impulse = -max_friction;
+        }
+        else if (new_impulse > max_friction) {
+            new_impulse = max_friction;
+        }
+
+
+
+        lambda = new_impulse - c.tangent_impulse;
+        c.tangent_impulse = new_impulse;
+
+        Velocity_matrix delta  = delta_v( lambda, c.tangent1+c.tangent2, r_a, r_b, a.mass(), a.moment_of_inertia(), 
+                                          b.mass(), b.moment_of_inertia() );
+         
+        a.velocity()           = a.velocity()          + delta.a_linear;
+        a.angular_velocity()   = a.angular_velocity()  + delta.a_angular;
+        b.velocity()           = b.velocity()          + delta.b_linear;
+        b.angular_velocity()   = b.angular_velocity()  + delta.b_angular;
+    }
 
     for (auto& c : contact_manifold.contacts()) {
         Math::Vector r_a = c.contact_point_a - a.coordinate_space().position();
@@ -152,16 +222,14 @@ Constraint_solver::Velocity_matrix Constraint_solver::solve( Physics_object& a, 
         lambda = new_impulse - c.normal_impulse;
         c.normal_impulse = new_impulse;
 
-        Constraint_solver::Velocity_matrix delta = delta_v( lambda, c.normal, r_a, r_b, a.mass(), a.moment_of_inertia(), 
-                                                            b.mass(), b.moment_of_inertia() );
+        Velocity_matrix delta  = delta_v( lambda, c.normal, r_a, r_b, a.mass(), a.moment_of_inertia(), 
+                                          b.mass(), b.moment_of_inertia() );
          
-         a.velocity()           = a.velocity()          + delta.a_linear;
-         a.angular_velocity()   = a.angular_velocity()  + delta.a_angular;
-         b.velocity()           = b.velocity()          + delta.b_linear;
-         b.angular_velocity()   = b.angular_velocity()  + delta.b_angular;
+        a.velocity()           = a.velocity()          + delta.a_linear;
+        a.angular_velocity()   = a.angular_velocity()  + delta.a_angular;
+        b.velocity()           = b.velocity()          + delta.b_linear;
+        b.angular_velocity()   = b.angular_velocity()  + delta.b_angular;
     }
-
-    return result;
 }
 
 }}

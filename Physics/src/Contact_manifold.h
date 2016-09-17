@@ -44,6 +44,7 @@ public:
         Math::Unit_vector tangent2;
         float           penetration_depth = 0;
         float           normal_impulse = 0;
+        float           tangent_impulse = 0;
     };
 
     /// @brief Prunes old contact points

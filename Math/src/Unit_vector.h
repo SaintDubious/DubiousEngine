@@ -12,6 +12,7 @@ template <int T> class VectorT;
 template <int T> class Unit_vectorT;
 template <int T> bool operator==( const Unit_vectorT<T>& a, const Unit_vectorT<T>& b );
 template <int T> bool operator!=( const Unit_vectorT<T>& a, const Unit_vectorT<T>& b );
+template <int T> VectorT<T> operator+( const Unit_vectorT<T>& a, const Unit_vectorT<T>& b );
 
 /// @brief A 3D Unit Vector
 ///
@@ -62,6 +63,7 @@ public:
 private:
     friend bool operator== <>( const Unit_vectorT<T>& a, const Unit_vectorT<T>& b );
     friend bool operator!= <>( const Unit_vectorT<T>& a, const Unit_vectorT<T>& b );
+    friend VectorT<T>   operator+ <>( const Unit_vectorT<T>& a, const Unit_vectorT<T>& b );
 
     Triple              m_coords = {1, 0, 0};
 };
@@ -78,6 +80,14 @@ template<int T>
 bool operator!=( const Unit_vectorT<T>& a, const Unit_vectorT<T>& b )
 {
     return a.m_coords != b.m_coords;
+}
+
+//////////////////////////////////////////////////////////////
+template <int T> 
+VectorT<T> operator+( const Unit_vectorT<T>& a, const Unit_vectorT<T>& b )
+{
+    Triple coords = a.m_coords + b.m_coords;
+    return VectorT<T>( coords.m_x, coords.m_y, coords.m_z );
 }
 
 typedef Unit_vectorT<0>  Unit_vector;

@@ -27,14 +27,8 @@ public:
     Constraint_solver( const Constraint_solver& ) = delete;
     Constraint_solver& operator=( const Constraint_solver& ) = delete;
 
-    struct Velocity_matrix {
-        Math::Vector    a_linear;
-        Math::Vector    a_angular;
-        Math::Vector    b_linear;
-        Math::Vector    b_angular;
-    };
-    Velocity_matrix     warm_start( Physics_object& a, Physics_object& b, Contact_manifold& contact_manifold );
-    Velocity_matrix     solve( Physics_object& a, Physics_object& b, Contact_manifold& contact_manifold );
+    void                warm_start( Physics_object& a, Physics_object& b, Contact_manifold& contact_manifold );
+    void                solve( Physics_object& a, Physics_object& b, Contact_manifold& contact_manifold );
 private:
     
     const float         m_time_step;

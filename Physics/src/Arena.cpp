@@ -4,7 +4,7 @@
 #include <iostream>
 
 namespace {
-    const float BETA = 0.05f;
+    const float BETA = 0.0f;
     const float COEFFICIENT_OF_RESTITUTION = 0.0f;
     const float SLOP = 0.0f;
     const float CONTACT_THRESHOLD = 0.05f;

@@ -36,7 +36,7 @@ void Contact_manifold::prune_old_contacts()
                         }
                         c.penetration_depth = dot_penetrator;
 
-                        const float THRESHOLD = 0.1f;
+                        const float THRESHOLD = 0.05f;
                         // if the point has moved too far from where it was originally recorded
                         // then we want to remove if from the manifold
                         if ((new_contact_a-c.contact_point_a).length_squared() > THRESHOLD) {
@@ -205,6 +205,7 @@ void Contact_manifold::insert( const std::vector<Contact>& contacts )
                 auto old = existing;
                 existing = c;
                 existing.normal_impulse = old.normal_impulse;
+                existing.tangent_impulse = old.tangent_impulse;
 
                 break;
             }
