@@ -20,6 +20,15 @@ VectorT<T> cross_product( const VectorT<T>& a, const VectorT<T>& b )
 
 //////////////////////////////////////////////////////////////
 template <int T>
+VectorT<T> cross_product( const Unit_vectorT<T>& a, const Unit_vectorT<T>& b )
+{
+    return VectorT<T>( (a.y()*b.z()) - (a.z()*b.y()), 
+        (a.z()*b.x()) - (a.x()*b.z()), 
+        (a.x()*b.y()) - (a.y()*b.x()));
+}
+
+//////////////////////////////////////////////////////////////
+template <int T>
 float dot_product( const VectorT<T>& a, const VectorT<T>& b )
 {
     return a.x()*b.x() + a.y()*b.y() + a.z()*b.z();
@@ -30,22 +39,6 @@ template <int T>
 float dot_product( const Unit_vectorT<T>& a, const Unit_vectorT<T>& b )
 {
     return a.x()*b.x() + a.y()*b.y() + a.z()*b.z();
-}
-
-//////////////////////////////////////////////////////////////
-// http://www.geometrictools.com/Documentation/DistancePointLine.pdf
-template <int T>
-float distance_to_line_segment( const PointT<T>& a, const PointT<T>& b, const PointT<T>& p )
-{
-    Vector direction = b-a;
-    float t = dot_product( direction, p-a ) / dot_product( direction, direction );
-    if (t<=0) {
-        return (p-a).length();
-    }
-    else if (t>=1) {
-        return (p-b).length();
-    }
-    return (p-(a+(direction*t))).length();
 }
 
 //////////////////////////////////////////////////////////////

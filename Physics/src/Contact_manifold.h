@@ -3,9 +3,12 @@
 
 #include <Point.h>
 #include <Unit_vector.h>
+#include <Coordinate_space.h>
 
 #include <memory>
 #include <vector>
+
+namespace Physics_test { class Contact_manifold_test; }
 
 //////////////////////////////////////////////////////////////
 namespace Dubious {
@@ -25,7 +28,7 @@ class Physics_object;
 class Contact_manifold {
 public:
 
-    Contact_manifold( std::shared_ptr<Physics_object> a, std::shared_ptr<Physics_object> b );
+    Contact_manifold( std::shared_ptr<Physics_object> a, std::shared_ptr<Physics_object> b, float threshold );
 
     /// @brief Contact information
     ///
@@ -37,7 +40,10 @@ public:
         Math::Point     contact_point_b;
         Math::Local_point local_point_b;
         Math::Unit_vector normal;
-        float           penetration_depth;
+        Math::Unit_vector tangent1;
+        Math::Unit_vector tangent2;
+        float           penetration_depth = 0;
+        float           normal_impulse = 0;
     };
 
     /// @brief Prunes old contact points
@@ -53,14 +59,23 @@ public:
     /// and if so, maybe use the older ones? Or newer ones?
     void                insert( const std::vector<Contact>& contacts );
 
+    std::vector<Contact>& contacts() { return m_contacts; }
     const std::vector<Contact>& contacts() const { return m_contacts; }
 
-    float&              normal_impulse_sum() { return m_normal_impulse_sum; }
 private:
-    std::shared_ptr<Physics_object> m_object_a;
-    std::shared_ptr<Physics_object> m_object_b;
+    friend class Physics_test::Contact_manifold_test;
+
+    const std::shared_ptr<Physics_object> m_object_a;
+    const std::shared_ptr<Physics_object> m_object_b;
     std::vector<Contact> m_contacts;
-    float               m_normal_impulse_sum = 0;
+    const float         m_threshold;
+
+    void                cleanup_contacts( std::vector<Contact>& contacts );
+    float               distance_squared_to_line_segment( const Math::Point& a, const Math::Point& b, const Math::Point& p ) const;
+    std::tuple<bool,float> distance_squared_to_triangle( const Math::Point& a, const Math::Point& b, const Math::Point& c, const Math::Point& p ) const;
+    Math::Coordinate_space triangle_to_zy_plane( const Math::Point& a, const Math::Point& b, const Math::Point& c ) const;
+    std::tuple<bool,Math::Point,Math::Point> closest_segment( const Math::Point& a, const Math::Point& b, const Math::Point& c, const Math::Point& p ) const;
+
 };
 
 }}

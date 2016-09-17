@@ -5,47 +5,50 @@
 
 #include <algorithm>
 
+#include <iostream>
+
 //////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Physics {
 
-Constraint_solver::Constraint_solver( float time_step )
+Constraint_solver::Constraint_solver( float time_step, float beta, float cor, float slop )
     : m_time_step( time_step )
+    , m_beta( beta )
+    , m_coefficient_of_restitution( cor )
+    , m_slop( slop )
 {
 }
 
 namespace {
 
-float baumgarte_term( float dt, const Math::Vector& n, const Math::Point& p_a, const Math::Point& p_b )
+// The baumgarte term will be larger for larger penetration depths. The idea here is that
+// the further the colliders overlap, the more they push apart. This can be tweaked by
+// changing the value of beta
+float baumgarte_term( float time_step, float beta, float penetration_depth )
 {
-    // BETA is the number you can play with to try different things. In my simple 
-    // test with stacked blocks, when it was 0.01 they would very slowly penetrate.
-    // When it was 0.9 they hopped up and down until the stack fell.
-    const float BETA = 0.2f;
-    float d = Math::dot_product( (p_b - p_a), n );
-    // According to Allen Chou's web page, the Baumgarte term should be negative.
-    // However when I use negative, my colliders end up sucking into each other
-    // and generally going haywire. 
-    return (BETA/dt) * d;
+    return -(beta/time_step) * penetration_depth;
 }
 
-float restitution_term( const Math::Vector& n, 
+// The restitution part responds stronger to objects that are moving faster. This
+// will add bounce to high speed collisions, and have almost no effect for low
+// speed collisions. This can be tweaked with the coefficient of restitution
+float restitution_term( const Math::Vector& n, float coefficient_of_restitution,
                         const Math::Vector& r_a, const Math::Vector& r_b,
                         const Math::Vector& v_a, const Math::Vector& av_a, 
                         const Math::Vector& v_b, const Math::Vector& av_b)
 {
-    const float COEFFICIENT_OF_RESTITUTION = 0.4f;
     Math::Vector a_part = -1*v_a - Math::cross_product( av_a, r_a );
     Math::Vector b_part =    v_b + Math::cross_product( av_b, r_b );
 
-    return Math::dot_product( (a_part+b_part) * COEFFICIENT_OF_RESTITUTION, n );
+    return Math::dot_product( (a_part+b_part) * coefficient_of_restitution, n );
 }
 
 // The lagrangian multiplier (denoted by lambda) is a scalar derived from a heck of a
 // lot of really big matrices. I'm trying my hardest to not have to create a matrix
 // class for this thing, so I went ahead and unwrapped it all into a bunch of vector
 // dot products.
-float lagrangian_multiplier( float dt, const Math::Vector& n, 
+float lagrangian_multiplier( float dt, float beta, float cor, float slop, 
+                             const Math::Vector& n, float penetration_depth,
                              const Math::Point& p_a, const Math::Point& p_b,
                              const Math::Vector& r_a, const Math::Vector& r_b,
                              const Math::Vector& v_a, const Math::Vector& av_a, 
@@ -71,8 +74,12 @@ float lagrangian_multiplier( float dt, const Math::Vector& n,
         denom_b = Math::dot_product(n*inverse_m_b, n) + Math::dot_product( rb_x_n*inverse_tensor_b, rb_x_n);
     }
     float denom = denom_a + denom_b;
-    float baumgarte = baumgarte_term( dt, n, p_a, p_b ); 
-    float restitution = restitution_term( n, r_a, r_b, v_a, av_a, v_b, av_b );
+
+    float baumgarte = 0;
+    if (penetration_depth > slop) {
+        baumgarte = baumgarte_term( dt, beta, penetration_depth ); 
+    }
+    float restitution = restitution_term( n, cor, r_a, r_b, v_a, av_a, v_b, av_b );
     float lambda = -(j_dot_v + baumgarte + restitution)  / denom;
 
     return lambda;
@@ -100,8 +107,8 @@ Constraint_solver::Velocity_matrix delta_v( float lambda, const Math::Vector& n,
     return result;
 }
 }
-                                
-Constraint_solver::Velocity_matrix Constraint_solver::solve( const Physics_object& a, const Physics_object& b, Contact_manifold& contact_manifold )
+      
+Constraint_solver::Velocity_matrix Constraint_solver::warm_start( Physics_object& a, Physics_object& b, Contact_manifold& contact_manifold )
 {
     Constraint_solver::Velocity_matrix result;
     result.a_linear  = a.velocity();
@@ -109,35 +116,50 @@ Constraint_solver::Velocity_matrix Constraint_solver::solve( const Physics_objec
     result.b_linear  = b.velocity();
     result.b_angular = b.angular_velocity();
 
-    contact_manifold.normal_impulse_sum() = 0;
+
     for (const auto& c : contact_manifold.contacts()) {
         Math::Vector r_a = c.contact_point_a - a.coordinate_space().position();
         Math::Vector r_b = c.contact_point_b - b.coordinate_space().position();
+        Constraint_solver::Velocity_matrix delta = delta_v( c.normal_impulse, c.normal, r_a, r_b, a.mass(), a.moment_of_inertia(), 
+                                                            b.mass(), b.moment_of_inertia() );
+        a.velocity()           = a.velocity()          + delta.a_linear;
+        a.angular_velocity()   = a.angular_velocity()  + delta.a_angular;
+        b.velocity()           = b.velocity()          + delta.b_linear;
+        b.angular_velocity()   = b.angular_velocity()  + delta.b_angular;
+    }
+    return result;
+}
+                          
+Constraint_solver::Velocity_matrix Constraint_solver::solve( Physics_object& a, Physics_object& b, Contact_manifold& contact_manifold )
+{
+    Constraint_solver::Velocity_matrix result;
+    result.a_linear  = a.velocity();
+    result.a_angular = a.angular_velocity();
+    result.b_linear  = b.velocity();
+    result.b_angular = b.angular_velocity();
 
 
-        // normal impulse clamping
-        float lambda = lagrangian_multiplier( m_time_step, c.normal, c.contact_point_a, c.contact_point_b, 
+    for (auto& c : contact_manifold.contacts()) {
+        Math::Vector r_a = c.contact_point_a - a.coordinate_space().position();
+        Math::Vector r_b = c.contact_point_b - b.coordinate_space().position();
+
+        float lambda = lagrangian_multiplier( m_time_step, m_beta, m_coefficient_of_restitution, m_slop,
+                                              c.normal, c.penetration_depth, c.contact_point_a, c.contact_point_b, 
                                               r_a, r_b, a.velocity(), a.angular_velocity(), a.mass(), a.moment_of_inertia(),
                                               b.velocity(), b.angular_velocity(), b.mass(), b.moment_of_inertia());
-        float normal_impulse_sum_copy = contact_manifold.normal_impulse_sum();
-        contact_manifold.normal_impulse_sum() = std::max( 0.0f, contact_manifold.normal_impulse_sum() + lambda );
-        lambda = contact_manifold.normal_impulse_sum() - normal_impulse_sum_copy;
-
-
+        // normal impulse clamping
+        float new_impulse = std::max( 0.0f, c.normal_impulse + lambda );
+        lambda = new_impulse - c.normal_impulse;
+        c.normal_impulse = new_impulse;
 
         Constraint_solver::Velocity_matrix delta = delta_v( lambda, c.normal, r_a, r_b, a.mass(), a.moment_of_inertia(), 
                                                             b.mass(), b.moment_of_inertia() );
-
          
-         
-            
-        result.a_linear  = result.a_linear  + delta.a_linear;
-        result.a_angular = result.a_angular + delta.a_angular;
-        result.b_linear  = result.b_linear  + delta.b_linear;
-        result.b_angular = result.b_angular + delta.b_angular;
+         a.velocity()           = a.velocity()          + delta.a_linear;
+         a.angular_velocity()   = a.angular_velocity()  + delta.a_angular;
+         b.velocity()           = b.velocity()          + delta.b_linear;
+         b.angular_velocity()   = b.angular_velocity()  + delta.b_angular;
     }
-
-
 
     return result;
 }

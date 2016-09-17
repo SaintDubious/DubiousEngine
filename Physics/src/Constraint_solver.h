@@ -22,7 +22,7 @@ class Physics_object;
 /// http://allenchou.net/game-physics-series/
 class Constraint_solver {
 public:
-    Constraint_solver( float time_step );
+    Constraint_solver( float time_step, float beta, float cor, float slop );
 
     Constraint_solver( const Constraint_solver& ) = delete;
     Constraint_solver& operator=( const Constraint_solver& ) = delete;
@@ -33,10 +33,14 @@ public:
         Math::Vector    b_linear;
         Math::Vector    b_angular;
     };
-    Velocity_matrix solve( const Physics_object& a, const Physics_object& b, Contact_manifold& contact_manifold );
+    Velocity_matrix     warm_start( Physics_object& a, Physics_object& b, Contact_manifold& contact_manifold );
+    Velocity_matrix     solve( Physics_object& a, Physics_object& b, Contact_manifold& contact_manifold );
 private:
     
-    float               m_time_step;
+    const float         m_time_step;
+    const float         m_beta;
+    const float         m_coefficient_of_restitution;
+    const float         m_slop;
 };
 
 }}

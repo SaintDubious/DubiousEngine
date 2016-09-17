@@ -31,7 +31,7 @@ const float LIGHT_HEIGHT = 50.0f;
 const float PI = 3.1415926535f;
 const int WIDTH=800;
 const int HEIGHT=600;
-const int NUM_OBJECTS = 1;
+const int NUM_OBJECTS = 2;
 const int FIRST_OBJECT = 1; // the floor is item 0
 
 //////////////////////////////////////////////////////////////
@@ -103,14 +103,14 @@ int main( int argc, char** argv )
             else {
                 object_color = Renderer::Color::RED;
             }
-            visible_objects.back()->coordinate_space().translate( Math::Vector( 0, i*1.1f+1.5f, 0 ) );
-//            visible_objects.back()->coordinate_space().translate( Math::Vector( i*2.0f, i*5.0f+1.5f, 0 ) );
+            visible_objects.back()->coordinate_space().translate( Math::Vector( 0, i*1.1f+0.55f, 0 ) );
+            visible_objects.back()->coordinate_space().rotate( Math::Quaternion( Math::Unit_vector(0,1,0), Math::to_radians(i*45.0f) ) );
             visible_objects.back()->renderer() = simple_renderer;
             scene->add_object( visible_objects.back() );
 
             physics_objects.push_back( std::make_shared<Physics::Physics_object>( physics_model, 1.0f ) );
-            physics_objects.back()->coordinate_space().translate( Math::Vector( 0, i*1.1f+1.5f, 0 ) );
-//            physics_objects.back()->coordinate_space().translate( Math::Vector( i*2.0f, i*5.0f+1.5f, 0 ) );
+            physics_objects.back()->coordinate_space().translate( Math::Vector( 0, i*1.1f+0.55f, 0 ) );
+            physics_objects.back()->coordinate_space().rotate( Math::Quaternion( Math::Unit_vector(0,1,0), Math::to_radians(i*45.0f) ) );
             arena.push_back( physics_objects.back() );
         }
 
@@ -157,7 +157,7 @@ void on_idle()
 {
     arena.run_physics( frame_timer.restart()/1000.0f );
 
-    for (int i=0; i<NUM_OBJECTS+1; ++i) {
+    for (int i=1; i<NUM_OBJECTS+1; ++i) {
         Math::Point new_position         = physics_objects[i]->coordinate_space().position();
         Math::Quaternion new_orientation = physics_objects[i]->coordinate_space().rotation();
         if (new_position.y() < 0.0f) {
@@ -169,7 +169,7 @@ void on_idle()
         visible_objects[i]->coordinate_space().rotation() = new_orientation;
 
         // reset forces to default
-        physics_objects[i]->force()  = Math::Vector( 0, -9.8f, 0 );
+        physics_objects[i]->force()  = Math::Vector( 0, -10.0f, 0 );
 //        physics_objects[i]->force()  = Math::Vector( 0, 0, 0 );
         physics_objects[i]->torque() = Math::Vector();
     }
