@@ -157,12 +157,14 @@ void Constraint_solver::warm_start( Physics_object& a, Physics_object& b, Contac
         Math::Vector r_a = c.contact_point_a - a.coordinate_space().position();
         Math::Vector r_b = c.contact_point_b - b.coordinate_space().position();
 
-        Velocity_matrix delta  = delta_v( c.tangent_impulse, Math::Unit_vector(c.tangent1+c.tangent2), r_a, r_b, a.mass(), a.moment_of_inertia(), 
+        Velocity_matrix delta  = delta_v( c.tangent1_impulse, c.tangent1, r_a, r_b, a.mass(), a.moment_of_inertia(), 
                                           b.mass(), b.moment_of_inertia() );
-        a.velocity()           = a.velocity()          + delta.a_linear;
-        a.angular_velocity()   = a.angular_velocity()  + delta.a_angular;
-        b.velocity()           = b.velocity()          + delta.b_linear;
-        b.angular_velocity()   = b.angular_velocity()  + delta.b_angular;
+        Velocity_matrix delta2  = delta_v( c.tangent2_impulse, c.tangent2, r_a, r_b, a.mass(), a.moment_of_inertia(), 
+                                          b.mass(), b.moment_of_inertia() );
+        a.velocity()           = a.velocity()          + delta.a_linear  + delta2.a_linear;
+        a.angular_velocity()   = a.angular_velocity()  + delta.a_angular + delta2.a_angular;
+        b.velocity()           = b.velocity()          + delta.b_linear  + delta2.b_linear;
+        b.angular_velocity()   = b.angular_velocity()  + delta.b_angular + delta2.b_angular;
 
         delta  = delta_v( c.normal_impulse, c.normal, r_a, r_b, a.mass(), a.moment_of_inertia(), 
                                           b.mass(), b.moment_of_inertia() );
@@ -179,34 +181,46 @@ void Constraint_solver::solve( Physics_object& a, Physics_object& b, Contact_man
         Math::Vector r_a = c.contact_point_a - a.coordinate_space().position();
         Math::Vector r_b = c.contact_point_b - b.coordinate_space().position();
 
-        float lambda = lagrangian_multiplier_friction( Math::Unit_vector(c.tangent1+c.tangent2), 
-                                              r_a, r_b, a.velocity(), a.angular_velocity(), a.mass(), a.moment_of_inertia(),
-                                              b.velocity(), b.angular_velocity(), b.mass(), b.moment_of_inertia());
-        // normal impulse clamping
         const float FRICTION = 0.3f;
         float max_friction = FRICTION * c.normal_impulse;
 
 
-        float new_impulse = c.tangent_impulse + lambda;
-        if (new_impulse < -max_friction) {
-            new_impulse = -max_friction;
-        }
-        else if (new_impulse > max_friction) {
-            new_impulse = max_friction;
-        }
 
+        float lambda = lagrangian_multiplier_friction( c.tangent1, 
+                                              r_a, r_b, a.velocity(), a.angular_velocity(), a.mass(), a.moment_of_inertia(),
+                                              b.velocity(), b.angular_velocity(), b.mass(), b.moment_of_inertia());
+        // normal impulse clamping
+        float new_impulse = std::max( -max_friction, std::min( max_friction, c.tangent1_impulse + lambda ));
+        lambda = new_impulse - c.tangent1_impulse;
+        c.tangent1_impulse = new_impulse;
 
-
-        lambda = new_impulse - c.tangent_impulse;
-        c.tangent_impulse = new_impulse;
-
-        Velocity_matrix delta  = delta_v( lambda, c.tangent1+c.tangent2, r_a, r_b, a.mass(), a.moment_of_inertia(), 
+        Velocity_matrix delta  = delta_v( lambda, c.tangent1, r_a, r_b, a.mass(), a.moment_of_inertia(), 
                                           b.mass(), b.moment_of_inertia() );
+        
+
+
+
+
+        lambda = lagrangian_multiplier_friction( c.tangent2, 
+                                              r_a, r_b, a.velocity(), a.angular_velocity(), a.mass(), a.moment_of_inertia(),
+                                              b.velocity(), b.angular_velocity(), b.mass(), b.moment_of_inertia());
+        // normal impulse clamping
+        new_impulse = std::max( -max_friction, std::min( max_friction, c.tangent2_impulse + lambda ));
+        lambda = new_impulse - c.tangent2_impulse;
+        c.tangent2_impulse = new_impulse;
+        
+        Velocity_matrix delta2  = delta_v( lambda, c.tangent2, r_a, r_b, a.mass(), a.moment_of_inertia(), 
+                                          b.mass(), b.moment_of_inertia() );
+
+
+
+        
+        
          
-        a.velocity()           = a.velocity()          + delta.a_linear;
-        a.angular_velocity()   = a.angular_velocity()  + delta.a_angular;
-        b.velocity()           = b.velocity()          + delta.b_linear;
-        b.angular_velocity()   = b.angular_velocity()  + delta.b_angular;
+        a.velocity()           = a.velocity()          + delta.a_linear   + delta2.a_linear;
+        a.angular_velocity()   = a.angular_velocity()  + delta.a_angular  + delta2.a_angular;
+        b.velocity()           = b.velocity()          + delta.b_linear   + delta2.b_linear;
+        b.angular_velocity()   = b.angular_velocity()  + delta.b_angular  + delta2.b_angular;
     }
 
     for (auto& c : contact_manifold.contacts()) {

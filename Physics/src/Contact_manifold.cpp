@@ -42,9 +42,13 @@ void Contact_manifold::prune_old_contacts()
                         if ((new_contact_a-c.contact_point_a).length_squared() > THRESHOLD) {
                             return true;
                         }
+//                        c.contact_point_a = new_contact_a;
+  //                      c.local_point_a = m_object_a->coordinate_space().transform(new_contact_a);
                         if ((new_contact_b-c.contact_point_b).length_squared() > THRESHOLD) {
                             return true;
                         }
+//                        c.contact_point_b = new_contact_b;
+  //                      c.local_point_b = m_object_b->coordinate_space().transform(new_contact_b);
                         return false;
                     }
                   ),
@@ -205,7 +209,8 @@ void Contact_manifold::insert( const std::vector<Contact>& contacts )
                 auto old = existing;
                 existing = c;
                 existing.normal_impulse = old.normal_impulse;
-                existing.tangent_impulse = old.tangent_impulse;
+                existing.tangent1_impulse = old.tangent1_impulse;
+                existing.tangent2_impulse = old.tangent2_impulse;
 
                 break;
             }

@@ -31,7 +31,7 @@ const float LIGHT_HEIGHT = 50.0f;
 const float PI = 3.1415926535f;
 const int WIDTH=800;
 const int HEIGHT=600;
-const int NUM_OBJECTS = 2;
+const int NUM_OBJECTS = 10;
 const int FIRST_OBJECT = 1; // the floor is item 0
 
 //////////////////////////////////////////////////////////////
@@ -104,13 +104,13 @@ int main( int argc, char** argv )
                 object_color = Renderer::Color::RED;
             }
             visible_objects.back()->coordinate_space().translate( Math::Vector( 0, i*1.1f+0.55f, 0 ) );
-            visible_objects.back()->coordinate_space().rotate( Math::Quaternion( Math::Unit_vector(0,1,0), Math::to_radians(i*45.0f) ) );
+//            visible_objects.back()->coordinate_space().rotate( Math::Quaternion( Math::Unit_vector(0,1,0), Math::to_radians(i*45.0f) ) );
             visible_objects.back()->renderer() = simple_renderer;
             scene->add_object( visible_objects.back() );
 
             physics_objects.push_back( std::make_shared<Physics::Physics_object>( physics_model, 1.0f ) );
             physics_objects.back()->coordinate_space().translate( Math::Vector( 0, i*1.1f+0.55f, 0 ) );
-            physics_objects.back()->coordinate_space().rotate( Math::Quaternion( Math::Unit_vector(0,1,0), Math::to_radians(i*45.0f) ) );
+//            physics_objects.back()->coordinate_space().rotate( Math::Quaternion( Math::Unit_vector(0,1,0), Math::to_radians(i*45.0f) ) );
             arena.push_back( physics_objects.back() );
         }
 
@@ -197,7 +197,13 @@ void on_idle()
             Renderer::Open_gl_primitive prim( Renderer::Open_gl_primitive::LINES );
             prim.vertex( c.contact_point_a );
             prim.vertex( c.contact_point_a + Math::Vector(c.normal)*c.penetration_depth );
-
+            /*
+            // render tangents
+            prim.vertex( c.contact_point_a );
+            prim.vertex( c.contact_point_a + Math::Vector(c.tangent1) );
+            prim.vertex( c.contact_point_a );
+            prim.vertex( c.contact_point_a + Math::Vector(c.tangent2) );
+            */
         }
 
     }
@@ -276,6 +282,9 @@ void on_key_down( SDL_Keycode key, unsigned short mod )
         break;
     case SDLK_a:
         physics_objects[FIRST_OBJECT]->torque() = Math::Vector( 1, 0, 0 );
+        break;
+    case SDLK_f:
+    physics_objects[FIRST_OBJECT]->force() = physics_objects[FIRST_OBJECT]->force() + Math::Vector( 100, 0, 50 );
         break;
     case SDLK_s:
         physics_objects[FIRST_OBJECT]->torque() = Math::Vector( static_cast<float>(rand())/RAND_MAX, 
