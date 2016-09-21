@@ -35,13 +35,25 @@ struct Triple {
         , m_z(z)
     {}
 
-    /// @brief Simple unary - operator
-    ///
-    /// Used to make a Triple the minus of itself. Just a shorthand
-    /// for Triple * -1
-    Triple              operator-()
+    Triple              operator-() const
     {
         return Triple( -m_x, -m_y, -m_z );
+    }
+
+    Triple&             operator+=( const Triple& b )
+    {
+        m_x += b.m_x;
+        m_y += b.m_y;
+        m_z += b.m_z;
+        return *this;
+    }
+
+    Triple&             operator-=( const Triple& b )
+    {
+        m_x -= b.m_x;
+        m_y -= b.m_y;
+        m_z -= b.m_z;
+        return *this;
     }
 
     float               m_x = 0;

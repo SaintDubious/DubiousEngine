@@ -26,6 +26,22 @@ float VectorT<T>::length() const
     return sqrt(length_squared());
 }
 
+//////////////////////////////////////////////////////////////
+template<int T>
+VectorT<T>& VectorT<T>::operator+=( const VectorT<T>& rhs )
+{
+    m_coords += rhs.m_coords;
+    return *this;
+}
+
+//////////////////////////////////////////////////////////////
+template<int T>
+VectorT<T>& VectorT<T>::operator-=( const VectorT<T>& rhs )
+{
+    m_coords -= rhs.m_coords;
+    return *this;
+}
+
 template class VectorT<0>;
 template class VectorT<1>;
 

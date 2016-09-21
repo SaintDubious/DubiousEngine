@@ -77,7 +77,6 @@ public:
     /// @returns Z coordinate
     float               z() const { return m_coords.m_z; }
 
-private:
     friend bool         operator== <>( const VectorT<T>& a, const VectorT<T>& b );
     friend bool         operator!= <>( const VectorT<T>& a, const VectorT<T>& b );
     friend VectorT<T>   operator+ <>( const VectorT<T>& a, const VectorT<T>& b );
@@ -87,6 +86,11 @@ private:
     friend VectorT<T>   operator/ <>( const VectorT<T>& a, float b );
     friend std::ostream& operator<< <>(std::ostream& o, const VectorT<T>& a);
 
+    VectorT<T>          operator-() const { return VectorT<T>( -m_coords ); }
+    VectorT<T>&         operator+=( const VectorT<T>& rhs );
+    VectorT<T>&         operator-=( const VectorT<T>& rhs );
+
+private:
     VectorT( const Triple& coords )
         : m_coords( coords )
     {}

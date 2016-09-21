@@ -70,6 +70,21 @@ public:
         Assert::IsTrue(equals(q.y(), -200));
         Assert::IsTrue(equals(q.z(), -300));
 
+        q = -r;
+        Assert::IsTrue(equals(q.x(), -10));
+        Assert::IsTrue(equals(q.y(), -20));
+        Assert::IsTrue(equals(q.z(), -30));
+
+        q += r;
+        Assert::IsTrue(equals(q.x(), 0));
+        Assert::IsTrue(equals(q.y(), 0));
+        Assert::IsTrue(equals(q.z(), 0));
+
+        q -= r;
+        Assert::IsTrue(equals(q.x(), -10));
+        Assert::IsTrue(equals(q.y(), -20));
+        Assert::IsTrue(equals(q.z(), -30));
+
     }
 
     TEST_METHOD(vector_length)

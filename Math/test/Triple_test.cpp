@@ -49,6 +49,12 @@ public:
         Assert::IsTrue( b == Triple(1, 10, 100) );
 
         Assert::IsTrue( -b == Triple(-1, -10, -100) );
+
+        b += a;
+        Assert::IsTrue( b == Triple(2, 20, 200) );
+
+        b -= a;
+        Assert::IsTrue( b == Triple(1, 10, 100) );
     }
 
 };
