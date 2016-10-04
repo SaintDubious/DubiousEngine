@@ -31,7 +31,7 @@ const float LIGHT_HEIGHT = 50.0f;
 const float PI = 3.1415926535f;
 const int WIDTH=800;
 const int HEIGHT=600;
-const int NUM_OBJECTS = 3;
+const int NUM_OBJECTS = 200;
 const int FIRST_OBJECT = 1; // the floor is item 0
 
 //////////////////////////////////////////////////////////////
@@ -54,6 +54,8 @@ Utility::Sdl_manager::Mouse_point   left_down_point;
 bool					            left_button_down;
 std::shared_ptr<Renderer::Simple_object_renderer> simple_renderer;
 Utility::Timer                      frame_timer;
+float elapsed;
+int frame_count;
 
 Physics::Arena                      arena( 1.0f/60.0f );
 std::vector<std::shared_ptr<Renderer::Visible_object>>  visible_objects;
@@ -65,7 +67,9 @@ int main( int argc, char** argv )
     try {
         std::cout << "Starting test\n";
 
-        auto floor_file = Utility::Ac3d_file_reader::test_cube( 10.0f, 0.5f, 10.0f );
+        elapsed = 0;
+        frame_count = 0;
+        auto floor_file = Utility::Ac3d_file_reader::test_cube( 20.0f, 0.5f, 20.0f );
         std::unique_ptr<const Utility::Ac3d_file> model_file;
         if (argc == 2) {
             model_file = Utility::Ac3d_file_reader::read_file( Utility::File_path( argv[1] ) );
@@ -155,6 +159,13 @@ void on_quit()
 //////////////////////////////////////////////////////////////
 void on_idle()
 {
+    elapsed += frame_timer.elapsed();
+    ++frame_count;
+    if (elapsed > 1000.0f) {
+        std::cout << frame_count << " fps\n";
+        frame_count = 0;
+        elapsed = 0;
+    }
     arena.run_physics( frame_timer.restart()/1000.0f );
 
     for (int i=1; i<NUM_OBJECTS+1; ++i) {
@@ -176,7 +187,7 @@ void on_idle()
 
     scene->render( *camera );
 
-
+/*
     // Draw the contact info on top
     Renderer::Open_gl_attributes attribs( Renderer::Open_gl_attributes::ENABLE_BIT | Renderer::Open_gl_attributes::HINT_BIT | Renderer::Open_gl_attributes::POLYGON_BIT, false );
     Renderer::Open_gl_commands::line_width( 2 );
@@ -197,17 +208,15 @@ void on_idle()
             Renderer::Open_gl_primitive prim( Renderer::Open_gl_primitive::LINES );
             prim.vertex( c.contact_point_a );
             prim.vertex( c.contact_point_a + Math::Vector(c.normal)*c.penetration_depth );
-            /*
             // render tangents
-            prim.vertex( c.contact_point_a );
-            prim.vertex( c.contact_point_a + Math::Vector(c.tangent1) );
-            prim.vertex( c.contact_point_a );
-            prim.vertex( c.contact_point_a + Math::Vector(c.tangent2) );
-            */
+//            prim.vertex( c.contact_point_a );
+//            prim.vertex( c.contact_point_a + Math::Vector(c.tangent1) );
+//            prim.vertex( c.contact_point_a );
+//            prim.vertex( c.contact_point_a + Math::Vector(c.tangent2) );
         }
 
     }
-
+    */
     SDL_Delay( 10 );
 }
 
