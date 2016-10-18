@@ -12,6 +12,9 @@
 
 using namespace Dubious;
 
+// Result Log
+// 10/17/2016 - 22,800 ms - Starting point
+
 //////////////////////////////////////////////////////////////
 void reset_scene( const int group_count, std::vector<std::shared_ptr<Physics::Physics_object>>& physics_objects ) 
 {
@@ -19,11 +22,16 @@ void reset_scene( const int group_count, std::vector<std::shared_ptr<Physics::Ph
         physics_objects[i*2]->coordinate_space().position()     = Math::Point( i*2, 0, 0 );
         physics_objects[i*2]->coordinate_space().rotation()     = Math::Quaternion();
         physics_objects[i*2]->velocity()                        = Math::Vector( 0, 0.2f, 0 );
+        physics_objects[i*2]->force()                           = Math::Vector( 0, 1.0f, 0 );
         physics_objects[i*2]->angular_velocity()                = Math::Vector( 0, 0, 0.2f );
+        physics_objects[i*2]->torque()                          = Math::Vector( 0, 0, 0.2f );
+
         physics_objects[i*2+1]->coordinate_space().position()   = Math::Point( i*2, 1.0f, 0 );
         physics_objects[i*2+1]->coordinate_space().rotation()   = Math::Quaternion();
         physics_objects[i*2+1]->velocity()                      = Math::Vector( 0, -0.2f, 0 );
+        physics_objects[i*2+1]->force()                         = Math::Vector( 0, -1.0f, 0 );
         physics_objects[i*2+1]->angular_velocity()              = Math::Vector( 0, 0, -0.2f );
+        physics_objects[i*2+1]->torque()                        = Math::Vector( 0, 0, -0.2f );
     }
 }
 
@@ -33,16 +41,12 @@ int main( int argc, char** argv )
     try {
         std::cout << "Starting test\n";
 
-        const int GROUP_COUNT = 1000;
+        const int GROUP_COUNT = 5000;
         Utility::Timer                      frame_timer;
         Physics::Arena                      arena( 1.0f/60.0f, 1 );
         std::vector<std::shared_ptr<Physics::Physics_object>>   physics_objects;
         auto cube_file = Utility::Ac3d_file_reader::test_cube( 0.5f, 0.5f, 0.5f );
         auto physics_model = std::make_shared<Physics::Physics_model>( *cube_file );
-
-
-
-
 
         for (int i=0; i<GROUP_COUNT; ++i) {
             physics_objects.push_back( std::make_shared<Physics::Physics_object>( physics_model, 1.0f ) );
@@ -51,8 +55,6 @@ int main( int argc, char** argv )
             arena.push_back( physics_objects.back() );
         }
         reset_scene( GROUP_COUNT, physics_objects );
-
-
 
         frame_timer.start();
         arena.run_physics( 1.1f/60.0f );
