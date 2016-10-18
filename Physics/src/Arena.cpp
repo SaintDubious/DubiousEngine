@@ -14,9 +14,10 @@ namespace {
 namespace Dubious {
 namespace Physics {
 
-Arena::Arena( float step_size )
+Arena::Arena( float step_size, int iterations )
     : m_constraint_solver( step_size, BETA,COEFFICIENT_OF_RESTITUTION, SLOP )
     , m_step_size( step_size )
+    , m_velocity_iterations( iterations )
 {
 }
 
@@ -58,10 +59,12 @@ void Arena::run_physics( float elapsed )
             std::shared_ptr<Physics_object> b = std::get<1>(manifold.first);
             m_constraint_solver.warm_start( *a, *b, manifold.second );
         }
-        for (auto &manifold : m_manifolds) {
-            std::shared_ptr<Physics_object> a = std::get<0>(manifold.first);
-            std::shared_ptr<Physics_object> b = std::get<1>(manifold.first);
-            m_constraint_solver.solve( *a, *b, manifold.second );
+        for (int i=0; i<m_velocity_iterations; ++i) {
+            for (auto &manifold : m_manifolds) {
+                std::shared_ptr<Physics_object> a = std::get<0>(manifold.first);
+                std::shared_ptr<Physics_object> b = std::get<1>(manifold.first);
+                m_constraint_solver.solve( *a, *b, manifold.second );
+            }
         }
 
         for (const auto& o : m_objects) {

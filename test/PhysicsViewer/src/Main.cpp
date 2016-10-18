@@ -57,7 +57,7 @@ Utility::Timer                      frame_timer;
 float elapsed;
 int frame_count;
 
-Physics::Arena                      arena( 1.0f/60.0f );
+Physics::Arena                      arena( 1.0f/60.0f, 1 );
 std::vector<std::shared_ptr<Renderer::Visible_object>>  visible_objects;
 std::vector<std::shared_ptr<Physics::Physics_object>>   physics_objects;
 
@@ -171,11 +171,11 @@ void on_idle()
     for (int i=1; i<NUM_OBJECTS+1; ++i) {
         Math::Point new_position         = physics_objects[i]->coordinate_space().position();
         Math::Quaternion new_orientation = physics_objects[i]->coordinate_space().rotation();
-        if (new_position.y() < 0.0f) {
-            new_position = Math::Point( new_position.x(), 0.0f, new_position.z() );
-            physics_objects[i]->coordinate_space().position() = new_position;
-            physics_objects[i]->velocity() = Math::Vector();
-        }
+  //      if (new_position.y() < 0.0f) {
+  //          new_position = Math::Point( new_position.x(), 0.0f, new_position.z() );
+//            physics_objects[i]->coordinate_space().position() = new_position;
+//            physics_objects[i]->velocity() = Math::Vector();
+  //      }
         visible_objects[i]->coordinate_space().position() = new_position;
         visible_objects[i]->coordinate_space().rotation() = new_orientation;
 

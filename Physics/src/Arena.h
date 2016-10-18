@@ -25,7 +25,8 @@ class Arena {
 public:
     /// @brief Constructor
     /// @param step_size - [in] time of a step size
-    Arena( float step_size );
+    /// @param iterations - [in] number of times to perform velocity constraints
+    Arena( float step_size, int iterations );
 
     Arena( const Arena& ) = delete;
     Arena& operator=( const Arena& ) = delete;
@@ -53,6 +54,7 @@ private:
     Collision_solver    m_collision_solver;
     Constraint_solver   m_constraint_solver;
     float               m_step_size;
+    int                 m_velocity_iterations = 1;
     float               m_elapsed = 0.0f;
 
     std::vector<std::shared_ptr<Physics_object>> m_objects;
