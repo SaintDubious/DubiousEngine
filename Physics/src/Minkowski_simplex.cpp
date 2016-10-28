@@ -10,21 +10,28 @@ namespace Dubious {
 namespace Physics {
 
 //////////////////////////////////////////////////////////////
-Minkowski_simplex::Minkowski_simplex( Minkowski_vector&& start )
-    : m_v { start }
+Minkowski_simplex::Minkowski_simplex( const Minkowski_vector& start )
+{
+    m_v[0] = start;
+    m_size = 1;
+}
+
+//////////////////////////////////////////////////////////////
+Minkowski_simplex::Minkowski_simplex()
+    : m_size( 0 )
 {
 }
 
 //////////////////////////////////////////////////////////////
-void Minkowski_simplex::push_back( Minkowski_vector&& v )
+void Minkowski_simplex::push_back( const Minkowski_vector& v )
 {
-    m_v.push_back( v );
+    m_v[m_size++] = v;
 }
 
 //////////////////////////////////////////////////////////////
 std::tuple<bool,Math::Vector> Minkowski_simplex::build()
 {
-    switch (m_v.size()) {
+    switch (m_size) {
     case 2:
         return build_2(); 
     case 3:
@@ -86,14 +93,14 @@ std::tuple<bool,Math::Vector> Minkowski_simplex::build_3()
         // The point lies outside of the triangle on the ab side
         m_v[0] = m_v[1];
         m_v[1] = m_v[2];
-        m_v.pop_back();
+        --m_size;
         return std::make_tuple(false,ab_perp);
     }
     const Math::Vector& ac_perp = Math::cross_product( ab_x_ac, ac );
     if (Math::dot_product( ao, ac_perp ) > 0) {
         // The point lies outside of the triangle on the ac side
         m_v[1] = m_v[2];
-        m_v.pop_back();
+        --m_size;
         return std::make_tuple(false,ac_perp);
     }
 
@@ -136,13 +143,13 @@ std::tuple<bool,Math::Vector> Minkowski_simplex::build_4()
         m_v[0] = m_v[1];
         m_v[1] = m_v[2];
         m_v[2] = m_v[3];
-        m_v.pop_back();
+        --m_size;
         return std::make_tuple(false,ab_x_ac);
     }
     const Math::Vector& ac_x_ad = Math::cross_product( ac, ad );
     if (Math::dot_product( ac_x_ad, ao ) > 0) {
         m_v[2] = m_v[3];
-        m_v.pop_back();
+        --m_size;
         return std::make_tuple(false,ac_x_ad);
     }
     const Math::Vector& ad_x_ab = Math::cross_product( ad, ab );
@@ -150,7 +157,7 @@ std::tuple<bool,Math::Vector> Minkowski_simplex::build_4()
         m_v[1] = m_v[0];
         m_v[0] = m_v[2];
         m_v[2] = m_v[3];
-        m_v.pop_back();
+        --m_size;
         return std::make_tuple(false,ad_x_ab);
     }
 

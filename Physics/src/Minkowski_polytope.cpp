@@ -9,7 +9,7 @@ namespace Physics {
 //////////////////////////////////////////////////////////////
 Minkowski_polytope::Minkowski_polytope( const Minkowski_simplex& simplex )
 {
-    if (simplex.v().size() != 4) {
+    if (simplex.size() != 4) {
         throw std::runtime_error( "Attempting to create polytope from simplex that is not tetrahedron" );
     }
     const Minkowski_vector& a = simplex.v()[3];

@@ -47,6 +47,15 @@ bool model_intersection( const Physics_model& a, const Math::Coordinate_space& c
     if (a.vectors().empty() || b.vectors().empty()) {
         return false;
     }
+    // If the sum of the radius squared is longer then the distance squared
+    // then there's no way these can be touching
+    // This is an optimisation I tested and resulted in a very good speed up.
+    float distance_squared = (ca.position()-cb.position()).length_squared();
+    float radius_sum = a.radius() + b.radius();
+    if (distance_squared > radius_sum*radius_sum) {
+        return false;
+    }
+
     Math::Vector direction( 1, 0, 0 );
     Math::Vector support_a  = ca.transform(support( a, ca.transform(direction) ))    + (Math::to_vector(ca.position()));
     Math::Vector support_b  = cb.transform(support( b, cb.transform(direction*-1) )) + (Math::to_vector(cb.position()));
@@ -165,7 +174,7 @@ bool intersection_recurse_b( const Physics_model& a, const Math::Coordinate_spac
                              std::vector<Contact_manifold::Contact>& contacts )
 {
     bool ret_val = false;
-    Minkowski_simplex simplex( std::move(Minkowski_vector()) );
+    Minkowski_simplex simplex;
     if (model_intersection( a, ca, b, cb, simplex )) {
         Contact_manifold::Contact contact;
         find_collision_point( a, ca, b, cb, simplex, contact );
