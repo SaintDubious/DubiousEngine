@@ -14,12 +14,14 @@
     <ClCompile Include="src\Ac3d_file_reader.cpp" />
     <ClCompile Include="src\File_path.cpp" />
     <ClCompile Include="src\Sdl_manager.cpp" />
+    <ClCompile Include="src\Thread_pool.cpp" />
     <ClCompile Include="src\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Ac3d_file_reader.h" />
     <ClInclude Include="src\File_path.h" />
     <ClInclude Include="src\Sdl_manager.h" />
+    <ClInclude Include="src\Thread_pool.h" />
     <ClInclude Include="src\Timer.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

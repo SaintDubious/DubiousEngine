@@ -47,14 +47,6 @@ bool model_intersection( const Physics_model& a, const Math::Coordinate_space& c
     if (a.vectors().empty() || b.vectors().empty()) {
         return false;
     }
-    // If the sum of the radius squared is longer then the distance squared
-    // then there's no way these can be touching
-    // This is an optimisation I tested and resulted in a very good speed up.
-    float distance_squared = (ca.position()-cb.position()).length_squared();
-    float radius_sum = a.radius() + b.radius();
-    if (distance_squared > radius_sum*radius_sum) {
-        return false;
-    }
 
     Math::Vector direction( 1, 0, 0 );
     Math::Vector support_a  = ca.transform(support( a, ca.transform(direction) ))    + (Math::to_vector(ca.position()));
@@ -130,7 +122,9 @@ void find_collision_point( const Physics_model& a, const Math::Coordinate_space&
                            const Minkowski_simplex& simplex, Contact_manifold::Contact& contact )
 {
     Minkowski_polytope polytope( simplex );
-    while (true) {
+    // In a perfect world, this would always break out when the collision
+    // point was found. In our world, we limit it
+    for (int i=0; i<20; ++i) {
         float min_distance;
         Minkowski_polytope::Triangle triangle;
         std::tie(triangle,min_distance) = polytope.find_closest_triangle();
@@ -138,7 +132,7 @@ void find_collision_point( const Physics_model& a, const Math::Coordinate_space&
         Math::Vector support_a  = ca.transform(support( a, ca.transform(direction) ))    + (Math::to_vector(ca.position()));
         Math::Vector support_b  = cb.transform(support( b, cb.transform(direction*-1) )) + (Math::to_vector(cb.position()));
         Math::Vector support_point = support_a - support_b;
-        if (Math::dot_product(support_point,Math::Vector(triangle.normal)) <= min_distance+0.0001f) {
+        if (Math::dot_product(support_point,Math::Vector(triangle.normal)) <= min_distance+0.001f) {
             contact.normal = triangle.normal;
             // http://box2d.org/2014/02/computing-a-basis/
             if (fabs(contact.normal.x()) >= 0.57735f) {
@@ -208,6 +202,17 @@ bool intersection_recurse_a( const Physics_model& a, const Math::Coordinate_spac
     return ret_val;
 }
 
+}
+
+//////////////////////////////////////////////////////////////
+bool Collision_solver::broad_phase_intersection( const Physics_object& a, const Physics_object& b )
+{
+    // If the sum of the radius squared is longer then the distance squared
+    // then there's no way these can be touching
+    // This is an optimisation I tested and resulted in a very good speed up.
+    float distance_squared = (a.coordinate_space().position()-b.coordinate_space().position()).length_squared();
+    float radius_sum = a.model()->radius() + b.model()->radius();
+    return distance_squared <= radius_sum*radius_sum;
 }
 
 //////////////////////////////////////////////////////////////

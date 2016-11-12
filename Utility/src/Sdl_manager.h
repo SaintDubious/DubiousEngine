@@ -18,7 +18,7 @@ namespace Utility {
 ///	Any application using this engine will need to make use of this object.  Events
 ///	are implemented as function pointers.  Set each one to a function and it will
 ///	be called when the event triggers.  The OnIdle event is of particular importance
-///		as it is a good time to run your physics and redraw your OpenGL scene.
+///	as it is a good time to run your physics and redraw your OpenGL scene.
 class Sdl_manager {
 public:
     /// @brief Constructor

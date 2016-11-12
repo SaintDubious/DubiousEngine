@@ -31,7 +31,8 @@ const float LIGHT_HEIGHT = 50.0f;
 const float PI = 3.1415926535f;
 const int WIDTH=800;
 const int HEIGHT=600;
-const int NUM_OBJECTS = 120;
+const int NUM_LAYERS = 20;
+const int OBJECTS_PER_LAYER = 4;
 const int FIRST_OBJECT = 1; // the floor is item 0
 
 //////////////////////////////////////////////////////////////
@@ -44,6 +45,7 @@ void on_mouse_left_down( const Utility::Sdl_manager::Mouse_point& P );
 void on_mouse_left_up( const Utility::Sdl_manager::Mouse_point& P );
 void on_mouse_wheel( int Y );
 void on_key_down( SDL_Keycode Key, unsigned short Mod );
+float build_layer( float y );
 
 //////////////////////////////////////////////////////////////
 // Globals
@@ -58,8 +60,11 @@ float elapsed;
 int frame_count;
 
 Physics::Arena                      arena( 1.0f/60.0f, 100 );
+std::shared_ptr<Renderer::Visible_model> visible_model;
+std::shared_ptr<Physics::Physics_model> physics_model;
 std::vector<std::shared_ptr<Renderer::Visible_object>>  visible_objects;
 std::vector<std::shared_ptr<Physics::Physics_object>>   physics_objects;
+Renderer::Color object_color = Renderer::Color::RED;
 
 //////////////////////////////////////////////////////////////
 int main( int argc, char** argv )
@@ -71,12 +76,7 @@ int main( int argc, char** argv )
         frame_count = 0;
         auto floor_file = Utility::Ac3d_file_reader::test_cube( 20.0f, 0.5f, 20.0f );
         std::unique_ptr<const Utility::Ac3d_file> model_file;
-        if (argc == 2) {
-            model_file = Utility::Ac3d_file_reader::read_file( Utility::File_path( argv[1] ) );
-        }
-        else {
-            model_file = Utility::Ac3d_file_reader::test_cube( 0.5f, 0.5f, 0.5f );
-        }
+        model_file = Utility::Ac3d_file_reader::test_cube( 0.5f, 0.5f, 1.5f );
 
         sdl.create_root_window( "Physics Viewer", WIDTH, HEIGHT, false );
 
@@ -84,8 +84,8 @@ int main( int argc, char** argv )
         scene = std::make_unique<Renderer::Scene>( context_store );
         simple_renderer.reset( new Renderer::Simple_object_renderer( context_store ) );
 
-        auto visible_model = std::make_shared<Renderer::Visible_model>( *floor_file, false );
-        auto physics_model = std::make_shared<Physics::Physics_model>( *floor_file );
+        visible_model = std::make_shared<Renderer::Visible_model>( *floor_file, false );
+        physics_model = std::make_shared<Physics::Physics_model>( *floor_file );
         visible_objects.push_back( std::make_shared<Renderer::Visible_object>( visible_model, visible_model ) );
         visible_objects.back()->coordinate_space().translate( Math::Vector( 0, -0.5f, 0 ) );
         visible_objects.back()->renderer() = simple_renderer;
@@ -97,25 +97,9 @@ int main( int argc, char** argv )
 
         visible_model = std::make_shared<Renderer::Visible_model>( *model_file, false );
         physics_model = std::make_shared<Physics::Physics_model>( *model_file );
-        Renderer::Color object_color = Renderer::Color::RED;
-        for (int i=0; i<NUM_OBJECTS; ++i) {
-            visible_objects.push_back( std::make_shared<Renderer::Visible_object>( visible_model, visible_model ) );
-            visible_objects.back()->base_color() = object_color;
-            if (object_color == Renderer::Color::RED) {
-                object_color = Renderer::Color::BLUE;
-            }
-            else {
-                object_color = Renderer::Color::RED;
-            }
-            visible_objects.back()->coordinate_space().translate( Math::Vector( 0, i*1.1f+0.55f, 0 ) );
-//            visible_objects.back()->coordinate_space().rotate( Math::Quaternion( Math::Unit_vector(0,1,0), Math::to_radians(i*45.0f) ) );
-            visible_objects.back()->renderer() = simple_renderer;
-            scene->add_object( visible_objects.back() );
-
-            physics_objects.push_back( std::make_shared<Physics::Physics_object>( physics_model, 1.0f ) );
-            physics_objects.back()->coordinate_space().translate( Math::Vector( 0, i*1.1f+0.55f, 0 ) );
-//            physics_objects.back()->coordinate_space().rotate( Math::Quaternion( Math::Unit_vector(0,1,0), Math::to_radians(i*45.0f) ) );
-            arena.push_back( physics_objects.back() );
+        float layer = 0.5f;
+        for (int i=0; i<NUM_LAYERS; ++i) {
+            layer = build_layer( layer );
         }
 
         scene->scene_light().position   = Math::Point( 20, 20, 0 );
@@ -152,6 +136,60 @@ int main( int argc, char** argv )
 }
 
 //////////////////////////////////////////////////////////////
+float build_layer( float y )
+{
+    if (object_color == Renderer::Color::RED) {
+        object_color = Renderer::Color::BLUE;
+    }
+    else {
+        object_color = Renderer::Color::RED;
+    }
+
+    visible_objects.push_back( std::make_shared<Renderer::Visible_object>( visible_model, visible_model ) );
+    visible_objects.back()->base_color() = object_color;
+    visible_objects.back()->coordinate_space().translate( Math::Vector( -1, y+0.001f, 0 ) );
+    visible_objects.back()->renderer() = simple_renderer;
+    scene->add_object( visible_objects.back() );
+    physics_objects.push_back( std::make_shared<Physics::Physics_object>( physics_model, 1.0f ) );
+    physics_objects.back()->coordinate_space().translate( Math::Vector( -1, y+0.001f, 0 ) );
+    arena.push_back( physics_objects.back() );
+
+    visible_objects.push_back( std::make_shared<Renderer::Visible_object>( visible_model, visible_model ) );
+    visible_objects.back()->base_color() = object_color;
+    visible_objects.back()->coordinate_space().translate( Math::Vector( 1, y+0.001f, 0 ) );
+    visible_objects.back()->renderer() = simple_renderer;
+    scene->add_object( visible_objects.back() );
+    physics_objects.push_back( std::make_shared<Physics::Physics_object>( physics_model, 1.0f ) );
+    physics_objects.back()->coordinate_space().translate( Math::Vector( 1, y+0.001f, 0 ) );
+    arena.push_back( physics_objects.back() );
+
+    visible_objects.push_back( std::make_shared<Renderer::Visible_object>( visible_model, visible_model ) );
+    visible_objects.back()->base_color() = object_color;
+    visible_objects.back()->coordinate_space().translate( Math::Vector( 0, y+1.001f, -1 ) );
+    visible_objects.back()->coordinate_space().rotate( Math::Quaternion( Math::Unit_vector(0,1,0), Math::to_radians(90.0f) ) );
+    visible_objects.back()->renderer() = simple_renderer;
+    scene->add_object( visible_objects.back() );
+    physics_objects.push_back( std::make_shared<Physics::Physics_object>( physics_model, 1.0f ) );
+    physics_objects.back()->coordinate_space().translate( Math::Vector( 0, y+1.001f, -1 ) );
+    physics_objects.back()->coordinate_space().rotate( Math::Quaternion( Math::Unit_vector(0,1,0), Math::to_radians(90.0f) ) );
+    arena.push_back( physics_objects.back() );
+
+    visible_objects.push_back( std::make_shared<Renderer::Visible_object>( visible_model, visible_model ) );
+    visible_objects.back()->base_color() = object_color;
+    visible_objects.back()->coordinate_space().translate( Math::Vector( 0, y+1.001f, 1 ) );
+    visible_objects.back()->coordinate_space().rotate( Math::Quaternion( Math::Unit_vector(0,1,0), Math::to_radians(90.0f) ) );
+    visible_objects.back()->renderer() = simple_renderer;
+    scene->add_object( visible_objects.back() );
+    physics_objects.push_back( std::make_shared<Physics::Physics_object>( physics_model, 1.0f ) );
+    physics_objects.back()->coordinate_space().translate( Math::Vector( 0, y+1.001f, 1 ) );
+    physics_objects.back()->coordinate_space().rotate( Math::Quaternion( Math::Unit_vector(0,1,0), Math::to_radians(90.0f) ) );
+    arena.push_back( physics_objects.back() );
+
+
+    return y + 2.002f;
+}
+
+//////////////////////////////////////////////////////////////
 void on_quit()
 {
 }
@@ -168,7 +206,7 @@ void on_idle()
     }
     arena.run_physics( frame_timer.restart()/1000.0f );
 
-    for (int i=1; i<NUM_OBJECTS+1; ++i) {
+    for (int i=1; i<NUM_LAYERS*OBJECTS_PER_LAYER+1; ++i) {
         Math::Point new_position         = physics_objects[i]->coordinate_space().position();
         Math::Quaternion new_orientation = physics_objects[i]->coordinate_space().rotation();
   //      if (new_position.y() < 0.0f) {

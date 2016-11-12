@@ -39,6 +39,16 @@ public:
     /// @returns true if they collide
     bool                intersection( const Physics_object& a, const Physics_object& b, std::vector<Contact_manifold::Contact>& contacts );
 
+    /// @brief cheap and cheerful intersection test
+    ///
+    /// This is a cheap and very rough intersection test. It only
+    /// looks to see if the radius of the 2 objects added is more
+    /// than the distance between them. If it is then the objects
+    /// might be touching
+    /// @param a - [in] the first object
+    /// @param b - [in] the second object
+    /// @returns true if they might collide
+    bool                broad_phase_intersection( const Physics_object& a, const Physics_object& b );
 };
 
 }}

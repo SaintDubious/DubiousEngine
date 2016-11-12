@@ -1,12 +1,14 @@
 #include "Arena.h"
 #include "Physics_object.h"
 
+#include <set>
 #include <iostream>
+#include <future>
 
 namespace {
-    const float BETA = 0.0f;
+    const float BETA = 0.03f;
     const float COEFFICIENT_OF_RESTITUTION = 0.0f;
-    const float SLOP = 0.0f;
+    const float SLOP = 0.05f;
     const float CONTACT_THRESHOLD = 0.05f;
 }
 
@@ -35,10 +37,14 @@ void Arena::run_physics( float elapsed )
             o->angular_velocity() = o->angular_velocity() + (o->torque()*o->inverse_moment_of_inertia())*m_step_size;
         }
 
+        std::set<std::tuple<std::shared_ptr<Physics_object>,std::shared_ptr<Physics_object>>> new_pairs;
         for (size_t i=0; i<m_objects.size(); ++i) {
             std::shared_ptr<Physics_object> a = m_objects[i];
             for (size_t j=i+1; j<m_objects.size(); ++j) {
                 std::shared_ptr<Physics_object> b = m_objects[j];
+                if (!m_collision_solver.broad_phase_intersection( *a, *b )) {
+                    continue;
+                }
                 std::vector<Contact_manifold::Contact> contacts;
                 if (m_collision_solver.intersection( *a, *b, contacts )) {
                     auto contact_manifold = m_manifolds.find( std::make_tuple(a,b) );
@@ -47,13 +53,21 @@ void Arena::run_physics( float elapsed )
                     }
                     contact_manifold->second.prune_old_contacts();
                     contact_manifold->second.insert( contacts );
-                }
-                else {
-                    m_manifolds.erase( std::make_tuple(a,b) );
+                    new_pairs.insert( std::make_tuple(a,b) );
                 }
             }
         }
 
+        // remove any stale contacts
+        for (auto iter=m_manifolds.begin(), end=m_manifolds.end(); iter!=end;) {
+            if (new_pairs.find(iter->first) == new_pairs.end()) {
+                iter = m_manifolds.erase( iter );
+            }
+            else {
+                ++iter;
+            }
+        }
+        
         for (auto &manifold : m_manifolds) {
             std::shared_ptr<Physics_object> a = std::get<0>(manifold.first);
             std::shared_ptr<Physics_object> b = std::get<1>(manifold.first);
