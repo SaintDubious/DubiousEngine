@@ -28,7 +28,8 @@ class Physics_object;
 class Contact_manifold {
 public:
 
-    Contact_manifold( std::shared_ptr<Physics_object> a, std::shared_ptr<Physics_object> b, float threshold );
+    Contact_manifold( std::shared_ptr<Physics_object> a, std::shared_ptr<Physics_object> b, 
+                      float persistent_threshold );
 
     /// @brief Contact information
     ///
@@ -70,7 +71,7 @@ private:
     const std::shared_ptr<Physics_object> m_object_a;
     const std::shared_ptr<Physics_object> m_object_b;
     std::vector<Contact> m_contacts;
-    const float         m_threshold;
+    const float         m_persistent_threshold = 0.05f;
 
     void                cleanup_contacts( std::vector<Contact>& contacts );
     float               distance_squared_to_line_segment( const Math::Point& a, const Math::Point& b, const Math::Point& p ) const;

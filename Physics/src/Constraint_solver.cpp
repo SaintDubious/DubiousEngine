@@ -62,10 +62,11 @@ float lagrangian_multiplier( float dt, float beta, float cor, float slop,
     denom              += Math::dot_product(  n*b.inverse_mass(), n)   + Math::dot_product(  rb_x_n*b.inverse_moment_of_inertia(),  rb_x_n);
 
     float baumgarte = 0;
+    float restitution = 0;
     if (penetration_depth > slop) {
         baumgarte = baumgarte_term( dt, beta, penetration_depth ); 
+        restitution = restitution_term( n, cor, r_a, r_b, a.velocity(), a.angular_velocity(), b.velocity(), b.angular_velocity() );
     }
-    float restitution = restitution_term( n, cor, r_a, r_b, a.velocity(), a.angular_velocity(), b.velocity(), b.angular_velocity() );
     float lambda = -(j_dot_v + baumgarte + restitution)  / denom;
 
     return lambda;

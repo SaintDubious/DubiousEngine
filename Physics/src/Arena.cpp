@@ -5,29 +5,28 @@
 #include <iostream>
 #include <future>
 
-namespace {
-    const float BETA = 0.03f;
-    const float COEFFICIENT_OF_RESTITUTION = 0.0f;
-    const float SLOP = 0.05f;
-    const float CONTACT_THRESHOLD = 0.05f;
-}
-
 //////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Physics {
 
-Arena::Arena( float step_size, int iterations )
-    : m_constraint_solver( step_size, BETA,COEFFICIENT_OF_RESTITUTION, SLOP )
-    , m_step_size( step_size )
-    , m_velocity_iterations( iterations )
+Arena::Arena( const Settings& settings )
+    : m_constraint_solver( settings.step_size, 
+                           settings.beta, 
+                           settings.coefficient_of_restitution, 
+                           settings.slop )
+    , m_step_size( settings.step_size )
+    , m_velocity_iterations( settings.iterations )
+    , m_settings( settings )
 {
 }
 
+//////////////////////////////////////////////////////////////
 void Arena::push_back( std::shared_ptr<Physics_object> obj )
 {
     m_objects.push_back( obj );
 }
 
+//////////////////////////////////////////////////////////////
 void Arena::run_physics( float elapsed )
 {
     m_elapsed += elapsed;
@@ -49,7 +48,8 @@ void Arena::run_physics( float elapsed )
                 if (m_collision_solver.intersection( *a, *b, contacts )) {
                     auto contact_manifold = m_manifolds.find( std::make_tuple(a,b) );
                     if (contact_manifold == m_manifolds.end()) {
-                        contact_manifold = m_manifolds.insert( std::make_pair(std::make_tuple(a,b), Contact_manifold( a, b, CONTACT_THRESHOLD )) ).first;
+                        contact_manifold = m_manifolds.insert( std::make_pair(std::make_tuple(a,b), 
+                            Contact_manifold( a, b, m_settings.manifold_persistent_threshold )) ).first;
                     }
                     contact_manifold->second.prune_old_contacts();
                     contact_manifold->second.insert( contacts );

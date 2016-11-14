@@ -57,7 +57,7 @@ Utility::Timer                      frame_timer;
 float elapsed;
 int frame_count;
 
-Physics::Arena                      arena( 1.0f/60.0f, 100 );
+Physics::Arena                      arena( Physics::Arena::Settings( 1.0f/60.0f, 100, 0.03f, 0.5f, 0.05f, 0.05f ) );
 std::vector<std::shared_ptr<Renderer::Visible_object>>  visible_objects;
 std::vector<std::shared_ptr<Physics::Physics_object>>   physics_objects;
 

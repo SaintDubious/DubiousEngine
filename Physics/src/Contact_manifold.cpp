@@ -12,10 +12,11 @@ namespace Dubious {
 namespace Physics {
 
 //////////////////////////////////////////////////////////////
-Contact_manifold::Contact_manifold( const std::shared_ptr<Physics_object> a, const std::shared_ptr<Physics_object> b, float threshold )
+Contact_manifold::Contact_manifold( const std::shared_ptr<Physics_object> a, const std::shared_ptr<Physics_object> b, 
+                                    float persistent_threshold )
     : m_object_a( a )
     , m_object_b( b )
-    , m_threshold( threshold )
+    , m_persistent_threshold( persistent_threshold )
 {
 }
 
@@ -29,26 +30,20 @@ void Contact_manifold::prune_old_contacts()
                         Math::Point new_contact_b = m_object_b->coordinate_space().transform( c.local_point_b );
 
                         // check to see if it's still penetrating
-                        Math::Vector penetrator = Math::to_vector(new_contact_b)-Math::to_vector(new_contact_a);
                         float dot_penetrator = Math::dot_product( Math::Vector(c.normal), Math::to_vector(new_contact_b)-Math::to_vector(new_contact_a) );
-                        if (dot_penetrator > 0.05f) {
+                        if (dot_penetrator > 0.0f) {
                             return true;
                         }
                         c.penetration_depth = dot_penetrator;
 
-                        const float THRESHOLD = 0.05f;
                         // if the point has moved too far from where it was originally recorded
                         // then we want to remove if from the manifold
-                        if ((new_contact_a-c.contact_point_a).length_squared() > THRESHOLD) {
+                        if ((new_contact_a-c.contact_point_a).length_squared() > m_persistent_threshold) {
                             return true;
                         }
-//                        c.contact_point_a = new_contact_a;
-  //                      c.local_point_a = m_object_a->coordinate_space().transform(new_contact_a);
-                        if ((new_contact_b-c.contact_point_b).length_squared() > THRESHOLD) {
+                        if ((new_contact_b-c.contact_point_b).length_squared() > m_persistent_threshold) {
                             return true;
                         }
-//                        c.contact_point_b = new_contact_b;
-  //                      c.local_point_b = m_object_b->coordinate_space().transform(new_contact_b);
                         return false;
                     }
                   ),
@@ -202,8 +197,8 @@ void Contact_manifold::insert( const std::vector<Contact>& contacts )
     for (const auto& c : contacts) { 
         bool add = true;
         for (auto& existing : m_contacts) {
-            if ((c.contact_point_a - existing.contact_point_a).length_squared() < m_threshold &&
-                (c.contact_point_b - existing.contact_point_b).length_squared() < m_threshold) {
+            if ((c.contact_point_a - existing.contact_point_a).length_squared() < m_persistent_threshold &&
+                (c.contact_point_b - existing.contact_point_b).length_squared() < m_persistent_threshold) {
                 add = false;
 
                 auto old = existing;

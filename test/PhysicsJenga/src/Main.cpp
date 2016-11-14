@@ -31,7 +31,7 @@ const float LIGHT_HEIGHT = 50.0f;
 const float PI = 3.1415926535f;
 const int WIDTH=800;
 const int HEIGHT=600;
-const int NUM_LAYERS = 20;
+const int NUM_LAYERS = 30;
 const int OBJECTS_PER_LAYER = 4;
 const int FIRST_OBJECT = 1; // the floor is item 0
 
@@ -59,7 +59,7 @@ Utility::Timer                      frame_timer;
 float elapsed;
 int frame_count;
 
-Physics::Arena                      arena( 1.0f/60.0f, 100 );
+Physics::Arena                      arena( Physics::Arena::Settings( 1.0f/60.0f, 100, 0.03f, 0.5f, 0.05f, 0.05f ) );
 std::shared_ptr<Renderer::Visible_model> visible_model;
 std::shared_ptr<Physics::Physics_model> physics_model;
 std::vector<std::shared_ptr<Renderer::Visible_object>>  visible_objects;
