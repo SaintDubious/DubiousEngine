@@ -205,7 +205,7 @@ bool intersection_recurse_a( const Physics_model& a, const Math::Coordinate_spac
 }
 
 //////////////////////////////////////////////////////////////
-bool Collision_solver::broad_phase_intersection( const Physics_object& a, const Physics_object& b )
+bool Collision_solver::broad_phase_intersection( const Physics_object& a, const Physics_object& b ) const
 {
     // If the sum of the radius squared is longer then the distance squared
     // then there's no way these can be touching
@@ -216,7 +216,7 @@ bool Collision_solver::broad_phase_intersection( const Physics_object& a, const 
 }
 
 //////////////////////////////////////////////////////////////
-bool Collision_solver::intersection( const Physics_object& a, const Physics_object& b, std::vector<Contact_manifold::Contact>& contacts )
+bool Collision_solver::intersection( const Physics_object& a, const Physics_object& b, std::vector<Contact_manifold::Contact>& contacts ) const
 {
     return intersection_recurse_a( *a.model(), a.coordinate_space(), *b.model(), b.coordinate_space(), contacts );
 }

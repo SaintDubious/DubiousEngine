@@ -15,9 +15,11 @@ using namespace Dubious;
 // Result Log - sparse case
 // 10/17/2016 - GROUP_COUNT=5000 - 22,800 ms - Starting point
 // 11/11/2016 - GROUP_COUNT=5000 -  2,400 ms - optimized sparse case
+// 11/23/2016 - GROUP_COUNT=5000 -  2,600 ms - with threading
 
 // Result Log - dense case
 // 11/11/2016 - GROUP_COUNT=1000 - 12,800 ms - starting dense
+// 11/23/2016 - GROUP_COUNT=1000 -  4,800 ms - with threading
 
 //////////////////////////////////////////////////////////////
 void reset_scene( const int group_count, std::vector<std::shared_ptr<Physics::Physics_object>>& physics_objects ) 

@@ -7,6 +7,8 @@
 #include <vector>
 #include <memory>
 #include <map>
+#include <set>
+#include <mutex>
 
 //////////////////////////////////////////////////////////////
 namespace Dubious {
@@ -79,6 +81,12 @@ public:
         /// as the old.
         const float     manifold_persistent_threshold = 0.05f;
 
+        /// After broad phase collision detection we create a vector
+        /// of potentially colliding pairs. If the number of these 
+        /// pairs exceeds this number, the collision detection will
+        /// be shunted off to a new thread. One new thread for every
+        /// vector of pairs of the following size
+        const unsigned int collisions_per_thread = 100000;
     };
 
     /// @brief Constructor
@@ -119,6 +127,11 @@ private:
     std::map<std::tuple<std::shared_ptr<Physics_object>,
                         std::shared_ptr<Physics_object>>, 
              Contact_manifold> m_manifolds;
+    std::mutex          m_manifolds_mutex;
+
+
+    std::set<std::tuple<std::shared_ptr<Physics_object>,std::shared_ptr<Physics_object>>>
+        solve_collisions( std::vector<std::tuple<std::shared_ptr<Physics_object>,std::shared_ptr<Physics_object>>>&& inputs );
 };
 
 }}

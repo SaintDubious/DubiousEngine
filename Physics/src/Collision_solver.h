@@ -37,7 +37,7 @@ public:
     /// @param a - [in] the first object
     /// @param b - [in] the second object
     /// @returns true if they collide
-    bool                intersection( const Physics_object& a, const Physics_object& b, std::vector<Contact_manifold::Contact>& contacts );
+    bool                intersection( const Physics_object& a, const Physics_object& b, std::vector<Contact_manifold::Contact>& contacts ) const;
 
     /// @brief cheap and cheerful intersection test
     ///
@@ -48,7 +48,7 @@ public:
     /// @param a - [in] the first object
     /// @param b - [in] the second object
     /// @returns true if they might collide
-    bool                broad_phase_intersection( const Physics_object& a, const Physics_object& b );
+    bool                broad_phase_intersection( const Physics_object& a, const Physics_object& b ) const;
 };
 
 }}

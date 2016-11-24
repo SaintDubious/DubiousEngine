@@ -36,6 +36,7 @@ void Arena::run_physics( float elapsed )
             o->angular_velocity() = o->angular_velocity() + (o->torque()*o->inverse_moment_of_inertia())*m_step_size;
         }
 
+#ifdef TEST_SINGLE_THREAD
         std::set<std::tuple<std::shared_ptr<Physics_object>,std::shared_ptr<Physics_object>>> new_pairs;
         for (size_t i=0; i<m_objects.size(); ++i) {
             std::shared_ptr<Physics_object> a = m_objects[i];
@@ -57,6 +58,32 @@ void Arena::run_physics( float elapsed )
                 }
             }
         }
+#else
+        std::vector<std::tuple<std::shared_ptr<Physics_object>,std::shared_ptr<Physics_object>>> inputs;
+        std::vector<std::future<std::set<std::tuple<std::shared_ptr<Physics_object>,std::shared_ptr<Physics_object>>>>> local_pairs;
+        for (size_t i=0; i<m_objects.size(); ++i) {
+            std::shared_ptr<Physics_object> a = m_objects[i];
+            for (size_t j=i+1; j<m_objects.size(); ++j) {
+                std::shared_ptr<Physics_object> b = m_objects[j];
+                if (!m_collision_solver.broad_phase_intersection( *a, *b )) {
+                    continue;
+                }
+                inputs.push_back( std::make_tuple( a, b ) );
+                if (inputs.size() > m_settings.collisions_per_thread) {
+                    local_pairs.push_back( std::async( std::launch::async, &Arena::solve_collisions, this, std::move(inputs) ) );
+                    inputs.clear();              
+                }
+            }
+        }
+        // and the rest...
+        local_pairs.push_back( std::async( std::launch::async, &Arena::solve_collisions, this, std::move(inputs) ) );
+
+        std::set<std::tuple<std::shared_ptr<Physics_object>,std::shared_ptr<Physics_object>>> new_pairs;
+        for (auto& results : local_pairs) {
+            const auto& result_set = results.get();
+            new_pairs.insert( result_set.begin(), result_set.end() );
+        }
+#endif        
 
         // remove any stale contacts
         for (auto iter=m_manifolds.begin(), end=m_manifolds.end(); iter!=end;) {
@@ -90,6 +117,28 @@ void Arena::run_physics( float elapsed )
 
         m_elapsed -= m_step_size;
     }
+}
+
+//////////////////////////////////////////////////////////////
+std::set<std::tuple<std::shared_ptr<Physics_object>,std::shared_ptr<Physics_object>>>
+        Arena::solve_collisions( std::vector<std::tuple<std::shared_ptr<Physics_object>,std::shared_ptr<Physics_object>>>&& inputs )
+{
+    std::set<std::tuple<std::shared_ptr<Physics_object>,std::shared_ptr<Physics_object>>> new_pairs;
+    for (const auto& object_tuple : inputs) {
+        std::vector<Contact_manifold::Contact> contacts;
+        if (m_collision_solver.intersection( *std::get<0>(object_tuple), *std::get<1>(object_tuple), contacts )) {
+            auto contact_manifold = m_manifolds.find( object_tuple );
+            if (contact_manifold == m_manifolds.end()) {
+                std::unique_lock<std::mutex> lock( m_manifolds_mutex );
+                contact_manifold = m_manifolds.insert( std::make_pair(object_tuple, 
+                    Contact_manifold( std::get<0>(object_tuple), std::get<1>(object_tuple), m_settings.manifold_persistent_threshold )) ).first;
+            }
+            contact_manifold->second.prune_old_contacts();
+            contact_manifold->second.insert( contacts );
+            new_pairs.insert( object_tuple );
+        }
+    }
+    return new_pairs;
 }
 
 }}
