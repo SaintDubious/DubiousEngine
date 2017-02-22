@@ -6,6 +6,7 @@
     <ClCompile Include="src\File_path.cpp" />
     <ClCompile Include="src\Ac3d_file_reader.cpp" />
     <ClCompile Include="src\Thread_pool.cpp" />
+    <ClCompile Include="src\Open_cl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Timer.h" />
@@ -13,5 +14,6 @@
     <ClInclude Include="src\File_path.h" />
     <ClInclude Include="src\Ac3d_file_reader.h" />
     <ClInclude Include="src\Thread_pool.h" />
+    <ClInclude Include="src\Open_cl.h" />
   </ItemGroup>
 </Project>

@@ -84,7 +84,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>
       </SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)/Math/src;$(SolutionDir)/Utility/src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/Math/src;$(SolutionDir)/Utility/src;D:\Users\james\DevTools\OpenCL\inc</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -108,7 +108,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>
       </SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)/Math/src;$(SolutionDir)/Utility/src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/Math/src;$(SolutionDir)/Utility/src;D:\Users\james\DevTools\OpenCL\inc</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -150,6 +150,10 @@
     <ClCompile Include="src\Minkowski_simplex.cpp" />
     <ClCompile Include="src\Physics_model.cpp" />
     <ClCompile Include="src\Physics_object.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\Broad_phase_inner.cl" />
+    <None Include="src\Broad_phase_outer.cl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

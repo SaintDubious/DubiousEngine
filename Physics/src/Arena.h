@@ -3,6 +3,7 @@
 
 #include "Collision_solver.h"
 #include "Constraint_solver.h"
+#include "Open_cl.h"
 
 #include <vector>
 #include <memory>
@@ -31,6 +32,13 @@ public:
     /// I read somewhere that a physics engine is an endless selection
     /// of knobs to turn. This struct holds the knobs.
     struct Settings {
+
+        enum class BroadphaseStrategy {
+            SINGLE_THREADED,
+            MULTI_THREADED,
+            OPENCL
+        };
+
         Settings()
         {}
 
@@ -47,31 +55,31 @@ public:
         /// How long, in seconds, for an individual time step. The
         /// engine will always perform physics updates in discrete
         /// units of this much time. 1/60th is a good number
-        const float     step_size = 0.0166666f;
+        float           step_size = 0.0166666f;
 
         /// How many iterations the constraint solver will take 
         /// per time step.
-        const int       iterations = 20;
+        int             iterations = 20;
 
         /// Beta affects how much force is applied when objects are 
         /// overlapping. The further the overlap, the more separating
         /// force is applied. If this is set too low, objects can 
         /// overlap and never push apart. Set it too high and 
         /// resting objects will jitter.  
-        const float     beta = 0.03f;
+        float           beta = 0.03f;
 
         /// This fake force is applied proportionally to how fast 
         /// objects are overlapping. This can help stop fast objects
         /// from penetrating too far. However if it's turned up too
         /// high it will cause bouncing.
-        const float     coefficient_of_restitution = 0.5f;
+        float           coefficient_of_restitution = 0.5f;
 
         /// This affects both beta and the coefficient of restitution.
         /// If objects are overlapping less then this, then neither
         /// of those forces will be applied. A little bit of slop 
         /// will allow some penetration, but a stabler system. Not
         /// enough slop and things will become unstable.
-        const float     slop = 0.05f;
+        float           slop = 0.05f;
 
         /// When a point is being added to the contact manifold it
         /// needs to be tested against existing points to see if it
@@ -79,19 +87,28 @@ public:
         /// squared from an existing point to a new is less then this
         /// threshold then the new point will be considered the same
         /// as the old.
-        const float     manifold_persistent_threshold = 0.05f;
+        float           manifold_persistent_threshold = 0.05f;
 
         /// After broad phase collision detection we create a vector
         /// of potentially colliding pairs. If the number of these 
         /// pairs exceeds this number, the collision detection will
         /// be shunted off to a new thread. One new thread for every
         /// vector of pairs of the following size
-        const unsigned int collisions_per_thread = 100000;
+        unsigned int    collisions_per_thread = 100000;
+
+        /// When using openCL for broadphase detection we need to know
+        /// how many objects per global work group
+        unsigned int    cl_broadphase_work_group_size = 3000;
+
+        BroadphaseStrategy broadphase_strategy = BroadphaseStrategy::OPENCL;
     };
 
     /// @brief Constructor
     /// @param settings - [in] settings (see above)
     Arena( const Settings& settings );
+
+    /// @brief Destructor
+    ~Arena();
 
     Arena( const Arena& ) = delete;
     Arena& operator=( const Arena& ) = delete;
@@ -129,9 +146,25 @@ private:
              Contact_manifold> m_manifolds;
     std::mutex          m_manifolds_mutex;
 
+    cl_platform_id      m_platform_id;
+    cl_device_id        m_device_id;
+    cl_context          m_context;
+    cl_command_queue    m_command_queue;
+    cl_program          m_broad_phase_inner_program;
+    cl_kernel           m_broad_phase_inner_kernel;
+    cl_program          m_broad_phase_outer_program;
+    cl_kernel           m_broad_phase_outer_kernel;
+    cl_mem              m_broad_phase_buffer_obj_a;
+    cl_mem              m_broad_phase_buffer_obj_b;
+    cl_mem              m_broad_phase_buffer_result;
+    cl_float            *m_broad_phase_objects = nullptr;
+    cl_char             *m_broad_phase_results = nullptr;
+
 
     std::set<std::tuple<std::shared_ptr<Physics_object>,std::shared_ptr<Physics_object>>>
         solve_collisions( std::vector<std::tuple<std::shared_ptr<Physics_object>,std::shared_ptr<Physics_object>>>&& inputs );
+    std::vector<std::tuple<size_t,size_t>> openCL_broad_phase_inner( size_t offset, size_t length );
+    std::vector<std::tuple<size_t,size_t>> openCL_broad_phase_outer( size_t offset_a, size_t offset_b, size_t length );
 };
 
 }}

@@ -21,4 +21,17 @@
     <ClCompile Include="src\Arena.cpp" />
     <ClCompile Include="src\Contact_manifold.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Filter Include="kernels">
+      <UniqueIdentifier>{39084768-6986-4bf8-85b3-c64257ee78aa}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\Broad_phase_inner.cl">
+      <Filter>kernels</Filter>
+    </None>
+    <None Include="src\Broad_phase_outer.cl">
+      <Filter>kernels</Filter>
+    </None>
+  </ItemGroup>
 </Project>

@@ -91,13 +91,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)/Math/src;$(SolutionDir)/Utility/src;$(SolutionDir)/Physics/src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/Math/src;$(SolutionDir)/Utility/src;$(SolutionDir)/Physics/src;D:\Users\james\DevTools\OpenCL\inc</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)bin\$(Configuration);D:\Users\james\DevTools\SDL2-2.0.3\lib\x86</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Math.lib;Utility.lib;Physics.lib;SDL2.lib;Opengl32.lib;GLU32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)bin\$(Configuration);D:\Users\james\DevTools\SDL2-2.0.3\lib\x86;D:\Users\james\DevTools\OpenCL\lib\Win32</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Math.lib;Utility.lib;Physics.lib;SDL2.lib;Opengl32.lib;GLU32.lib;OpenCL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -121,15 +121,15 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)/Math/src;$(SolutionDir)/Utility/src;$(SolutionDir)/Physics/src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/Math/src;$(SolutionDir)/Utility/src;$(SolutionDir)/Physics/src;D:\Users\james\DevTools\OpenCL\inc</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)bin\$(Configuration);D:\Users\james\DevTools\SDL2-2.0.3\lib\x86</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Math.lib;Utility.lib;Physics.lib;SDL2.lib;Opengl32.lib;GLU32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)bin\$(Configuration);D:\Users\james\DevTools\SDL2-2.0.3\lib\x86;D:\Users\james\DevTools\OpenCL\lib\Win32</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Math.lib;Utility.lib;Physics.lib;SDL2.lib;Opengl32.lib;GLU32.lib;OpenCL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
