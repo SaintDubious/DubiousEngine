@@ -47,6 +47,18 @@ void QuaternionT<T>::get_matrix( float matrix[16] ) const
 
 //////////////////////////////////////////////////////////////
 template <int T>
+std::tuple<Unit_vectorT<T>,float> QuaternionT<T>::get_axis_angle() const
+{
+    float angle = 2*acosf(m_real);
+    float denom = sqrtf( 1 - m_real*m_real );
+    Unit_vectorT<T> axis( m_imaginary.m_x / denom,
+                          m_imaginary.m_y / denom,
+                          m_imaginary.m_z / denom );
+    return std::make_tuple( axis, angle );
+}
+
+//////////////////////////////////////////////////////////////
+template <int T>
 QuaternionT<T> QuaternionT<T>::conjugate() const
 {
     return QuaternionT<T>( m_real, Triple( -m_imaginary.m_x, -m_imaginary.m_y, -m_imaginary.m_z ) );

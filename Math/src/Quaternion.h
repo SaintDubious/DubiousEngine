@@ -4,6 +4,8 @@
 #include "Triple.h"
 #include "Vector.h"
 
+#include <tuple>
+
 namespace Math_test { class Quaternion_test; }
 namespace Physics_test { class Collision_solver_test; }
 
@@ -98,6 +100,14 @@ public:
     /// the three axis of rotation in one call
     /// @param matrix - [out] Will be filled with the rotation matrix
     void                get_matrix( float matrix[16] ) const;
+
+    /// @brief Get the Axis and Angle
+    ///
+    /// Return a unit vector representing the axis of rotation, as
+    /// well as a float representing the angle around that axis, in
+    /// radians
+    /// @returns tuple of axis and angle
+    std::tuple<Unit_vectorT<T>,float> get_axis_angle() const;
 
     /// @brief Normalize the Quaternion
     ///

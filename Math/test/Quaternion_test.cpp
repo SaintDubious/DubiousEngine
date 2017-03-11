@@ -128,6 +128,18 @@ public:
         Assert::IsTrue( equals( matrix[_33], cosf(to_radians(30)) ) );
     }
 
+    TEST_METHOD(quaternion_axis_angle)
+    {
+        Unit_vector axis( 0.5f, 1.7f, -1.1f );
+        float angle = 1.2345f;
+        Quaternion a( axis, angle );
+        Unit_vector test_axis;
+        float test_angle;
+        std::tie(test_axis, test_angle) = a.get_axis_angle();
+
+        Assert::IsTrue( axis == test_axis );
+        Assert::IsTrue( angle == test_angle );
+    }
 };
 
 }

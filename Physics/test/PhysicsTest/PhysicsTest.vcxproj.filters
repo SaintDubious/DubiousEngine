@@ -8,5 +8,6 @@
     <ClCompile Include="Physics_model_test.cpp" />
     <ClCompile Include="Constraint_solver_test.cpp" />
     <ClCompile Include="Contact_manifold_test.cpp" />
+    <ClCompile Include="Arena_test.cpp" />
   </ItemGroup>
 </Project>
