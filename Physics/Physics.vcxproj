@@ -133,6 +133,10 @@
   <ItemGroup>
     <ClInclude Include="src\Arena.h" />
     <ClInclude Include="src\Collision_solver.h" />
+    <ClInclude Include="src\Collision_strategy.h" />
+    <ClInclude Include="src\Collision_strategy_multi_threaded.h" />
+    <ClInclude Include="src\Collision_strategy_open_cl.h" />
+    <ClInclude Include="src\Collision_strategy_simple.h" />
     <ClInclude Include="src\Constraint_solver.h" />
     <ClInclude Include="src\Contact_manifold.h" />
     <ClInclude Include="src\Minkowski_polytope.h" />
@@ -144,6 +148,9 @@
   <ItemGroup>
     <ClCompile Include="src\Arena.cpp" />
     <ClCompile Include="src\Collision_solver.cpp" />
+    <ClCompile Include="src\Collision_strategy_multi_threaded.cpp" />
+    <ClCompile Include="src\Collision_strategy_open_cl.cpp" />
+    <ClCompile Include="src\Collision_strategy_simple.cpp" />
     <ClCompile Include="src\Constraint_solver.cpp" />
     <ClCompile Include="src\Contact_manifold.cpp" />
     <ClCompile Include="src\Minkowski_polytope.cpp" />

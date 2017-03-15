@@ -1,6 +1,9 @@
 #include "Arena.h"
 #include "Physics_object.h"
 #include "Physics_model.h"
+#include "Collision_strategy_simple.h"
+#include "Collision_strategy_multi_threaded.h"
+#include "Collision_strategy_open_cl.h"
 
 #include "Broad_phase_inner.cl"
 #include "Broad_phase_outer.cl"
@@ -18,68 +21,20 @@ Arena::Arena( const Settings& settings )
                            settings.beta, 
                            settings.coefficient_of_restitution, 
                            settings.slop )
-    , m_step_size( settings.step_size )
-    , m_velocity_iterations( settings.iterations )
     , m_settings( settings )
 {
-    if (m_settings.broadphase_strategy == Settings::BroadphaseStrategy::OPENCL) {
-        bool opencl_available;    
-        std::tie(opencl_available,m_platform_id,m_device_id) = Utility::Open_cl::setup();
-        if (!opencl_available) {
-            throw std::runtime_error( "Attempted to use OpenCL, but it is not supported" );
-        }
-        m_context = Utility::Open_cl::create_context( m_platform_id, m_device_id );
-        m_command_queue = Utility::Open_cl::create_command_queue( m_context, m_device_id );
-        std::tie(m_broad_phase_inner_program,m_broad_phase_inner_kernel) = Utility::Open_cl::create_kernel( broad_phase_inner, "broad_phase_inner", m_context, m_device_id );
-        std::tie(m_broad_phase_outer_program,m_broad_phase_outer_kernel) = Utility::Open_cl::create_kernel( broad_phase_outer, "broad_phase_outer", m_context, m_device_id );
-
-        size_t ret_size;
-        size_t work_group_size;
-        cl_int rc;
-        rc = clGetKernelWorkGroupInfo( m_broad_phase_inner_kernel, m_device_id, CL_KERNEL_WORK_GROUP_SIZE, sizeof(size_t), &work_group_size, &ret_size );
-        if (CL_SUCCESS != rc) {
-            throw std::runtime_error( "clGetKernelWorkGroupInfo" );
-        }
-        std::cout << "CL_KERNEL_WORK_GROUP_SIZE inner: " << work_group_size << "\n";
-        rc = clGetKernelWorkGroupInfo( m_broad_phase_outer_kernel, m_device_id, CL_KERNEL_WORK_GROUP_SIZE, sizeof(size_t), &work_group_size, &ret_size );
-        if (CL_SUCCESS != rc) {
-            throw std::runtime_error( "clGetKernelWorkGroupInfo" );
-        }
-        std::cout << "CL_KERNEL_WORK_GROUP_SIZE outer: " << work_group_size << "\n";
-
-        if (m_settings.cl_broadphase_work_group_size & 0x01) {
-            throw std::runtime_error( "Really?!?!? Is it too much to ask to have an even cl_broadphase_work_group_size?" );
-        }
-        size_t max_results = m_settings.cl_broadphase_work_group_size*(m_settings.cl_broadphase_work_group_size-1)/2;
-        m_broad_phase_objects = new cl_float[4* m_settings.cl_broadphase_work_group_size];
-        m_broad_phase_results = new cl_char[max_results];
-
-        m_broad_phase_buffer_obj_a  = Utility::Open_cl::create_buffer( m_context, CL_MEM_READ_ONLY, m_settings.cl_broadphase_work_group_size*sizeof(cl_float)*4 );
-        m_broad_phase_buffer_obj_b  = Utility::Open_cl::create_buffer( m_context, CL_MEM_READ_ONLY, m_settings.cl_broadphase_work_group_size*sizeof(cl_float)*4 );
-        m_broad_phase_buffer_result = Utility::Open_cl::create_buffer( m_context, CL_MEM_WRITE_ONLY, max_results*sizeof(cl_char) );
-
-    }
-    
-}
-
-//////////////////////////////////////////////////////////////
-Arena::~Arena()
-{
-    if (m_settings.broadphase_strategy == Settings::BroadphaseStrategy::OPENCL) {
-        clReleaseKernel( m_broad_phase_inner_kernel );
-        clReleaseProgram( m_broad_phase_inner_program );
-        clReleaseKernel( m_broad_phase_outer_kernel );
-        clReleaseProgram( m_broad_phase_outer_program );
-        clReleaseCommandQueue( m_command_queue );
-
-        delete [] m_broad_phase_objects;
-        delete [] m_broad_phase_results;
-
-        clReleaseMemObject( m_broad_phase_buffer_obj_a );
-        clReleaseMemObject( m_broad_phase_buffer_obj_b );
-        clReleaseMemObject( m_broad_phase_buffer_result );
-
-        clReleaseContext( m_context );
+    switch (m_settings.collision_strategy) {
+    case Settings::Collision_strategy::SINGLE_THREADED:
+        m_collision_strategy = std::make_unique<Collision_strategy_simple>( m_settings.manifold_persistent_threshold );
+        break;
+    case Settings::Collision_strategy::MULTI_THREADED:
+        m_collision_strategy = std::make_unique<Collision_strategy_multi_threaded>( m_settings.manifold_persistent_threshold, m_settings.collisions_per_thread );
+        break;
+    case Settings::Collision_strategy::OPENCL:
+        m_collision_strategy = std::make_unique<Collision_strategy_open_cl>( m_settings.manifold_persistent_threshold, m_settings.collisions_per_thread, m_settings.cl_broadphase_work_group_size );
+        break;
+    default:
+        throw std::runtime_error( "Unknown collision strategy requested" );
     }
 }
 
@@ -93,128 +48,22 @@ void Arena::push_back( std::shared_ptr<Physics_object> obj )
 void Arena::run_physics( float elapsed )
 {
     m_elapsed += elapsed;
-    while (m_elapsed > m_step_size) {
+    while (m_elapsed > m_settings.step_size) {
+
         for (const auto& o : m_objects) {
-            o->velocity() = o->velocity() + (o->force()*o->inverse_mass())*m_step_size;
-            o->angular_velocity() = o->angular_velocity() + (o->torque()*o->inverse_moment_of_inertia())*m_step_size;
+            o->velocity() = o->velocity() + (o->force()*o->inverse_mass())*m_settings.step_size;
+            o->angular_velocity() = o->angular_velocity() + (o->torque()*o->inverse_moment_of_inertia())*m_settings.step_size;
         }
 
-        std::set<std::tuple<std::shared_ptr<Physics_object>,std::shared_ptr<Physics_object>>> new_pairs;
-        if (m_settings.broadphase_strategy == Settings::BroadphaseStrategy::OPENCL) {
-            size_t objects_size = m_objects.size();
-
-            // inner comparisons
-            for (size_t i=0; i<objects_size; i+=m_settings.cl_broadphase_work_group_size) {
-                std::vector<std::tuple<size_t,size_t>> result_vect = openCL_broad_phase_inner( i, m_settings.cl_broadphase_work_group_size );
-                std::vector<std::tuple<std::shared_ptr<Physics_object>,std::shared_ptr<Physics_object>>> inputs;
-                std::vector<std::future<std::set<std::tuple<std::shared_ptr<Physics_object>,std::shared_ptr<Physics_object>>>>> local_pairs;
-                for (const auto& result_pair : result_vect) {
-                    inputs.push_back( std::make_tuple( m_objects[std::get<0>(result_pair)], m_objects[std::get<1>(result_pair)] ) );
-                    if (inputs.size() > m_settings.collisions_per_thread) {
-                        local_pairs.push_back( std::async( std::launch::async, &Arena::solve_collisions, this, std::move(inputs) ) );
-                        inputs.clear();              
-                    }
-                }
-                // and the rest...
-                local_pairs.push_back( std::async( std::launch::async, &Arena::solve_collisions, this, std::move(inputs) ) );
-                for (auto& results : local_pairs) {
-                    const auto& result_set = results.get();
-                    new_pairs.insert( result_set.begin(), result_set.end() );
-                }
-            }
-
-            // outer comparisons
-            int half_size = m_settings.cl_broadphase_work_group_size >> 1;
-            for (int i=0; i<objects_size; i+=half_size) {
-                int j = 0;
-                if (i % m_settings.cl_broadphase_work_group_size == 0) {
-                    j += i+m_settings.cl_broadphase_work_group_size;
-                }
-                else {
-                    j += i+half_size;
-                }
-                for (; j<objects_size; j+=half_size) {
-                    std::vector<std::tuple<size_t,size_t>> result_vect = openCL_broad_phase_outer( i, j, half_size );
-                    std::vector<std::tuple<std::shared_ptr<Physics_object>,std::shared_ptr<Physics_object>>> inputs;
-                    std::vector<std::future<std::set<std::tuple<std::shared_ptr<Physics_object>,std::shared_ptr<Physics_object>>>>> local_pairs;
-                    for (const auto& result_pair : result_vect) {
-                        inputs.push_back( std::make_tuple( m_objects[std::get<0>(result_pair)], m_objects[std::get<1>(result_pair)] ) );
-                        if (inputs.size() > m_settings.collisions_per_thread) {
-                            local_pairs.push_back( std::async( std::launch::async, &Arena::solve_collisions, this, std::move(inputs) ) );
-                            inputs.clear();              
-                        }
-                    }
-                    // and the rest...
-                    local_pairs.push_back( std::async( std::launch::async, &Arena::solve_collisions, this, std::move(inputs) ) );
-                    for (auto& results : local_pairs) {
-                        const auto& result_set = results.get();
-                        new_pairs.insert( result_set.begin(), result_set.end() );
-                    }
-                }
-            }
-        }
-        else if (m_settings.broadphase_strategy == Settings::BroadphaseStrategy::SINGLE_THREADED) {
-            for (size_t i=0; i<m_objects.size(); ++i) {
-                std::shared_ptr<Physics_object> a = m_objects[i];
-                for (size_t j=i+1; j<m_objects.size(); ++j) {
-                    std::shared_ptr<Physics_object> b = m_objects[j];
-                    if (!m_collision_solver.broad_phase_intersection( *a, *b )) {
-                        continue;
-                    }
-                    std::vector<Contact_manifold::Contact> contacts;
-                    if (m_collision_solver.intersection( *a, *b, contacts )) {
-                        auto contact_manifold = m_manifolds.find( std::make_tuple(a,b) );
-                        if (contact_manifold == m_manifolds.end()) {
-                            contact_manifold = m_manifolds.insert( std::make_pair(std::make_tuple(a,b), 
-                                Contact_manifold( a, b, m_settings.manifold_persistent_threshold )) ).first;
-                        }
-                        contact_manifold->second.prune_old_contacts();
-                        contact_manifold->second.insert( contacts );
-                        new_pairs.insert( std::make_tuple(a,b) );
-                    }
-                }
-            }
-        }
-        else if (m_settings.broadphase_strategy == Settings::BroadphaseStrategy::MULTI_THREADED) {
-            std::vector<std::tuple<std::shared_ptr<Physics_object>,std::shared_ptr<Physics_object>>> inputs;
-            std::vector<std::future<std::set<std::tuple<std::shared_ptr<Physics_object>,std::shared_ptr<Physics_object>>>>> local_pairs;
-            for (size_t i=0; i<m_objects.size(); ++i) {
-                std::shared_ptr<Physics_object> a = m_objects[i];
-                for (size_t j=i+1; j<m_objects.size(); ++j) {
-                    std::shared_ptr<Physics_object> b = m_objects[j];
-                    if (!m_collision_solver.broad_phase_intersection( *a, *b )) {
-                        continue;
-                    }
-                    inputs.push_back( std::make_tuple( a, b ) );
-                    if (inputs.size() > m_settings.collisions_per_thread) {
-                        local_pairs.push_back( std::async( std::launch::async, &Arena::solve_collisions, this, std::move(inputs) ) );
-                        inputs.clear();              
-                    }
-                }
-            }
-            // and the rest...
-            local_pairs.push_back( std::async( std::launch::async, &Arena::solve_collisions, this, std::move(inputs) ) );
-            for (auto& results : local_pairs) {
-                const auto& result_set = results.get();
-                new_pairs.insert( result_set.begin(), result_set.end() );
-            }
-        }
-        // remove any stale contacts
-        for (auto iter=m_manifolds.begin(), end=m_manifolds.end(); iter!=end;) {
-            if (new_pairs.find(iter->first) == new_pairs.end()) {
-                iter = m_manifolds.erase( iter );
-            }
-            else {
-                ++iter;
-            }
-        }
+        m_collision_strategy->find_contacts( m_objects, m_manifolds );
         
         for (auto &manifold : m_manifolds) {
             std::shared_ptr<Physics_object> a = std::get<0>(manifold.first);
             std::shared_ptr<Physics_object> b = std::get<1>(manifold.first);
             m_constraint_solver.warm_start( *a, *b, manifold.second );
         }
-        for (int i=0; i<m_velocity_iterations; ++i) {
+
+        for (int i=0; i<m_settings.iterations; ++i) {
             for (auto &manifold : m_manifolds) {
                 std::shared_ptr<Physics_object> a = std::get<0>(manifold.first);
                 std::shared_ptr<Physics_object> b = std::get<1>(manifold.first);
@@ -223,119 +72,13 @@ void Arena::run_physics( float elapsed )
         }
 
         for (const auto& o : m_objects) {
-            o->coordinate_space().position() = o->coordinate_space().position() + o->velocity()*m_step_size;
-            Math::Quaternion q_angular_veloticy = o->angular_velocity() * o->coordinate_space().rotation() * 0.5;
-            o->coordinate_space().rotation() = o->coordinate_space().rotation() + q_angular_veloticy*m_step_size;
+            o->coordinate_space().position() = o->coordinate_space().position() + o->velocity()*m_settings.step_size;
+            o->coordinate_space().rotation() = o->coordinate_space().rotation() + (o->angular_velocity() * o->coordinate_space().rotation() * 0.5)*m_settings.step_size;
             o->coordinate_space().rotation().normalize();
         }
 
-        m_elapsed -= m_step_size;
+        m_elapsed -= m_settings.step_size;
     }
-}
-
-//////////////////////////////////////////////////////////////
-std::vector<std::tuple<size_t,size_t>> Arena::openCL_broad_phase_inner( size_t offset, size_t length )
-{   
-    if (offset+length > m_objects.size()) {
-        length = m_objects.size() - offset;
-    }
-    for (size_t i=0; i<length; ++i) {
-        std::shared_ptr<Physics_object> a = m_objects[i+offset];
-        m_broad_phase_objects[i*4+0] = a->coordinate_space().position().x();
-        m_broad_phase_objects[i*4+1] = a->coordinate_space().position().y();
-        m_broad_phase_objects[i*4+2] = a->coordinate_space().position().z();
-        m_broad_phase_objects[i*4+3] = a->model()->radius();
-    }
-    size_t comparison_count = static_cast<int>(length * (length-1) / 2.0f);
-
-    cl_int num_elements = length;
-    Utility::Open_cl::set_kernel_arg( m_broad_phase_inner_kernel, 0, sizeof(cl_mem), &m_broad_phase_buffer_obj_a );
-    Utility::Open_cl::set_kernel_arg( m_broad_phase_inner_kernel, 1, sizeof(cl_int), &num_elements );
-    Utility::Open_cl::set_kernel_arg( m_broad_phase_inner_kernel, 2, sizeof(cl_mem), &m_broad_phase_buffer_result );
-
-    Utility::Open_cl::enqueue_write_buffer( m_command_queue, m_broad_phase_buffer_obj_a, CL_FALSE, 4 * sizeof(cl_float) * length, m_broad_phase_objects );
-    Utility::Open_cl::enqueue_nd_range_kernel( m_command_queue, m_broad_phase_inner_kernel, comparison_count );
-    Utility::Open_cl::enqueue_read_buffer( m_command_queue, m_broad_phase_buffer_result, CL_TRUE, comparison_count*sizeof(cl_char), m_broad_phase_results );
-
-    std::vector<std::tuple<size_t,size_t>> result_vector;
-    int global_index = 0;
-    for (size_t i=0; i<length; ++i) {
-        for (size_t j=i+1; j<length; ++j) {
-            if (m_broad_phase_results[global_index++] == 1) {
-                result_vector.push_back( std::make_tuple( i+offset, j+offset ) );
-            }
-        }
-    }
-
-    return result_vector;
-}
-
-//////////////////////////////////////////////////////////////
-std::vector<std::tuple<size_t,size_t>> Arena::openCL_broad_phase_outer( size_t offset_a, size_t offset_b, size_t length )
-{
-    size_t length_b = 0;
-    for (size_t i=0; i<length; ++i) {
-        std::shared_ptr<Physics_object> a = m_objects[i+offset_a];
-        m_broad_phase_objects[i*4+0] = a->coordinate_space().position().x();
-        m_broad_phase_objects[i*4+1] = a->coordinate_space().position().y();
-        m_broad_phase_objects[i*4+2] = a->coordinate_space().position().z();
-        m_broad_phase_objects[i*4+3] = a->model()->radius();
-        if (i+offset_b >= m_objects.size()) {
-            continue;
-        }
-        a = m_objects[i+offset_b];
-        m_broad_phase_objects[(i+length)*4+0] = a->coordinate_space().position().x();
-        m_broad_phase_objects[(i+length)*4+1] = a->coordinate_space().position().y();
-        m_broad_phase_objects[(i+length)*4+2] = a->coordinate_space().position().z();
-        m_broad_phase_objects[(i+length)*4+3] = a->model()->radius();
-        ++length_b;
-    }
-    size_t comparison_count = length * length_b;
-
-    cl_int num_elements = length;
-    Utility::Open_cl::set_kernel_arg( m_broad_phase_outer_kernel, 0, sizeof(cl_mem), &m_broad_phase_buffer_obj_a );
-    Utility::Open_cl::set_kernel_arg( m_broad_phase_outer_kernel, 1, sizeof(cl_int), &m_broad_phase_buffer_obj_b );
-    Utility::Open_cl::set_kernel_arg( m_broad_phase_outer_kernel, 2, sizeof(cl_int), &length_b );
-    Utility::Open_cl::set_kernel_arg( m_broad_phase_outer_kernel, 3, sizeof(cl_mem), &m_broad_phase_buffer_result );
-
-    Utility::Open_cl::enqueue_write_buffer( m_command_queue, m_broad_phase_buffer_obj_a, CL_FALSE, 4 * sizeof(cl_float) * length, m_broad_phase_objects );
-    Utility::Open_cl::enqueue_write_buffer( m_command_queue, m_broad_phase_buffer_obj_b, CL_FALSE, 4 * sizeof(cl_float) * length_b, &m_broad_phase_objects[length*4] );
-    Utility::Open_cl::enqueue_nd_range_kernel( m_command_queue, m_broad_phase_outer_kernel, comparison_count );
-    Utility::Open_cl::enqueue_read_buffer( m_command_queue, m_broad_phase_buffer_result, CL_TRUE, comparison_count*sizeof(cl_char), m_broad_phase_results );
-
-    std::vector<std::tuple<size_t,size_t>> result_vector;
-    int global_index = 0;
-    for (size_t i=0; i<length; ++i) {
-        for (size_t j=0; j<length_b; ++j) {
-            if (m_broad_phase_results[global_index++] == 1) {
-                result_vector.push_back( std::make_tuple( i+offset_a, j+offset_b ) );
-            }
-        }
-    }
-
-    return result_vector;
-}
-
-//////////////////////////////////////////////////////////////
-std::set<std::tuple<std::shared_ptr<Physics_object>,std::shared_ptr<Physics_object>>>
-        Arena::solve_collisions( std::vector<std::tuple<std::shared_ptr<Physics_object>,std::shared_ptr<Physics_object>>>&& inputs )
-{
-    std::set<std::tuple<std::shared_ptr<Physics_object>,std::shared_ptr<Physics_object>>> new_pairs;
-    for (const auto& object_tuple : inputs) {
-        std::vector<Contact_manifold::Contact> contacts;
-        if (m_collision_solver.intersection( *std::get<0>(object_tuple), *std::get<1>(object_tuple), contacts )) {
-            auto contact_manifold = m_manifolds.find( object_tuple );
-            if (contact_manifold == m_manifolds.end()) {
-                std::unique_lock<std::mutex> lock( m_manifolds_mutex );
-                contact_manifold = m_manifolds.insert( std::make_pair(object_tuple, 
-                    Contact_manifold( std::get<0>(object_tuple), std::get<1>(object_tuple), m_settings.manifold_persistent_threshold )) ).first;
-            }
-            contact_manifold->second.prune_old_contacts();
-            contact_manifold->second.insert( contacts );
-            new_pairs.insert( object_tuple );
-        }
-    }
-    return new_pairs;
 }
 
 }}

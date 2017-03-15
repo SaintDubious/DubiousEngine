@@ -20,10 +20,10 @@ public:
 	{
         auto model_file = Ac3d_file_reader::test_cube( 1.0f, 1.0f, 1.0f ); 
         auto model = std::make_shared<Physics_model>( *model_file );
-        auto a = std::make_shared<Physics_object>( model, 10 );
+        auto a = std::make_shared<Physics_object>( model, 10.0f );
 
         Arena::Settings settings;
-        settings.broadphase_strategy = Arena::Settings::BroadphaseStrategy::SINGLE_THREADED;
+        settings.collision_strategy = Arena::Settings::Collision_strategy::SINGLE_THREADED;
         Arena arena( settings );
 
         a->force() = Vector( 100, 0, 0 );
@@ -38,10 +38,10 @@ public:
 	{
         auto model_file = Ac3d_file_reader::test_cube( 1.0f, 1.0f, 1.0f ); 
         auto model = std::make_shared<Physics_model>( *model_file );
-        auto a = std::make_shared<Physics_object>( model, 10 );
+        auto a = std::make_shared<Physics_object>( model, 10.0f );
 
         Arena::Settings settings;
-        settings.broadphase_strategy = Arena::Settings::BroadphaseStrategy::SINGLE_THREADED;
+        settings.collision_strategy = Arena::Settings::Collision_strategy::SINGLE_THREADED;
         Arena arena( settings );
 
         // How did I arrive at this magic number?
