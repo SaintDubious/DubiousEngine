@@ -28,10 +28,10 @@ Arena::Arena( const Settings& settings )
         m_collision_strategy = std::make_unique<Collision_strategy_simple>( m_settings.manifold_persistent_threshold );
         break;
     case Settings::Collision_strategy::MULTI_THREADED:
-        m_collision_strategy = std::make_unique<Collision_strategy_multi_threaded>( m_settings.manifold_persistent_threshold, m_settings.collisions_per_thread );
+        m_collision_strategy = std::make_unique<Collision_strategy_multi_threaded>( m_settings.manifold_persistent_threshold, m_settings.mt_collisions_work_group_size );
         break;
     case Settings::Collision_strategy::OPENCL:
-        m_collision_strategy = std::make_unique<Collision_strategy_open_cl>( m_settings.manifold_persistent_threshold, m_settings.collisions_per_thread, m_settings.cl_broadphase_work_group_size );
+        m_collision_strategy = std::make_unique<Collision_strategy_open_cl>( m_settings.manifold_persistent_threshold, m_settings.collisions_per_thread, m_settings.cl_collisions_work_group_size );
         break;
     default:
         throw std::runtime_error( "Unknown collision strategy requested" );

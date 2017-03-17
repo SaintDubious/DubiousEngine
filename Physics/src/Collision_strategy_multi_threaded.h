@@ -24,8 +24,8 @@ public:
     /// @brief Constructor
     ///
     /// @param manifold_persistent_threshold - [in] see Arena::Settings
-    /// @param collisions_per_thread - [in] see Arena::Settings
-    Collision_strategy_multi_threaded( float manifold_persistent_threshold, unsigned int collisions_per_thread );
+    /// @param workgroup_size - [in] see Arena::Settings
+    Collision_strategy_multi_threaded( float manifold_persistent_threshold, unsigned int workgroup_size );
 
     /// @brief Destructor
     ~Collision_strategy_multi_threaded() = default;
@@ -39,11 +39,16 @@ public:
 private:
     Collision_solver    m_collision_solver;
     const float         m_manifold_persistent_threshold;
-    const unsigned int  m_collisions_per_thread;
+    const unsigned int  m_workgroup_size;
     std::mutex          m_manifolds_mutex;
    
-    std::set<Physics_object_pair> solve_collisions( std::vector<Physics_object_pair>&& inputs,
-                                                    std::map<Physics_object_pair, Contact_manifold>& manifolds );
+    std::set<Physics_object_pair> solve_inner( size_t start, size_t length,
+                                               const std::vector<std::shared_ptr<Physics_object>>& objects,
+                                               std::map<Physics_object_pair, Contact_manifold>& manifolds );
+
+    std::set<Physics_object_pair> solve_outer( size_t a_start, size_t a_length, size_t b_start, size_t b_length,
+                                               const std::vector<std::shared_ptr<Physics_object>>& objects,
+                                               std::map<Physics_object_pair, Contact_manifold>& manifolds );
 
 };
 

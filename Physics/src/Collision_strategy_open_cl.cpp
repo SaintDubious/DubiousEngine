@@ -14,6 +14,7 @@
 namespace Dubious {
 namespace Physics {
 
+//////////////////////////////////////////////////////////////
 Collision_strategy_open_cl::Collision_strategy_open_cl( float manifold_persistent_threshold, unsigned int collisions_per_thread, int cl_broadphase_work_group_size )
     : m_manifold_persistent_threshold( manifold_persistent_threshold )
     , m_collisions_per_thread( collisions_per_thread )
@@ -55,6 +56,7 @@ Collision_strategy_open_cl::Collision_strategy_open_cl( float manifold_persisten
     m_broad_phase_buffer_result = Utility::Open_cl::create_buffer( m_context, CL_MEM_WRITE_ONLY, max_results*sizeof(cl_char) );
 }
 
+//////////////////////////////////////////////////////////////
 Collision_strategy_open_cl::~Collision_strategy_open_cl()
 {
     clReleaseKernel( m_broad_phase_inner_kernel );
@@ -73,6 +75,7 @@ Collision_strategy_open_cl::~Collision_strategy_open_cl()
     clReleaseContext( m_context );
 }
 
+//////////////////////////////////////////////////////////////
 void Collision_strategy_open_cl::find_contacts( const std::vector<std::shared_ptr<Physics_object>>& objects,
                                                 std::map<Physics_object_pair, Contact_manifold>& manifolds )
 {
@@ -151,7 +154,7 @@ std::vector<std::tuple<size_t,size_t>> Collision_strategy_open_cl::openCL_broad_
         m_broad_phase_objects[i*4+0] = a->coordinate_space().position().x();
         m_broad_phase_objects[i*4+1] = a->coordinate_space().position().y();
         m_broad_phase_objects[i*4+2] = a->coordinate_space().position().z();
-        m_broad_phase_objects[i*4+3] = a->model()->radius();
+        m_broad_phase_objects[i*4+3] = a->model().radius();
     }
     size_t comparison_count = static_cast<int>(length * (length-1) / 2.0f);
 
@@ -186,7 +189,7 @@ std::vector<std::tuple<size_t,size_t>> Collision_strategy_open_cl::openCL_broad_
         m_broad_phase_objects[i*4+0] = a->coordinate_space().position().x();
         m_broad_phase_objects[i*4+1] = a->coordinate_space().position().y();
         m_broad_phase_objects[i*4+2] = a->coordinate_space().position().z();
-        m_broad_phase_objects[i*4+3] = a->model()->radius();
+        m_broad_phase_objects[i*4+3] = a->model().radius();
         if (i+offset_b >= objects.size()) {
             continue;
         }
@@ -194,7 +197,7 @@ std::vector<std::tuple<size_t,size_t>> Collision_strategy_open_cl::openCL_broad_
         m_broad_phase_objects[(i+length)*4+0] = a->coordinate_space().position().x();
         m_broad_phase_objects[(i+length)*4+1] = a->coordinate_space().position().y();
         m_broad_phase_objects[(i+length)*4+2] = a->coordinate_space().position().z();
-        m_broad_phase_objects[(i+length)*4+3] = a->model()->radius();
+        m_broad_phase_objects[(i+length)*4+3] = a->model().radius();
         ++length_b;
     }
     size_t comparison_count = length * length_b;

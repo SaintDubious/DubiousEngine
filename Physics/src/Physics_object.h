@@ -26,7 +26,15 @@ public:
 
     Physics_object& operator=( const Physics_object& ) = delete;
 
-    std::shared_ptr<Physics_model> model() const { return m_model; }
+    /// @brief Model Accessor
+    ///
+    /// This function is used during broadphase collision detection to get the
+    /// radius. As such it's called a LOT. In a simple, single threaded test
+    /// when this returns a std::shared_ptr<Physics_model> the test ran in 2.4
+    /// seconds. When changed to a const reference it ran in 0.76 seconds.
+    /// Do not change this without serious profiling
+    /// @returns the physics model
+    const Physics_model& model() const { return *m_model.get(); }
 
     static const float STATIONARY;
 

@@ -211,14 +211,14 @@ bool Collision_solver::broad_phase_intersection( const Physics_object& a, const 
     // then there's no way these can be touching
     // This is an optimisation I tested and resulted in a very good speed up.
     float distance_squared = (a.coordinate_space().position()-b.coordinate_space().position()).length_squared();
-    float radius_sum = a.model()->radius() + b.model()->radius();
+    float radius_sum = a.model().radius() + b.model().radius();
     return distance_squared <= radius_sum*radius_sum;
 }
 
 //////////////////////////////////////////////////////////////
 bool Collision_solver::intersection( const Physics_object& a, const Physics_object& b, std::vector<Contact_manifold::Contact>& contacts ) const
 {
-    return intersection_recurse_a( *a.model(), a.coordinate_space(), *b.model(), b.coordinate_space(), contacts );
+    return intersection_recurse_a( a.model(), a.coordinate_space(), b.model(), b.coordinate_space(), contacts );
 }
 
 }}

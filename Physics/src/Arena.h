@@ -93,15 +93,19 @@ public:
         /// vector of pairs of the following size
         unsigned int    collisions_per_thread = 100000;
 
-        /// When using openCL for broadphase detection we need to know
+        /// When using Collision_strategy_open_cl we need to know
         /// how many objects per global work group
-        unsigned int    cl_broadphase_work_group_size = 3000;
+        unsigned int    cl_collisions_work_group_size = 3000;
+
+        /// When using Collision_strategy_multi_threaded we need to know
+        /// how many objects per global work group
+        unsigned int    mt_collisions_work_group_size = 1000;
 
         /// Which collision strategy should be used:
         /// SINGLE_THREADED -> Collision_strategy_simple
         /// MULTI_THREADED  -> Collision_strategy_multithreaded
         /// OPENCL          -> Collision_strategy_open_cl
-        Collision_strategy collision_strategy = Collision_strategy::OPENCL;
+        Collision_strategy collision_strategy = Collision_strategy::MULTI_THREADED;
     };
 
     /// @brief Constructor
