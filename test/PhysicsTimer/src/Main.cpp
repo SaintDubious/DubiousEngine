@@ -25,6 +25,7 @@ using namespace Dubious;
 // Result Log - dense case
 // 11/11/2016 - GROUP_COUNT=1000 - 12,800 ms - starting dense
 // 11/23/2016 - GROUP_COUNT=1000 -  4,800 ms - with threading
+// 03/19/2017 - GROUP_COUNT=1000 -  8,100 ms - single threaded - optimized
 
 //////////////////////////////////////////////////////////////
 void reset_scene( const int group_count, std::vector<std::shared_ptr<Physics::Physics_object>>& physics_objects ) 
@@ -32,14 +33,14 @@ void reset_scene( const int group_count, std::vector<std::shared_ptr<Physics::Ph
     const float DENSE = 0.001f;
     const float SPARSE = 2.0f;
     for (int i=0; i<group_count; ++i) {
-        physics_objects[i*2]->coordinate_space().position()     = Math::Point( i*SPARSE, 0, 0 );
+        physics_objects[i*2]->coordinate_space().position()     = Math::Point( i*DENSE, 0, 0 );
         physics_objects[i*2]->coordinate_space().rotation()     = Math::Quaternion();
         physics_objects[i*2]->velocity()                        = Math::Vector( 0, 0.2f, 0 );
         physics_objects[i*2]->force()                           = Math::Vector( 0, 1.0f, 0 );
         physics_objects[i*2]->angular_velocity()                = Math::Vector( 0, 0, 0.2f );
         physics_objects[i*2]->torque()                          = Math::Vector( 0, 0, 0.2f );
 
-        physics_objects[i*2+1]->coordinate_space().position()   = Math::Point( i*SPARSE, 1.0f, 0 );
+        physics_objects[i*2+1]->coordinate_space().position()   = Math::Point( i*DENSE, 1.0f, 0 );
         physics_objects[i*2+1]->coordinate_space().rotation()   = Math::Quaternion();
         physics_objects[i*2+1]->velocity()                      = Math::Vector( 0, -0.2f, 0 );
         physics_objects[i*2+1]->force()                         = Math::Vector( 0, -1.0f, 0 );
@@ -54,10 +55,10 @@ int main( int argc, char** argv )
     try {
         std::cout << "Starting test\n";
 
-        const int GROUP_COUNT = 5000;
+        const int GROUP_COUNT = 1000;
         Utility::Timer                      frame_timer;
         Physics::Arena::Settings            settings( 1.0f/60.0f, 1, 0.03f, 0.5f, 0.05f, 0.05f );
-        settings.collision_strategy         = Physics::Arena::Settings::Collision_strategy::MULTI_THREADED;
+        settings.collision_strategy         = Physics::Arena::Settings::Collision_strategy::SINGLE_THREADED;
         settings.mt_collisions_work_group_size = 500;
         Physics::Arena                      arena( settings );
         std::vector<std::shared_ptr<Physics::Physics_object>>   physics_objects;

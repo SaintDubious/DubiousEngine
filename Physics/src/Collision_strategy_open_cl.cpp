@@ -11,6 +11,7 @@
 #include <iostream>
 
 //////////////////////////////////////////////////////////////
+#pragma warning( disable : 4503 ) // decorated name length exceeded, name was truncated
 namespace Dubious {
 namespace Physics {
 
@@ -227,7 +228,6 @@ std::vector<std::tuple<size_t,size_t>> Collision_strategy_open_cl::openCL_broad_
 }
 
 //////////////////////////////////////////////////////////////
-#pragma warning( disable : 4503 ) // decorated name length exceeded, name was truncated
 std::set<Collision_strategy::Physics_object_pair> Collision_strategy_open_cl::solve_collisions( std::vector<Physics_object_pair>&& inputs,
                                         std::map<Physics_object_pair, Contact_manifold>& manifolds )
 {

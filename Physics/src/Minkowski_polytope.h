@@ -82,10 +82,14 @@ private:
         Minkowski_vector b;
     };
 
-    void push_edge( const Edge& edge );
+    // This function takes 2 points (and not an Edge) as an optimization.
+    // This way we can defer Edge creation until we actually know we need
+    // to push one onto the m_edges vector.
+    void push_edge( const Minkowski_vector& a, const Minkowski_vector& b );
 
-    std::list<Triangle> m_triangles;
-    std::list<Edge> m_edges;
+    // These are vectors and not lists. I profiled this and vector was faster
+    std::vector<Triangle> m_triangles;
+    std::vector<Edge> m_edges;
 };
 
 }}

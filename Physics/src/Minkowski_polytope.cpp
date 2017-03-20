@@ -16,6 +16,7 @@ Minkowski_polytope::Minkowski_polytope( const Minkowski_simplex& simplex )
     const Minkowski_vector& b = simplex.v()[2];
     const Minkowski_vector& c = simplex.v()[1];
     const Minkowski_vector& d = simplex.v()[0];
+    m_triangles.reserve( 10 );
     m_triangles.push_back( Triangle( a, b, c ) );
     m_triangles.push_back( Triangle( a, c, d ) );
     m_triangles.push_back( Triangle( a, d, b ) );
@@ -41,15 +42,16 @@ std::tuple<Minkowski_polytope::Triangle,float> Minkowski_polytope::find_closest_
 void Minkowski_polytope::push_back( Minkowski_vector&& v )
 {
     m_edges.clear();
-    for (auto iter=m_triangles.cbegin(), end=m_triangles.cend(); iter!=end; ) {
+    m_edges.reserve( 10 );
+    for (auto iter=m_triangles.cbegin(); iter!=m_triangles.cend(); ) {
         // I've seen cases of touching objects where this dot product comes out
         // to something times 10 to -7. So we can't compare against 0
         if (Math::dot_product( Math::Vector(iter->normal), v.v()-iter->a.v() ) > 0.00001) {
             // This triangle can be "seen" from the new point, it needs to
             // be removed.
-            push_edge( Edge( iter->a, iter->b ) );
-            push_edge( Edge( iter->b, iter->c ) );
-            push_edge( Edge( iter->c, iter->a ) );
+            push_edge( iter->a, iter->b );
+            push_edge( iter->b, iter->c );
+            push_edge( iter->c, iter->a );
             iter = m_triangles.erase( iter );
         }
         else {
@@ -61,27 +63,16 @@ void Minkowski_polytope::push_back( Minkowski_vector&& v )
     }
 }
 
-
 //////////////////////////////////////////////////////////////
-struct Edge {
-    Edge( const Minkowski_vector& p1, const Minkowski_vector& p2 )
-        : a( p1 )
-        , b( p2 )
-    {}
-    Minkowski_vector a;
-    Minkowski_vector b;
-};
-
-//////////////////////////////////////////////////////////////
-void Minkowski_polytope::push_edge( const Edge& edge )
+void Minkowski_polytope::push_edge( const Minkowski_vector& a, const Minkowski_vector& b )
 {
     for (auto iter=m_edges.cbegin(), end=m_edges.cend(); iter!=end; ++iter) {
-        if (iter->a.v() == edge.b.v() && iter->b.v() == edge.a.v()) {
+        if (iter->a.v() == b.v() && iter->b.v() == a.v()) {
             m_edges.erase( iter );
             return;
         }
     }
-    m_edges.push_back( edge );
+    m_edges.emplace_back( a, b );
 }
 
 }}
