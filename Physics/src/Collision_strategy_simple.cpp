@@ -20,9 +20,9 @@ void Collision_strategy_simple::find_contacts( const std::vector<std::shared_ptr
 {
     std::set<Physics_object_pair> new_pairs;
     for (size_t i=0; i<objects.size(); ++i) {
-        auto a = objects[i];
+        auto a = objects[i].get();
         for (size_t j=i+1; j<objects.size(); ++j) {
-            auto b = objects[j];
+            auto b = objects[j].get();
             if (!m_collision_solver.broad_phase_intersection( *a, *b )) {
                 continue;
             }
@@ -32,7 +32,7 @@ void Collision_strategy_simple::find_contacts( const std::vector<std::shared_ptr
                 auto contact_manifold = manifolds.find( object_pair );
                 if (contact_manifold == manifolds.end()) {
                     contact_manifold = manifolds.insert( std::make_pair(object_pair, 
-                        Contact_manifold( a, b, m_manifold_persistent_threshold )) ).first;
+                        Contact_manifold( *a, *b, m_manifold_persistent_threshold )) ).first;
                 }
                 contact_manifold->second.prune_old_contacts();
                 contact_manifold->second.insert( contacts );

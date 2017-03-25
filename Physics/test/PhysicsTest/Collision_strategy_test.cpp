@@ -119,8 +119,8 @@ private:
                       const std::map<Collision_strategy::Physics_object_pair, Contact_manifold>& manifolds )
     {
         for (const auto& result : manifolds) {
-            if ((std::get<0>(result.first) == objects[a] && std::get<1>(result.first) == objects[b]) ||
-                (std::get<1>(result.first) == objects[a] && std::get<0>(result.first) == objects[b])) {
+            if ((std::get<0>(result.first) == objects[a].get() && std::get<1>(result.first) == objects[b].get()) ||
+                (std::get<1>(result.first) == objects[a].get() && std::get<0>(result.first) == objects[b].get())) {
                 return true;
             }
         }

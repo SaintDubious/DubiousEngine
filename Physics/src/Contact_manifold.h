@@ -28,7 +28,7 @@ class Physics_object;
 class Contact_manifold {
 public:
 
-    Contact_manifold( std::shared_ptr<Physics_object> a, std::shared_ptr<Physics_object> b, 
+    Contact_manifold( const Physics_object& a, const Physics_object& b, 
                       float persistent_threshold );
 
     /// @brief Contact information
@@ -68,8 +68,8 @@ public:
 private:
     friend class Physics_test::Contact_manifold_test;
 
-    const std::shared_ptr<Physics_object> m_object_a;
-    const std::shared_ptr<Physics_object> m_object_b;
+    const Physics_object& m_object_a;
+    const Physics_object& m_object_b;
     std::vector<Contact> m_contacts;
     const float         m_persistent_threshold = 0.05f;
 

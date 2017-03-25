@@ -15,7 +15,11 @@ namespace Physics {
 ///
 /// Constructed from the output of the Minkowski Simplex
 /// created from the GJK collision detection. The Polytope keeps
-/// track of the expanding object used in EPA
+/// track of the expanding object used in EPA.
+///
+/// NOTE: This class is absolutely a hot spot when profiling. As 
+/// such it uses a number of optimizations that I wouldn't usually
+/// suggest.
 class Minkowski_polytope {
 public:
     /// @brief Usable Constructor
@@ -27,7 +31,6 @@ public:
 
     Minkowski_polytope( const Minkowski_polytope& ) = delete;
     Minkowski_polytope& operator=( const Minkowski_polytope& ) = delete;
-
 
     /// @brief A surface triangle
     ///
@@ -52,6 +55,13 @@ public:
         Minkowski_vector  a;
         Minkowski_vector  b;
         Minkowski_vector  c;
+
+        // Possible optimization:
+        // The internal tests for this thing care only about which side of the
+        // triangle it's on, so this doesn't need to be Unit_vector. The 
+        // the DENSE PhysicsTimer case shows a 1/6 speed up when this is just
+        // a Vector. However it is used outside for other things, so I'm not
+        // sure if it's safe.
         Math::Unit_vector normal;
     };
 

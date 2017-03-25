@@ -70,9 +70,9 @@ std::set<Collision_strategy::Physics_object_pair> Collision_strategy_multi_threa
 {
     std::set<Physics_object_pair> new_pairs;
     for (size_t i=start; i<start+length; ++i) {
-        const auto& a = objects[i];
+        auto a = objects[i].get();
         for (size_t j=i+1; j<start+length; ++j) {
-            const auto& b = objects[j];
+            auto b = objects[j].get();
             if (!m_collision_solver.broad_phase_intersection( *a, *b )) {
                 continue;
             }
@@ -83,7 +83,7 @@ std::set<Collision_strategy::Physics_object_pair> Collision_strategy_multi_threa
                 if (contact_manifold == manifolds.end()) {
                     std::unique_lock<std::mutex> lock( m_manifolds_mutex );
                     contact_manifold = manifolds.insert( std::make_pair(object_pair, 
-                        Contact_manifold( a, b, m_manifold_persistent_threshold )) ).first;
+                        Contact_manifold( *a, *b, m_manifold_persistent_threshold )) ).first;
                 }
                 contact_manifold->second.prune_old_contacts();
                 contact_manifold->second.insert( contacts );
@@ -102,9 +102,9 @@ std::set<Collision_strategy::Physics_object_pair> Collision_strategy_multi_threa
 {
     std::set<Physics_object_pair> new_pairs;
     for (size_t i=a_start; i<a_start+a_length; ++i) {
-        const auto& a = objects[i];
+        auto a = objects[i].get();
         for (size_t j=b_start; j<b_start+b_length; ++j) {
-            const auto& b = objects[j];
+            auto b = objects[j].get();
             if (!m_collision_solver.broad_phase_intersection( *a, *b )) {
                 continue;
             }
@@ -115,7 +115,7 @@ std::set<Collision_strategy::Physics_object_pair> Collision_strategy_multi_threa
                 if (contact_manifold == manifolds.end()) {
                     std::unique_lock<std::mutex> lock( m_manifolds_mutex );
                     contact_manifold = manifolds.insert( std::make_pair(object_pair, 
-                        Contact_manifold( a, b, m_manifold_persistent_threshold )) ).first;
+                        Contact_manifold( *a, *b, m_manifold_persistent_threshold )) ).first;
                 }
                 contact_manifold->second.prune_old_contacts();
                 contact_manifold->second.insert( contacts );

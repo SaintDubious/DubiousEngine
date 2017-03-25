@@ -133,8 +133,7 @@ public:
     ///
     /// Not sure if this is useful in any situation EXCEPT the one
     /// in which I'm trying to debug by drawing the contacts
-    const std::map<std::tuple<std::shared_ptr<Physics_object>,
-                              std::shared_ptr<Physics_object>>, 
+    const std::map<std::tuple<Physics_object*,Physics_object*>, 
                    Contact_manifold>& manifolds() const { return m_manifolds; }
 private:
 
@@ -143,10 +142,13 @@ private:
     float               m_elapsed = 0.0f;
     const Settings      m_settings;
 
+    // m_objects holds everything. The manifolds hold only pointers
+    // and references to the m_objects. This is an optimization that got
+    // me a 10% speedup. However it means if you ever remove anything from
+    // m_objects, you will have to make sure to pull it out of m_manifolds
+    // as well.
     std::vector<std::shared_ptr<Physics_object>> m_objects;
-    std::map<std::tuple<std::shared_ptr<Physics_object>,
-                        std::shared_ptr<Physics_object>>, 
-             Contact_manifold> m_manifolds;
+    std::map<std::tuple<Physics_object*,Physics_object*>, Contact_manifold> m_manifolds;
 };
 
 }}

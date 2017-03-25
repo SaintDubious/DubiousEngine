@@ -26,6 +26,7 @@ using namespace Dubious;
 // 11/11/2016 - GROUP_COUNT=1000 - 12,800 ms - starting dense
 // 11/23/2016 - GROUP_COUNT=1000 -  4,800 ms - with threading
 // 03/19/2017 - GROUP_COUNT=1000 -  8,100 ms - single threaded - optimized
+// 03/24/2017 - GROUP_COUNT=1000 -  6,100 ms - single threaded - optimized Minkowski_polytope
 
 //////////////////////////////////////////////////////////////
 void reset_scene( const int group_count, std::vector<std::shared_ptr<Physics::Physics_object>>& physics_objects ) 

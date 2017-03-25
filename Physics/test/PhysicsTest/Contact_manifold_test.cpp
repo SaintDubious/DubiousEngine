@@ -31,7 +31,7 @@ public:
         std::shared_ptr<Physics_object> b( new Physics_object( model, 1 ) );
         b->coordinate_space().position() = Point( 0, 2, 0 );
 
-        Contact_manifold contact_manifold( a, b, 0.05f );
+        Contact_manifold contact_manifold( *a, *b, 0.05f );
         std::vector<Contact_manifold::Contact> contacts;
         Assert::IsTrue( solver.intersection( *a, *b, contacts ) == true );
         contact_manifold.insert( contacts );
@@ -54,7 +54,7 @@ public:
         std::shared_ptr<Physics_object> b( new Physics_object( model, 1 ) );
         b->coordinate_space().position() = Point( 0, 2, 0 );
 
-        Contact_manifold contact_manifold( a, b, 0.05f );
+        Contact_manifold contact_manifold( *a, *b, 0.05f );
         std::vector<Contact_manifold::Contact> contacts;
         Assert::IsTrue( solver.intersection( *a, *b, contacts ) == true );
         contact_manifold.insert( contacts );
@@ -89,7 +89,7 @@ public:
         std::shared_ptr<Physics_object> a( new Physics_object( model, 1 ) );
         std::shared_ptr<Physics_object> b( new Physics_object( model, 1 ) );
 
-        Contact_manifold contact_manifold( a, b, 0.05f );
+        Contact_manifold contact_manifold( *a, *b, 0.05f );
         
         float d = 0;
         // Off of one end of the line
@@ -121,7 +121,7 @@ public:
         std::shared_ptr<Physics_object> model_a( new Physics_object( model, 1 ) );
         std::shared_ptr<Physics_object> model_b( new Physics_object( model, 1 ) );
 
-        Contact_manifold contact_manifold( model_a, model_b, 0.05f );
+        Contact_manifold contact_manifold( *model_a, *model_b, 0.05f );
         
         Point a( -1, -1, 0 );
         Point b( 1, -1, 0 );

@@ -89,7 +89,7 @@ void Collision_strategy_open_cl::find_contacts( const std::vector<std::shared_pt
         std::vector<Physics_object_pair> inputs;
         std::vector<std::future<std::set<Physics_object_pair>>> local_pairs;
         for (const auto& result_pair : result_vect) {
-            inputs.push_back( std::make_tuple( objects[std::get<0>(result_pair)], objects[std::get<1>(result_pair)] ) );
+            inputs.push_back( std::make_tuple( objects[std::get<0>(result_pair)].get(), objects[std::get<1>(result_pair)].get() ) );
             if (inputs.size() > m_collisions_per_thread) {
                 local_pairs.push_back( std::async( std::launch::async, &Collision_strategy_open_cl::solve_collisions, this, std::move(inputs), std::ref(manifolds) ) );
                 inputs.clear();              
@@ -118,7 +118,7 @@ void Collision_strategy_open_cl::find_contacts( const std::vector<std::shared_pt
             std::vector<Physics_object_pair> inputs;
             std::vector<std::future<std::set<Physics_object_pair>>> local_pairs;
             for (const auto& result_pair : result_vect) {
-                inputs.push_back( std::make_tuple( objects[std::get<0>(result_pair)], objects[std::get<1>(result_pair)] ) );
+                inputs.push_back( std::make_tuple( objects[std::get<0>(result_pair)].get(), objects[std::get<1>(result_pair)].get() ) );
                 if (inputs.size() > m_collisions_per_thread) {
                     local_pairs.push_back( std::async( std::launch::async, &Collision_strategy_open_cl::solve_collisions, this, std::move(inputs), std::ref(manifolds) ) );
                     inputs.clear();              
@@ -239,7 +239,7 @@ std::set<Collision_strategy::Physics_object_pair> Collision_strategy_open_cl::so
             if (contact_manifold == manifolds.end()) {
                 std::unique_lock<std::mutex> lock( m_manifolds_mutex );
                 contact_manifold = manifolds.insert( std::make_pair(object_tuple, 
-                    Contact_manifold( std::get<0>(object_tuple), std::get<1>(object_tuple), m_manifold_persistent_threshold )) ).first;
+                    Contact_manifold( *std::get<0>(object_tuple), *std::get<1>(object_tuple), m_manifold_persistent_threshold )) ).first;
             }
             contact_manifold->second.prune_old_contacts();
             contact_manifold->second.insert( contacts );

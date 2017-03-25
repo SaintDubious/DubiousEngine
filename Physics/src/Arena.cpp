@@ -58,15 +58,15 @@ void Arena::run_physics( float elapsed )
         m_collision_strategy->find_contacts( m_objects, m_manifolds );
         
         for (auto &manifold : m_manifolds) {
-            std::shared_ptr<Physics_object> a = std::get<0>(manifold.first);
-            std::shared_ptr<Physics_object> b = std::get<1>(manifold.first);
+            Physics_object* a = std::get<0>(manifold.first);
+            Physics_object* b = std::get<1>(manifold.first);
             m_constraint_solver.warm_start( *a, *b, manifold.second );
         }
 
         for (int i=0; i<m_settings.iterations; ++i) {
             for (auto &manifold : m_manifolds) {
-                std::shared_ptr<Physics_object> a = std::get<0>(manifold.first);
-                std::shared_ptr<Physics_object> b = std::get<1>(manifold.first);
+                Physics_object* a = std::get<0>(manifold.first);
+                Physics_object* b = std::get<1>(manifold.first);
                 m_constraint_solver.solve( *a, *b, manifold.second );
             }
         }

@@ -29,7 +29,7 @@ public:
 
     // I try to avoid typedefs, but this one is so long and used 
     // so often that it becomes unruly
-    typedef std::tuple<std::shared_ptr<Physics_object>,std::shared_ptr<Physics_object>> Physics_object_pair;
+    typedef std::tuple<Physics_object*,Physics_object*> Physics_object_pair;
 
     /// @brief Find contacts between objects
     ///

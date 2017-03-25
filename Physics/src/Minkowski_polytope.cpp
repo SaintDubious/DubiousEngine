@@ -1,6 +1,7 @@
 #include "Minkowski_polytope.h"
 
 #include <tuple>
+#include <cassert>
 
 //////////////////////////////////////////////////////////////
 namespace Dubious {
@@ -12,37 +13,39 @@ Minkowski_polytope::Minkowski_polytope( const Minkowski_simplex& simplex )
     if (simplex.size() != 4) {
         throw std::runtime_error( "Attempting to create polytope from simplex that is not tetrahedron" );
     }
-    const Minkowski_vector& a = simplex.v()[3];
-    const Minkowski_vector& b = simplex.v()[2];
-    const Minkowski_vector& c = simplex.v()[1];
-    const Minkowski_vector& d = simplex.v()[0];
-    m_triangles.reserve( 10 );
-    m_triangles.push_back( Triangle( a, b, c ) );
-    m_triangles.push_back( Triangle( a, c, d ) );
-    m_triangles.push_back( Triangle( a, d, b ) );
-    m_triangles.push_back( Triangle( b, d, c ) );
+    auto v_array = simplex.v();
+    const auto& a = v_array[3];
+    const auto& b = v_array[2];
+    const auto& c = v_array[1];
+    const auto& d = v_array[0];
+    m_triangles.reserve( 20 );
+    m_triangles.emplace_back( a, b, c );
+    m_triangles.emplace_back( a, c, d );
+    m_triangles.emplace_back( a, d, b );
+    m_triangles.emplace_back( b, d, c );
 }
 
 //////////////////////////////////////////////////////////////
 std::tuple<Minkowski_polytope::Triangle,float> Minkowski_polytope::find_closest_triangle()
 {
-    float distance = std::numeric_limits<float>::max();
-    Triangle ret = m_triangles.front();
+    auto distance = std::numeric_limits<float>::max();
+    const Minkowski_polytope::Triangle* ret = nullptr;
     for (const auto& t : m_triangles) {
-        float dot = Math::dot_product( t.a.v(), Math::Vector(t.normal) );
-        if ( dot < distance) {
-            ret = t;
+        auto dot = Math::dot_product( t.a.v(), Math::Vector(t.normal) );
+        if (dot < distance) {
+            ret = &t;
             distance = dot;
         }
     }
-    return std::make_tuple(ret, distance);
+    assert( ret && "It shouldn't be possible to select 0 triangles" );
+    return std::make_tuple(*ret, distance);
 }
 
 //////////////////////////////////////////////////////////////
 void Minkowski_polytope::push_back( Minkowski_vector&& v )
 {
     m_edges.clear();
-    m_edges.reserve( 10 );
+    m_edges.reserve( 60 );
     for (auto iter=m_triangles.cbegin(); iter!=m_triangles.cend(); ) {
         // I've seen cases of touching objects where this dot product comes out
         // to something times 10 to -7. So we can't compare against 0
@@ -59,7 +62,7 @@ void Minkowski_polytope::push_back( Minkowski_vector&& v )
         }
     } 
     for (const auto& e : m_edges) {
-        m_triangles.push_back( Triangle( v, e.a, e.b ) );
+        m_triangles.emplace_back( v, e.a, e.b );
     }
 }
 
