@@ -21,8 +21,9 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{4DB29D1B-ECB4-4D15-8FD9-333C3E56CAAA}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>PhysicsTimer</RootNamespace>
+    <RootNamespace>CollisionTimer</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <ProjectName>CollisionTimer</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
