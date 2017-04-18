@@ -73,11 +73,12 @@ bool model_intersection( const Physics_model& a, const Math::Coordinate_space& c
         support_point = support_a - support_b;
         // If this next check is < 0 then touching will be considered
         // a collision. If it's <= 0 then touching will not be a collision.
-        // For EPA to work, our GJK must exit with a tetrahedron. Therefore
+        // For EPA to work, our GJK must exit with a CONVEX tetrahedron. Therefore
         // if a contact point is directly on a line or triangle simplex (ie
-        // a touching collision) that must be considered a collision in order
-        // to keep building up to the tetrahedron. So this needs to be < 0
-        if (Math::dot_product( support_point, direction ) < 0) {
+        // a touching collision) then the resulting tetrahedron would end up
+        // being flat (essentially 2D). This would cause some normal generation
+        // to blow up. So we need for touching to not be considered a collision
+        if (Math::dot_product( support_point, direction ) <= 0) {
             return false;
         }
         simplex.push_back( Minkowski_vector( support_point, support_a, support_b ) );

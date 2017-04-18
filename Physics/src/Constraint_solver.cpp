@@ -52,14 +52,13 @@ float lagrangian_multiplier( float dt, float beta, float cor, float slop,
                              const Math::Vector& r_a, const Math::Vector& r_b,
                              const Physics_object& a, const Physics_object& b )
 {
-    float j_dot_v = Math::dot_product(-n, a.velocity()) + Math::dot_product(Math::cross_product(-r_a,n), a.angular_velocity()) +
-                    Math::dot_product( n, b.velocity()) + Math::dot_product(Math::cross_product( r_b,n), b.angular_velocity());
+    const auto &ra_x_n = Math::cross_product( r_a, n );
+    const auto &rb_x_n = Math::cross_product( r_b, n );
+    float j_dot_v = Math::dot_product(-n, a.velocity()) + Math::dot_product(-ra_x_n, a.angular_velocity()) +
+                    Math::dot_product( n, b.velocity()) + Math::dot_product( rb_x_n, b.angular_velocity());
 
-    Math::Vector ra_x_n = Math::cross_product( r_a, n );
-    float denom         = Math::dot_product( -n*a.inverse_mass(), -n ) + Math::dot_product( -ra_x_n*a.inverse_moment_of_inertia(), -ra_x_n);
-    
-    Math::Vector rb_x_n = Math::cross_product( r_b, n );
-    denom              += Math::dot_product(  n*b.inverse_mass(), n)   + Math::dot_product(  rb_x_n*b.inverse_moment_of_inertia(),  rb_x_n);
+    float denom   = Math::dot_product( -n*a.inverse_mass(), -n ) + Math::dot_product( -ra_x_n*a.inverse_moment_of_inertia(), -ra_x_n)
+                  + Math::dot_product(  n*b.inverse_mass(), n )  + Math::dot_product(  rb_x_n*b.inverse_moment_of_inertia(),  rb_x_n);
 
     float baumgarte = 0;
     float restitution = 0;
@@ -78,14 +77,14 @@ float lagrangian_multiplier_friction( const Math::Vector& t,
                                       const Math::Vector& r_a, const Math::Vector& r_b,
                                       const Physics_object& a, const Physics_object& b )
 {
-    float j_dot_v = Math::dot_product(-t, a.velocity()) + Math::dot_product(Math::cross_product(-r_a,t), a.angular_velocity()) +
-                    Math::dot_product( t, b.velocity()) + Math::dot_product(Math::cross_product( r_b,t), b.angular_velocity());
+    const auto& ra_x_t = Math::cross_product( r_a, t );
+    const auto& rb_x_t = Math::cross_product( r_b, t );
 
-    Math::Vector ra_x_t = Math::cross_product( r_a, t );
-    float        denom  = Math::dot_product( -t*a.inverse_mass(), -t ) + Math::dot_product( -ra_x_t*a.inverse_moment_of_inertia(), -ra_x_t);
+    float j_dot_v = Math::dot_product(-t, a.velocity()) + Math::dot_product(-ra_x_t, a.angular_velocity()) +
+                    Math::dot_product( t, b.velocity()) + Math::dot_product( rb_x_t, b.angular_velocity());
 
-    Math::Vector rb_x_t = Math::cross_product( r_b, t );
-    denom              += Math::dot_product(  t*b.inverse_mass(),  t ) + Math::dot_product(  rb_x_t*b.inverse_moment_of_inertia(),  rb_x_t);
+    float  denom  = Math::dot_product( -t*a.inverse_mass(), -t ) + Math::dot_product( -ra_x_t*a.inverse_moment_of_inertia(), -ra_x_t)
+                  + Math::dot_product(  t*b.inverse_mass(),  t ) + Math::dot_product(  rb_x_t*b.inverse_moment_of_inertia(),  rb_x_t);
 
     return -(j_dot_v)  / denom;
 }  
