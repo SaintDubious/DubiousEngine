@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Math", "Math\Math.vcxproj", "{F4F941A2-1058-4E28-B424-9BAEA08AB096}"
 EndProject
@@ -248,5 +248,8 @@ Global
 		{A5BC3645-6259-4754-A43E-A93455FE881A} = {F0B68A64-7E75-4492-8EA3-1CAEA50E55F8}
 		{4DB29D1B-ECB4-4D15-8FD9-333C3E56CAAA} = {F0B68A64-7E75-4492-8EA3-1CAEA50E55F8}
 		{8B961B49-7F59-48B5-822F-0A36F6389C4E} = {F0B68A64-7E75-4492-8EA3-1CAEA50E55F8}
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal
