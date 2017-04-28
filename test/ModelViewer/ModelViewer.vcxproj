@@ -22,7 +22,7 @@
     <ProjectGuid>{96A365C7-C682-4F48-9272-B5DA2039E95F}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>ModelViewer</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

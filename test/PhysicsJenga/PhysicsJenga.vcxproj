@@ -22,7 +22,7 @@
     <ProjectGuid>{A2FE8C2B-F4AE-449D-BF37-27791247571D}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>PhysicsJenga</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

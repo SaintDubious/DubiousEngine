@@ -25,7 +25,7 @@
     <ProjectGuid>{6371F593-68EA-40D5-A2A1-C349EAFA20B8}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>CollisionViewer</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

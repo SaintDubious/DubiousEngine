@@ -22,7 +22,7 @@
     <ProjectGuid>{00F519DA-DDAB-4226-A239-54E3128717B2}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>PhysicsViewer</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

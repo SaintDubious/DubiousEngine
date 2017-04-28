@@ -22,7 +22,7 @@
     <ProjectGuid>{1599A188-450B-4CE7-A36F-C7F72D65A97D}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>PhysicsTest</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
