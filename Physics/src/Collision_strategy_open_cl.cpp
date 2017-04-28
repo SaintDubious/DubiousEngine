@@ -80,26 +80,19 @@ Collision_strategy_open_cl::~Collision_strategy_open_cl()
 void Collision_strategy_open_cl::find_contacts( const std::vector<std::shared_ptr<Physics_object>>& objects,
                                                 std::map<Physics_object_pair, Contact_manifold>& manifolds )
 {
-    std::set<Physics_object_pair> new_pairs;
     size_t objects_size = objects.size();
+    std::vector<Physics_object_pair> object_pairs;
+    std::vector<std::future<std::set<Physics_object_pair>>> results;
 
     // inner comparisons
     for (size_t i=0; i<objects_size; i+=m_cl_broadphase_work_group_size) {
-        std::vector<std::tuple<size_t,size_t>> result_vect = openCL_broad_phase_inner( objects, i, m_cl_broadphase_work_group_size );
-        std::vector<Physics_object_pair> inputs;
-        std::vector<std::future<std::set<Physics_object_pair>>> local_pairs;
-        for (const auto& result_pair : result_vect) {
-            inputs.push_back( std::make_tuple( objects[std::get<0>(result_pair)].get(), objects[std::get<1>(result_pair)].get() ) );
-            if (inputs.size() > m_collisions_per_thread) {
-                local_pairs.push_back( std::async( std::launch::async, &Collision_strategy_open_cl::solve_collisions, this, std::move(inputs), std::ref(manifolds) ) );
-                inputs.clear();              
+        std::vector<std::tuple<size_t,size_t>> index_pairs = openCL_broad_phase_inner( objects, i, m_cl_broadphase_work_group_size );
+        for (const auto& pair : index_pairs) {
+            object_pairs.push_back( std::make_tuple( objects[std::get<0>(pair)].get(), objects[std::get<1>(pair)].get() ) );
+            if (object_pairs.size() > m_collisions_per_thread) {
+                results.push_back( std::async( std::launch::async, &Collision_strategy_open_cl::solve_collisions, this, std::move(object_pairs), std::ref(manifolds) ) );
+                object_pairs.clear();              
             }
-        }
-        // and the rest...
-        local_pairs.push_back( std::async( std::launch::async, &Collision_strategy_open_cl::solve_collisions, this, std::move(inputs), std::ref(manifolds) ) );
-        for (auto& results : local_pairs) {
-            const auto& result_set = results.get();
-            new_pairs.insert( result_set.begin(), result_set.end() );
         }
     }
 
@@ -114,28 +107,32 @@ void Collision_strategy_open_cl::find_contacts( const std::vector<std::shared_pt
             j = i+half_size;
         }
         for (; j<objects_size; j+=half_size) {
-            std::vector<std::tuple<size_t,size_t>> result_vect = openCL_broad_phase_outer( objects, i, j, half_size );
-            std::vector<Physics_object_pair> inputs;
-            std::vector<std::future<std::set<Physics_object_pair>>> local_pairs;
-            for (const auto& result_pair : result_vect) {
-                inputs.push_back( std::make_tuple( objects[std::get<0>(result_pair)].get(), objects[std::get<1>(result_pair)].get() ) );
-                if (inputs.size() > m_collisions_per_thread) {
-                    local_pairs.push_back( std::async( std::launch::async, &Collision_strategy_open_cl::solve_collisions, this, std::move(inputs), std::ref(manifolds) ) );
-                    inputs.clear();              
+            std::vector<std::tuple<size_t,size_t>> index_pairs = openCL_broad_phase_outer( objects, i, j, half_size );
+            for (const auto& pair : index_pairs) {
+                object_pairs.push_back( std::make_tuple( objects[std::get<0>(pair)].get(), objects[std::get<1>(pair)].get() ) );
+                if (object_pairs.size() > m_collisions_per_thread) {
+                    results.push_back( std::async( std::launch::async, &Collision_strategy_open_cl::solve_collisions, this, std::move(object_pairs), std::ref(manifolds) ) );
+                    object_pairs.clear();              
                 }
             }
-            // and the rest...
-            local_pairs.push_back( std::async( std::launch::async, &Collision_strategy_open_cl::solve_collisions, this, std::move(inputs), std::ref(manifolds) ) );
-            for (auto& results : local_pairs) {
-                const auto& result_set = results.get();
-                new_pairs.insert( result_set.begin(), result_set.end() );
-            }
         }
+    }
+    // If object_pairs is not empty then there are some left over
+    // pairs that need to be run through the collision solver
+    if (!object_pairs.empty()) {
+        results.push_back( std::async( std::launch::async, &Collision_strategy_open_cl::solve_collisions, this, std::move(object_pairs), std::ref(manifolds) ) );
+    }
+
+    // collect results from threads
+    std::set<Physics_object_pair> colliding_pairs;
+    for (auto& result : results) {
+        const auto& result_set = result.get();
+        colliding_pairs.insert( result_set.begin(), result_set.end() );
     }
 
     // remove any stale contacts
     for (auto iter=manifolds.begin(), end=manifolds.end(); iter!=end;) {
-        if (new_pairs.find(iter->first) == new_pairs.end()) {
+        if (colliding_pairs.find(iter->first) == colliding_pairs.end()) {
             manifolds.erase( iter++ );
         }
         else {
