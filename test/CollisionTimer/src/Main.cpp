@@ -21,6 +21,8 @@ using namespace Dubious;
 // 03/16/2017 - GROUP_COUNT=5000 -    765 ms - single-threaded - removed shared_ptr
 // 03/16/2017 - GROUP_COUNT=5000 -     55 ms - multi-threaded - removed shared_ptr
 // 03/16/2017 - GROUP_COUNT=5000 -    115 ms - opencl - removed shared_ptr
+// 04/27/2017 - GROUP_COUNT=5000 -    230 ms - single-threaded - VS2017
+// 04/27/2017 - GROUP_COUNT=5000 -     96 ms - opencl - cleanup, smaller collisions_per_thread, and VS2017
 
 // Result Log - dense case
 // 11/11/2016 - GROUP_COUNT=1000 - 12,800 ms - starting dense
@@ -59,8 +61,9 @@ int main( int argc, char** argv )
         const int GROUP_COUNT = 1000;
         Utility::Timer                      frame_timer;
         Physics::Arena::Settings            settings( 1.0f/60.0f, 1, 0.03f, 0.5f, 0.05f, 0.05f );
-        settings.collision_strategy         = Physics::Arena::Settings::Collision_strategy::SINGLE_THREADED;
+        settings.collision_strategy         = Physics::Arena::Settings::Collision_strategy::MULTI_THREADED;
         settings.mt_collisions_work_group_size = 500;
+        settings.collisions_per_thread      = 10000;
         Physics::Arena                      arena( settings );
         std::vector<std::shared_ptr<Physics::Physics_object>>   physics_objects;
         auto cube_file = Utility::Ac3d_file_reader::test_cube( 0.5f, 0.5f, 1.5f );
