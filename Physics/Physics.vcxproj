@@ -159,8 +159,7 @@
     <ClCompile Include="src\Physics_object.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\Broad_phase_inner.cl" />
-    <None Include="src\Broad_phase_outer.cl" />
+    <None Include="src\Broad_phase.cl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

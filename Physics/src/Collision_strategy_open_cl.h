@@ -49,9 +49,8 @@ private:
     cl_device_id        m_device_id;
     cl_context          m_context;
     cl_command_queue    m_command_queue;
-    cl_program          m_broad_phase_inner_program;
+    cl_program          m_broad_phase_program;
     cl_kernel           m_broad_phase_inner_kernel;
-    cl_program          m_broad_phase_outer_program;
     cl_kernel           m_broad_phase_outer_kernel;
     cl_mem              m_broad_phase_buffer_obj_a;
     cl_mem              m_broad_phase_buffer_obj_b;

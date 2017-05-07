@@ -3,8 +3,7 @@
 #include "Contact_manifold.h"
 #include "Physics_model.h"
 
-#include "Broad_phase_inner.cl"
-#include "Broad_phase_outer.cl"
+#include "Broad_phase.cl"
 
 #include <set>
 #include <future>
@@ -28,8 +27,9 @@ Collision_strategy_open_cl::Collision_strategy_open_cl( float manifold_persisten
     }
     m_context = Utility::Open_cl::create_context( m_platform_id, m_device_id );
     m_command_queue = Utility::Open_cl::create_command_queue( m_context, m_device_id );
-    std::tie(m_broad_phase_inner_program,m_broad_phase_inner_kernel) = Utility::Open_cl::create_kernel( broad_phase_inner, "broad_phase_inner", m_context, m_device_id );
-    std::tie(m_broad_phase_outer_program,m_broad_phase_outer_kernel) = Utility::Open_cl::create_kernel( broad_phase_outer, "broad_phase_outer", m_context, m_device_id );
+    m_broad_phase_program = Utility::Open_cl::create_program( broad_phase, m_context, m_device_id );
+    m_broad_phase_inner_kernel = Utility::Open_cl::create_kernel( m_broad_phase_program, "broad_phase_inner" );
+    m_broad_phase_outer_kernel = Utility::Open_cl::create_kernel( m_broad_phase_program, "broad_phase_outer" );
 
     size_t ret_size;
     size_t work_group_size;
@@ -61,9 +61,8 @@ Collision_strategy_open_cl::Collision_strategy_open_cl( float manifold_persisten
 Collision_strategy_open_cl::~Collision_strategy_open_cl()
 {
     clReleaseKernel( m_broad_phase_inner_kernel );
-    clReleaseProgram( m_broad_phase_inner_program );
     clReleaseKernel( m_broad_phase_outer_kernel );
-    clReleaseProgram( m_broad_phase_outer_program );
+    clReleaseProgram( m_broad_phase_program );
     clReleaseCommandQueue( m_command_queue );
 
     delete [] m_broad_phase_objects;
@@ -162,7 +161,7 @@ std::vector<std::tuple<size_t,size_t>> Collision_strategy_open_cl::openCL_broad_
     Utility::Open_cl::set_kernel_arg( m_broad_phase_inner_kernel, 2, sizeof(cl_mem), &m_broad_phase_buffer_result );
 
     Utility::Open_cl::enqueue_write_buffer( m_command_queue, m_broad_phase_buffer_obj_a, CL_FALSE, 4 * sizeof(cl_float) * length, m_broad_phase_objects );
-    Utility::Open_cl::enqueue_nd_range_kernel( m_command_queue, m_broad_phase_inner_kernel, comparison_count );
+    Utility::Open_cl::enqueue_nd_range_kernel( m_command_queue, m_broad_phase_inner_kernel, &comparison_count, nullptr );
     Utility::Open_cl::enqueue_read_buffer( m_command_queue, m_broad_phase_buffer_result, CL_TRUE, comparison_count*sizeof(cl_char), m_broad_phase_results );
 
     std::vector<std::tuple<size_t,size_t>> result_vector;
@@ -208,7 +207,7 @@ std::vector<std::tuple<size_t,size_t>> Collision_strategy_open_cl::openCL_broad_
 
     Utility::Open_cl::enqueue_write_buffer( m_command_queue, m_broad_phase_buffer_obj_a, CL_FALSE, 4 * sizeof(cl_float) * length, m_broad_phase_objects );
     Utility::Open_cl::enqueue_write_buffer( m_command_queue, m_broad_phase_buffer_obj_b, CL_FALSE, 4 * sizeof(cl_float) * length_b, &m_broad_phase_objects[length*4] );
-    Utility::Open_cl::enqueue_nd_range_kernel( m_command_queue, m_broad_phase_outer_kernel, comparison_count );
+    Utility::Open_cl::enqueue_nd_range_kernel( m_command_queue, m_broad_phase_outer_kernel, &comparison_count, nullptr );
     Utility::Open_cl::enqueue_read_buffer( m_command_queue, m_broad_phase_buffer_result, CL_TRUE, comparison_count*sizeof(cl_char), m_broad_phase_results );
 
     std::vector<std::tuple<size_t,size_t>> result_vector;

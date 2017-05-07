@@ -95,7 +95,7 @@ public:
 
         /// When using Collision_strategy_open_cl we need to know
         /// how many objects per global work group
-        unsigned int    cl_collisions_work_group_size = 3000;
+        unsigned int    cl_collisions_work_group_size = 3200;
 
         /// When using Collision_strategy_multi_threaded we need to know
         /// how many objects per global work group

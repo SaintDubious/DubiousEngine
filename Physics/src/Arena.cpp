@@ -5,9 +5,6 @@
 #include "Collision_strategy_multi_threaded.h"
 #include "Collision_strategy_open_cl.h"
 
-#include "Broad_phase_inner.cl"
-#include "Broad_phase_outer.cl"
-
 #include <set>
 #include <iostream>
 #include <future>
