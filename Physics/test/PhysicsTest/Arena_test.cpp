@@ -22,9 +22,7 @@ public:
         auto model = std::make_shared<Physics_model>( *model_file );
         auto a = std::make_shared<Physics_object>( model, 10.0f );
 
-        Arena::Settings settings;
-        settings.collision_strategy = Arena::Settings::Collision_strategy::SINGLE_THREADED;
-        Arena arena( settings );
+        Arena arena( (Arena::Settings()) );
 
         a->force() = Vector( 100, 0, 0 );
         arena.push_back( a );
@@ -40,9 +38,7 @@ public:
         auto model = std::make_shared<Physics_model>( *model_file );
         auto a = std::make_shared<Physics_object>( model, 10.0f );
 
-        Arena::Settings settings;
-        settings.collision_strategy = Arena::Settings::Collision_strategy::SINGLE_THREADED;
-        Arena arena( settings );
+        Arena arena( (Arena::Settings()) );
 
         // How did I arrive at this magic number?
         // I want the torque to accelerate this object to 90 deg/sec.

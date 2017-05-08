@@ -29,6 +29,8 @@ using namespace Dubious;
 // 11/23/2016 - GROUP_COUNT=1000 -  4,800 ms - with threading
 // 03/19/2017 - GROUP_COUNT=1000 -  8,100 ms - single threaded - optimized
 // 03/24/2017 - GROUP_COUNT=1000 -  6,100 ms - single threaded - optimized Minkowski_polytope
+// 05/07/2017 - GROUP_COUNT=1000 -  3,100 ms - multi-threaded 
+// 05/07/2017 - GROUP_COUNT=1000 -  2,900 ms - OpenCL 
 
 //////////////////////////////////////////////////////////////
 void reset_scene( const int group_count, std::vector<std::shared_ptr<Physics::Physics_object>>& physics_objects ) 
@@ -60,11 +62,14 @@ int main( int argc, char** argv )
 
         const int GROUP_COUNT = 1000;
         Utility::Timer                      frame_timer;
-        Physics::Arena::Settings            settings( 1.0f/60.0f, 1, 0.03f, 0.5f, 0.05f, 0.05f );
-        settings.collision_strategy         = Physics::Arena::Settings::Collision_strategy::MULTI_THREADED;
-        settings.mt_collisions_work_group_size = 500;
-        settings.collisions_per_thread      = 10000;
-        Physics::Arena                      arena( settings );
+        Physics::Arena::Collision_solver_settings collision_solver_settings;
+        collision_solver_settings.strategy = Physics::Arena::Collision_solver_settings::Strategy::OPENCL;
+        collision_solver_settings.mt_collisions_work_group_size = 500;
+        collision_solver_settings.cl_collisions_per_thread = 10000;
+        Physics::Arena::Constraint_solver_settings constraint_solver_settings;
+        constraint_solver_settings.iterations = 1;
+        Physics::Arena                      arena( Physics::Arena::Settings( collision_solver_settings, constraint_solver_settings ) );
+
         std::vector<std::shared_ptr<Physics::Physics_object>>   physics_objects;
         auto cube_file = Utility::Ac3d_file_reader::test_cube( 0.5f, 0.5f, 1.5f );
         auto physics_model = std::make_shared<Physics::Physics_model>( *cube_file );

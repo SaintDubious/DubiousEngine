@@ -12,7 +12,9 @@
 
 using namespace Dubious;
 
-// 03/31/2017 - BLOCK_COUNT = 3000, ITERATIONS = 100, SINGLE_THREADED - 7050ms
+// 03/31/2017 - BLOCK_COUNT = 3000, ITERATIONS = 100, Collision::SINGLE_THREADED, Constraint::SINGLE_THREADED - 7050ms
+// 05/07/2017 - BLOCK_COUNT = 3000, ITERATIONS = 100, Collision::SINGLE_THREADED, Constraint::MULTI_THREADED - 5000ms
+// 05/07/2017 - BLOCK_COUNT = 3000, ITERATIONS = 100, Collision::MULTI_THREADED,  Constraint::MULTI_THREADED - 2770ms
 
 //////////////////////////////////////////////////////////////
 int main( int argc, char** argv )
@@ -23,10 +25,14 @@ int main( int argc, char** argv )
         const auto BLOCK_COUNT = 3000;
         const auto ITERATIONS  = 100;
         Utility::Timer                      frame_timer;
-        Physics::Arena::Settings            settings( 1.0f/60.0f, ITERATIONS, 0.03f, 0.5f, 0.05f, 0.05f );
-        settings.collision_strategy         = Physics::Arena::Settings::Collision_strategy::SINGLE_THREADED;
-        settings.mt_collisions_work_group_size = 500;
-        Physics::Arena                      arena( settings );
+        Physics::Arena::Collision_solver_settings collision_solver_settings;
+        collision_solver_settings.strategy = Physics::Arena::Collision_solver_settings::Strategy::MULTI_THREADED;
+        collision_solver_settings.mt_collisions_work_group_size = 500;
+        collision_solver_settings.cl_collisions_per_thread = 10000;
+        Physics::Arena::Constraint_solver_settings constraint_solver_settings;
+        constraint_solver_settings.strategy = Physics::Arena::Constraint_solver_settings::Strategy::MULTI_THREADED;
+        constraint_solver_settings.iterations = ITERATIONS;
+        Physics::Arena                      arena( Physics::Arena::Settings( collision_solver_settings, constraint_solver_settings ) );
         std::vector<std::shared_ptr<Physics::Physics_object>> physics_objects;
 
         auto floor_file     = Utility::Ac3d_file_reader::test_cube( 20.0f, 0.5f, 20.0f );

@@ -24,30 +24,58 @@ class Physics_object;
 class Arena {
 public:
 
-    /// @brief Physics settings
+    /// @brief Collision solver settings
     ///
-    /// I read somewhere that a physics engine is an endless selection
-    /// of knobs to turn. This struct holds the knobs.
-    struct Settings {
+    /// Settings specific to collision detection.
+    struct Collision_solver_settings {
 
-        enum class Collision_strategy {
+        enum class Strategy {
             SINGLE_THREADED,
             MULTI_THREADED,
             OPENCL
         };
 
-        Settings()
-        {}
+        /// When a point is being added to the contact manifold it
+        /// needs to be tested against existing points to see if it
+        /// is new, or is already in the manifold. If the distance 
+        /// squared from an existing point to a new is less then this
+        /// threshold then the new point will be considered the same
+        /// as the old.
+        float           manifold_persistent_threshold = 0.05f;
 
-        Settings( float step, int iter, float b, float cor, float sl, 
-                  float persistent )
-            : step_size( step )
-            , iterations( iter )
-            , beta( b )
-            , coefficient_of_restitution( cor )
-            , slop( sl )
-            , manifold_persistent_threshold( persistent )
-        {}
+        /// After broad phase collision detection we create a vector
+        /// of potentially colliding pairs. If the number of these 
+        /// pairs exceeds this number, the collision detection will
+        /// be shunted off to a new thread. One new thread for every
+        /// vector of pairs of the following size.
+        /// This is specific to Collision_strategy_open_cl
+        unsigned int    cl_collisions_per_thread = 100000;
+
+        /// When using Collision_strategy_open_cl we need to know
+        /// how many objects per global work group
+        unsigned int    cl_collisions_work_group_size = 3200;
+
+        /// When using Collision_strategy_multi_threaded we need to know
+        /// how many objects per global work group
+        unsigned int    mt_collisions_work_group_size = 1000;
+
+        /// Which collision strategy should be used:
+        /// SINGLE_THREADED -> Collision_strategy_simple
+        /// MULTI_THREADED  -> Collision_strategy_multithreaded
+        /// OPENCL          -> Collision_strategy_open_cl
+        Strategy strategy = Strategy::SINGLE_THREADED;
+
+    };
+
+    /// @brief Constraint solver settings
+    ///
+    /// Settings for the constraint solver
+    struct Constraint_solver_settings {
+
+        enum class Strategy {
+            SINGLE_THREADED,
+            MULTI_THREADED
+        };
 
         /// How long, in seconds, for an individual time step. The
         /// engine will always perform physics updates in discrete
@@ -78,34 +106,28 @@ public:
         /// enough slop and things will become unstable.
         float           slop = 0.05f;
 
-        /// When a point is being added to the contact manifold it
-        /// needs to be tested against existing points to see if it
-        /// is new, or is already in the manifold. If the distance 
-        /// squared from an existing point to a new is less then this
-        /// threshold then the new point will be considered the same
-        /// as the old.
-        float           manifold_persistent_threshold = 0.05f;
+        /// Which constraint strategy should be used:
+        /// SINGLE_THREADED -> Constraint_strategy_simple
+        /// MULTI_THREADED  -> Constraint_strategy_multithreaded
+        Strategy strategy = Strategy::SINGLE_THREADED;
+    };
 
-        /// After broad phase collision detection we create a vector
-        /// of potentially colliding pairs. If the number of these 
-        /// pairs exceeds this number, the collision detection will
-        /// be shunted off to a new thread. One new thread for every
-        /// vector of pairs of the following size
-        unsigned int    collisions_per_thread = 100000;
+    /// @brief Physics settings
+    ///
+    /// I read somewhere that a physics engine is an endless selection
+    /// of knobs to turn. This struct holds the knobs.
+    struct Settings {
 
-        /// When using Collision_strategy_open_cl we need to know
-        /// how many objects per global work group
-        unsigned int    cl_collisions_work_group_size = 3200;
+        Settings()
+        {}
 
-        /// When using Collision_strategy_multi_threaded we need to know
-        /// how many objects per global work group
-        unsigned int    mt_collisions_work_group_size = 1000;
+        Settings( const Collision_solver_settings& col, const Constraint_solver_settings& con )
+            : collision( col )
+            , constraint( con )
+        {}
 
-        /// Which collision strategy should be used:
-        /// SINGLE_THREADED -> Collision_strategy_simple
-        /// MULTI_THREADED  -> Collision_strategy_multithreaded
-        /// OPENCL          -> Collision_strategy_open_cl
-        Collision_strategy collision_strategy = Collision_strategy::MULTI_THREADED;
+        Collision_solver_settings collision;
+        Constraint_solver_settings constraint;
     };
 
     /// @brief Constructor
