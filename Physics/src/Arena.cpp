@@ -4,6 +4,8 @@
 #include "Collision_strategy_simple.h"
 #include "Collision_strategy_multi_threaded.h"
 #include "Collision_strategy_open_cl.h"
+#include "Constraint_strategy_simple.h"
+#include "Constraint_strategy_multi_threaded.h"
 
 #include <set>
 #include <iostream>
@@ -14,11 +16,7 @@ namespace Dubious {
 namespace Physics {
 
 Arena::Arena( const Settings& settings )
-    : m_constraint_solver( settings.step_size, 
-                           settings.beta, 
-                           settings.coefficient_of_restitution, 
-                           settings.slop )
-    , m_settings( settings )
+    : m_settings( settings )
 {
     switch (m_settings.collision_strategy) {
     case Settings::Collision_strategy::SINGLE_THREADED:
@@ -33,6 +31,10 @@ Arena::Arena( const Settings& settings )
     default:
         throw std::runtime_error( "Unknown collision strategy requested" );
     }
+    m_constraint_strategy = std::make_unique<Constraint_strategy_simple>(m_settings.step_size, 
+                           m_settings.beta, 
+                           m_settings.coefficient_of_restitution, 
+                           m_settings.slop);
 }
 
 //////////////////////////////////////////////////////////////
@@ -54,19 +56,8 @@ void Arena::run_physics( float elapsed )
 
         m_collision_strategy->find_contacts( m_objects, m_manifolds );
         
-        for (auto &manifold : m_manifolds) {
-            Physics_object* a = std::get<0>(manifold.first);
-            Physics_object* b = std::get<1>(manifold.first);
-            m_constraint_solver.warm_start( *a, *b, manifold.second );
-        }
-
-        for (int i=0; i<m_settings.iterations; ++i) {
-            for (auto &manifold : m_manifolds) {
-                Physics_object* a = std::get<0>(manifold.first);
-                Physics_object* b = std::get<1>(manifold.first);
-                m_constraint_solver.solve( *a, *b, manifold.second );
-            }
-        }
+        m_constraint_strategy->warm_start( m_manifolds );
+        m_constraint_strategy->solve( m_settings.iterations, m_manifolds );
 
         for (const auto& o : m_objects) {
             o->coordinate_space().position() = o->coordinate_space().position() + o->velocity()*m_settings.step_size;

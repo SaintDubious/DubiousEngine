@@ -2,7 +2,7 @@
 #define INCLUDED_PHYSICS_ARENA
 
 #include "Collision_strategy.h"
-#include "Constraint_solver.h"
+#include "Constraint_strategy.h"
 
 #include <vector>
 #include <memory>
@@ -138,7 +138,7 @@ public:
 private:
 
     std::unique_ptr<Collision_strategy> m_collision_strategy;
-    Constraint_solver   m_constraint_solver;
+    std::unique_ptr<Constraint_strategy> m_constraint_strategy;
     float               m_elapsed = 0.0f;
     const Settings      m_settings;
 
