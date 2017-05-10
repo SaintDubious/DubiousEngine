@@ -9,17 +9,14 @@
 
 #include <Vector_math.h>
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Renderer {
 
-//////////////////////////////////////////////////////////////
 Outlined_object_renderer::Outlined_object_renderer( const std::shared_ptr<Open_gl_context_store>& context_store )
     : m_context_store( context_store )
 {
 }
 
-//////////////////////////////////////////////////////////////
 void Outlined_object_renderer::render( const std::shared_ptr<Visible_object>& object )
 {
     // make sure the models have been created and exist in
@@ -67,7 +64,6 @@ void Outlined_object_renderer::render( const std::shared_ptr<Visible_object>& ob
     Open_gl_commands::polygon_mode( GL_BACK, GL_FILL );
 }
 
-//////////////////////////////////////////////////////////////
 namespace {
 void render_model( Visible_model& model, bool outline_pass )
 {
@@ -104,7 +100,6 @@ void render_model( Visible_model& model, bool outline_pass )
 }
 }
 
-//////////////////////////////////////////////////////////////
 void Outlined_object_renderer::construct_model( const std::shared_ptr<Visible_object>& object )
 {
     Open_gl_attributes attribs( Open_gl_attributes::ENABLE_BIT, false );

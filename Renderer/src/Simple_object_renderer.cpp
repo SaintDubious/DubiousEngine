@@ -8,17 +8,14 @@
 
 #include <Vector_math.h>
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Renderer {
 
-//////////////////////////////////////////////////////////////
 Simple_object_renderer::Simple_object_renderer( const std::shared_ptr<Open_gl_context_store>& context_store )
     : m_context_store( context_store )
 {
 }
 
-//////////////////////////////////////////////////////////////
 void Simple_object_renderer::render( const std::shared_ptr<Visible_object>& object )
 {
     auto iter = m_object_data_map.find( object );
@@ -42,7 +39,6 @@ void Simple_object_renderer::render( const std::shared_ptr<Visible_object>& obje
     Open_gl_commands::call_list( gl_handle );	
 }
 
-//////////////////////////////////////////////////////////////
 namespace {
 void render_model( Visible_model& model )
 {
@@ -66,7 +62,6 @@ void render_model( Visible_model& model )
 }
 }
 
-//////////////////////////////////////////////////////////////
 void Simple_object_renderer::construct_model( const std::shared_ptr<Visible_object>& object )
 {
     Call_list_handle handle = m_context_store->create_call_list( 1 );

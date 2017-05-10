@@ -5,18 +5,15 @@
 #include <cassert>
 #include <tuple>
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Utility {
 
-//////////////////////////////////////////////////////////////
 // info on the file format can be found at:
 // http://www.ac3d.org/
 
 namespace
 {
 
-//////////////////////////////////////////////////////////////
 // material line looks like:
 // MATERIAL "" rgb 1 1 1  amb 0.2 0.2 0.2  emis 0 0 0  spec 0.5 0.5 0.5  shi 10  trans 0
 // (I've alread read the MATERIAL token)
@@ -41,7 +38,6 @@ const std::string SURF			= "SURF";
 const std::string MAT			= "mat";
 const std::string REFS			= "refs";
 
-//////////////////////////////////////////////////////////////
 void read_surfaces( std::ifstream& input, std::vector<Ac3d_model::Surface>& surfaces )
 {
     int num_surfaces;
@@ -83,7 +79,6 @@ void read_surfaces( std::ifstream& input, std::vector<Ac3d_model::Surface>& surf
     }
 }
 
-//////////////////////////////////////////////////////////////
 const std::string NAME			= "name";
 const std::string DATA			= "data";
 const std::string TEXTURE		= "texture";
@@ -99,7 +94,6 @@ const std::string OBJECT		= "OBJECT";
 const std::string MATERIAL		= "MATERIAL";
 
 
-//////////////////////////////////////////////////////////////
 std::unique_ptr<Ac3d_model> read_model( std::ifstream& input, bool& loc_present )
 {
     std::unique_ptr<Ac3d_model> model = std::make_unique<Ac3d_model>();
@@ -173,7 +167,6 @@ std::unique_ptr<Ac3d_model> read_model( std::ifstream& input, bool& loc_present 
 
 }
 
-//////////////////////////////////////////////////////////////
 std::unique_ptr<const Ac3d_file> Ac3d_file_reader::read_file( const File_path& file_name )
 {
     std::ifstream input_file( file_name.full_path().c_str() );
@@ -213,7 +206,6 @@ std::unique_ptr<const Ac3d_file> Ac3d_file_reader::read_file( const File_path& f
     return std::make_unique<const Ac3d_file>( std::move(materials), std::move(model) );
 }
 
-//////////////////////////////////////////////////////////////
 namespace {
 Ac3d_model::Surface build_surface( int p0, int p1, int p2 )
 {
@@ -256,7 +248,6 @@ std::unique_ptr<Ac3d_model> build_cube( float width, float height, float depth )
 
 }
 
-//////////////////////////////////////////////////////////////
 std::unique_ptr<const Ac3d_file> Ac3d_file_reader::test_cube( float width, float height, float depth )
 {
     std::unique_ptr<Ac3d_model> model = build_cube( width, height, depth );

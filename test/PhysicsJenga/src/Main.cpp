@@ -26,7 +26,6 @@
 
 using namespace Dubious;
 
-//////////////////////////////////////////////////////////////
 const float LIGHT_HEIGHT = 50.0f;
 const float PI = 3.1415926535f;
 const int WIDTH=800;
@@ -35,7 +34,6 @@ const int NUM_LAYERS = 30;
 const int OBJECTS_PER_LAYER = 4;
 const int FIRST_OBJECT = 1; // the floor is item 0
 
-//////////////////////////////////////////////////////////////
 // Events
 void on_quit();
 void on_idle();
@@ -47,7 +45,6 @@ void on_mouse_wheel( int Y );
 void on_key_down( SDL_Keycode Key, unsigned short Mod );
 float build_layer( float y );
 
-//////////////////////////////////////////////////////////////
 // Globals
 Utility::Sdl_manager	            sdl;
 std::unique_ptr<Renderer::Scene>    scene;
@@ -66,7 +63,6 @@ std::vector<std::shared_ptr<Renderer::Visible_object>>  visible_objects;
 std::vector<std::shared_ptr<Physics::Physics_object>>   physics_objects;
 Renderer::Color object_color = Renderer::Color::RED;
 
-//////////////////////////////////////////////////////////////
 int main( int argc, char** argv )
 {
     try {
@@ -141,7 +137,6 @@ int main( int argc, char** argv )
     return -1;
 }
 
-//////////////////////////////////////////////////////////////
 float build_layer( float y )
 {
     if (object_color == Renderer::Color::RED) {
@@ -195,12 +190,10 @@ float build_layer( float y )
     return y + 2.002f;
 }
 
-//////////////////////////////////////////////////////////////
 void on_quit()
 {
 }
 
-//////////////////////////////////////////////////////////////
 void on_idle()
 {
     elapsed += frame_timer.elapsed();
@@ -264,7 +257,6 @@ void on_idle()
     SDL_Delay( 10 );
 }
 
-//////////////////////////////////////////////////////////////
 void on_mouse_motion( const Utility::Sdl_manager::Mouse_point& p )
 {
     if( left_button_down ){
@@ -296,26 +288,22 @@ void on_mouse_motion( const Utility::Sdl_manager::Mouse_point& p )
     }
 }
 
-//////////////////////////////////////////////////////////////
 void on_mouse_right_down( const Utility::Sdl_manager::Mouse_point& p )
 {
     physics_objects[FIRST_OBJECT]->force() = physics_objects[FIRST_OBJECT]->force() + Math::Vector( 0, 5000, 0 );
 }
 
-//////////////////////////////////////////////////////////////
 void on_mouse_left_down( const Utility::Sdl_manager::Mouse_point& p )
 {
     left_button_down = true;
     left_down_point = p;
 }
 
-//////////////////////////////////////////////////////////////
 void on_mouse_left_up( const Utility::Sdl_manager::Mouse_point&  )
 {
     left_button_down = false;
 }
 
-//////////////////////////////////////////////////////////////
 void on_mouse_wheel( int y )
 {
     int delta = y*-5;
@@ -325,7 +313,6 @@ void on_mouse_wheel( int y )
     camera->z_axis_offset() += delta;
 }
 
-//////////////////////////////////////////////////////////////
 void on_key_down( SDL_Keycode key, unsigned short mod )
 {
     switch( key )

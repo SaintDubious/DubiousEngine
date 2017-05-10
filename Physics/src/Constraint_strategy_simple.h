@@ -4,7 +4,6 @@
 #include "Constraint_strategy.h"
 #include "Constraint_solver.h"
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Physics {
 

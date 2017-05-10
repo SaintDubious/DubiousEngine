@@ -9,12 +9,10 @@
 #include <future>
 #include <iostream>
 
-//////////////////////////////////////////////////////////////
 #pragma warning( disable : 4503 ) // decorated name length exceeded, name was truncated
 namespace Dubious {
 namespace Physics {
 
-//////////////////////////////////////////////////////////////
 Collision_strategy_open_cl::Collision_strategy_open_cl( float manifold_persistent_threshold, unsigned int collisions_per_thread, int cl_broadphase_work_group_size )
     : m_manifold_persistent_threshold( manifold_persistent_threshold )
     , m_collisions_per_thread( collisions_per_thread )
@@ -57,7 +55,6 @@ Collision_strategy_open_cl::Collision_strategy_open_cl( float manifold_persisten
     m_broad_phase_buffer_result = Utility::Open_cl::create_buffer( m_context, CL_MEM_WRITE_ONLY, max_results*sizeof(cl_char) );
 }
 
-//////////////////////////////////////////////////////////////
 Collision_strategy_open_cl::~Collision_strategy_open_cl()
 {
     clReleaseKernel( m_broad_phase_inner_kernel );
@@ -75,7 +72,6 @@ Collision_strategy_open_cl::~Collision_strategy_open_cl()
     clReleaseContext( m_context );
 }
 
-//////////////////////////////////////////////////////////////
 void Collision_strategy_open_cl::find_contacts( const std::vector<std::shared_ptr<Physics_object>>& objects,
                                                 std::map<Physics_object_pair, Contact_manifold>& manifolds )
 {
@@ -140,7 +136,6 @@ void Collision_strategy_open_cl::find_contacts( const std::vector<std::shared_pt
     }
 }
 
-//////////////////////////////////////////////////////////////
 std::vector<std::tuple<size_t,size_t>> Collision_strategy_open_cl::openCL_broad_phase_inner( const std::vector<std::shared_ptr<Physics_object>>& objects, size_t offset, size_t length )
 {   
     if (offset+length > objects.size()) {
@@ -177,7 +172,6 @@ std::vector<std::tuple<size_t,size_t>> Collision_strategy_open_cl::openCL_broad_
     return result_vector;
 }
 
-//////////////////////////////////////////////////////////////
 std::vector<std::tuple<size_t,size_t>> Collision_strategy_open_cl::openCL_broad_phase_outer( const std::vector<std::shared_ptr<Physics_object>>& objects, size_t offset_a, size_t offset_b, size_t length )
 {
     size_t length_b = 0;
@@ -223,7 +217,6 @@ std::vector<std::tuple<size_t,size_t>> Collision_strategy_open_cl::openCL_broad_
     return result_vector;
 }
 
-//////////////////////////////////////////////////////////////
 std::set<Collision_strategy::Physics_object_pair> Collision_strategy_open_cl::solve_collisions( std::vector<Physics_object_pair>&& inputs,
                                         std::map<Physics_object_pair, Contact_manifold>& manifolds )
 {

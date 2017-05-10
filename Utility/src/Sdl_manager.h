@@ -7,7 +7,6 @@
 #include <functional>
 #include <utility>
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Utility {
 

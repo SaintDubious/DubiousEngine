@@ -3,7 +3,6 @@
 
 #include "Triple.h"
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Math {
 
@@ -80,35 +79,30 @@ private:
     Triple              m_coords = {1, 0, 0};
 };
 
-//////////////////////////////////////////////////////////////
 template<int T> 
 bool operator==( const Unit_vectorT<T>& a, const Unit_vectorT<T>& b )
 {
     return a.m_coords == b.m_coords;
 }
 
-//////////////////////////////////////////////////////////////
 template<int T> 
 bool operator!=( const Unit_vectorT<T>& a, const Unit_vectorT<T>& b )
 {
     return a.m_coords != b.m_coords;
 }
 
-//////////////////////////////////////////////////////////////
 template <int T> 
 VectorT<T> operator*( const Unit_vectorT<T>& a, float b )
 {
     return VectorT<T>( a.m_coords.m_x*b, a.m_coords.m_y*b, a.m_coords.m_z*b );
 }
 
-//////////////////////////////////////////////////////////////
 template <int T> 
 VectorT<T> operator*( float a, const Unit_vectorT<T>& b )
 {
     return VectorT<T>( a*b.m_coords.m_x, a*b.m_coords.m_y, a*b.m_coords.m_z );
 }
 
-//////////////////////////////////////////////////////////////
 template <int T> 
 VectorT<T> operator+( const Unit_vectorT<T>& a, const Unit_vectorT<T>& b )
 {
@@ -116,7 +110,6 @@ VectorT<T> operator+( const Unit_vectorT<T>& a, const Unit_vectorT<T>& b )
     return VectorT<T>( coords.m_x, coords.m_y, coords.m_z );
 }
 
-//////////////////////////////////////////////////////////////
 template <int T> 
 VectorT<T> operator-( const Unit_vectorT<T>& a, const Unit_vectorT<T>& b )
 {

@@ -16,7 +16,6 @@ using namespace Dubious;
 // 05/07/2017 - BLOCK_COUNT = 3000, ITERATIONS = 100, Collision::SINGLE_THREADED, Constraint::MULTI_THREADED - 5000ms
 // 05/07/2017 - BLOCK_COUNT = 3000, ITERATIONS = 100, Collision::MULTI_THREADED,  Constraint::MULTI_THREADED - 2770ms
 
-//////////////////////////////////////////////////////////////
 int main( int argc, char** argv )
 {
     try {

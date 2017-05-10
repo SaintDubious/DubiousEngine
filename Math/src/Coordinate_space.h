@@ -6,7 +6,6 @@
 
 namespace Physics_test { class Collision_solver_test; }
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Math {
 

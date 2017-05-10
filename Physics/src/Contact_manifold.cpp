@@ -7,11 +7,9 @@
 #include <iostream>
 #include <tuple>
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Physics {
 
-//////////////////////////////////////////////////////////////
 Contact_manifold::Contact_manifold( const Physics_object& a, const Physics_object& b, 
                                     float persistent_threshold )
     : m_object_a( a )
@@ -20,7 +18,6 @@ Contact_manifold::Contact_manifold( const Physics_object& a, const Physics_objec
 {
 }
 
-//////////////////////////////////////////////////////////////
 void Contact_manifold::prune_old_contacts()
 {
     m_contacts.erase( 
@@ -50,7 +47,6 @@ void Contact_manifold::prune_old_contacts()
               m_contacts.end() );
 }
 
-//////////////////////////////////////////////////////////////
 // How to find a manifold
 // http://allenchou.net/2014/01/game-physics-stability-warm-starting/
 // The general idea is to find up to 4 points that define the largest
@@ -60,7 +56,6 @@ void Contact_manifold::prune_old_contacts()
 //   3. find the point farthest from that line segment
 //   4. find the point farthest from that triangle
 
-//////////////////////////////////////////////////////////////
 // http://www.geometrictools.com/Documentation/DistancePointLine.pdf
 float Contact_manifold::distance_squared_to_line_segment( const Math::Point& a, const Math::Point& b, const Math::Point& p ) const
 {
@@ -75,7 +70,6 @@ float Contact_manifold::distance_squared_to_line_segment( const Math::Point& a, 
     return (p-(a+(direction*t))).length_squared();
 }
 
-//////////////////////////////////////////////////////////////
 // Find out which segment of the triangle is closest to the point.
 // We do this by comparing the cross product of the line segment
 // formed by p and a, b, or c with the triangle normal. We can then tell 
@@ -113,7 +107,6 @@ std::tuple<bool,Math::Point,Math::Point> Contact_manifold::closest_segment( cons
     return std::make_tuple( false, a, b );
 }
 
-//////////////////////////////////////////////////////////////
 std::tuple<bool,float> Contact_manifold::distance_squared_to_triangle( const Math::Point& a, const Math::Point& b, const Math::Point& c, const Math::Point& p ) const
 {
     float intersects;
@@ -125,7 +118,6 @@ std::tuple<bool,float> Contact_manifold::distance_squared_to_triangle( const Mat
     return std::make_tuple(true, distance_squared_to_line_segment( i1, i2, p ) );
 }
 
-//////////////////////////////////////////////////////////////
 void Contact_manifold::cleanup_contacts( std::vector<Contact>& contacts )
 {
     if (contacts.size() <= 4) {
@@ -191,7 +183,6 @@ void Contact_manifold::cleanup_contacts( std::vector<Contact>& contacts )
     contacts = new_contacts;    
 }
 
-//////////////////////////////////////////////////////////////
 void Contact_manifold::insert( const std::vector<Contact>& contacts )
 {   
     for (const auto& c : contacts) { 

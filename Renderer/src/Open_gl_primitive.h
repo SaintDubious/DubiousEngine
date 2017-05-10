@@ -3,7 +3,6 @@
 
 #include <SDL_opengl.h>
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Math {
 template <int T> class PointT;

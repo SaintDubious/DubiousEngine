@@ -4,11 +4,9 @@
 
 #include <tuple>
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Renderer {
 
-//////////////////////////////////////////////////////////////
 Camera::Camera( int x, int y, int width, int height, float fovy )
     : m_viewport_x( x )
     , m_viewport_y( y )
@@ -19,7 +17,6 @@ Camera::Camera( int x, int y, int width, int height, float fovy )
 {
 }
 
-//////////////////////////////////////////////////////////////
 void Camera::ready_for_photo() const
 {
     Open_gl_commands::clear_color( Color( 1.0f, 1.0f, 1.0f, 1.0f ) );
@@ -50,7 +47,6 @@ void Camera::ready_for_photo() const
     Open_gl_commands::look_at( eye, eye-z, y );
 }
 
-//////////////////////////////////////////////////////////////
 Math::Point Camera::unproject( const std::pair<int,int>& p ) const
 {
     double x, y, z;

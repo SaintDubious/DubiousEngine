@@ -2,11 +2,9 @@
 
 #include <iostream>
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Utility {
 
-//////////////////////////////////////////////////////////////
 Thread_pool::Thread_pool( const int pool_size )
 {
     for (int i=0; i<pool_size; ++i) {
@@ -14,7 +12,6 @@ Thread_pool::Thread_pool( const int pool_size )
     }
 }
 
-//////////////////////////////////////////////////////////////
 Thread_pool::~Thread_pool()
 {
     try {
@@ -34,7 +31,6 @@ Thread_pool::~Thread_pool()
     }
 }
 
-//////////////////////////////////////////////////////////////
 void Thread_pool::push( Func f )
 {
     {
@@ -44,14 +40,12 @@ void Thread_pool::push( Func f )
     m_condition.notify_all();
 }
 
-//////////////////////////////////////////////////////////////
 int Thread_pool::size() const 
 {
     std::unique_lock<std::mutex> lock( m_mutex );
     return m_queue.size();
 }
 
-//////////////////////////////////////////////////////////////
 void Thread_pool::thread_func()
 {
     while (!m_drain) {

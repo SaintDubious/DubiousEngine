@@ -32,7 +32,6 @@ using namespace Dubious;
 // 05/07/2017 - GROUP_COUNT=1000 -  3,100 ms - multi-threaded 
 // 05/07/2017 - GROUP_COUNT=1000 -  2,900 ms - OpenCL 
 
-//////////////////////////////////////////////////////////////
 void reset_scene( const int group_count, std::vector<std::shared_ptr<Physics::Physics_object>>& physics_objects ) 
 {
     const float DENSE = 0.001f;
@@ -54,7 +53,6 @@ void reset_scene( const int group_count, std::vector<std::shared_ptr<Physics::Ph
     }
 }
 
-//////////////////////////////////////////////////////////////
 int main( int argc, char** argv )
 {
     try {

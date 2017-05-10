@@ -10,7 +10,6 @@
 
 namespace Physics_test { class Contact_manifold_test; }
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Physics {
 

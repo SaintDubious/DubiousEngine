@@ -7,7 +7,6 @@
 #include <mutex>
 #include <condition_variable>
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Utility {
 

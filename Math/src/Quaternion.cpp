@@ -1,11 +1,9 @@
 #include "Quaternion.h"
 #include "Unit_vector.h"
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Math {
 
-//////////////////////////////////////////////////////////////
 template <int T>
 QuaternionT<T>::QuaternionT( const Unit_vectorT<T>& axis, float angle )
 {
@@ -14,7 +12,6 @@ QuaternionT<T>::QuaternionT( const Unit_vectorT<T>& axis, float angle )
     m_imaginary = Triple( axis.x() * half_sin, axis.y() * half_sin, axis.z() * half_sin );
 }
 
-//////////////////////////////////////////////////////////////
 template <int T>
 void QuaternionT<T>::get_matrix( float matrix[16] ) const
 {
@@ -45,7 +42,6 @@ void QuaternionT<T>::get_matrix( float matrix[16] ) const
     matrix[_44] = 1.0;
 }
 
-//////////////////////////////////////////////////////////////
 template <int T>
 std::tuple<Unit_vectorT<T>,float> QuaternionT<T>::get_axis_angle() const
 {
@@ -57,14 +53,12 @@ std::tuple<Unit_vectorT<T>,float> QuaternionT<T>::get_axis_angle() const
     return std::make_tuple( axis, angle );
 }
 
-//////////////////////////////////////////////////////////////
 template <int T>
 QuaternionT<T> QuaternionT<T>::conjugate() const
 {
     return QuaternionT<T>( m_real, Triple( -m_imaginary.m_x, -m_imaginary.m_y, -m_imaginary.m_z ) );
 }
 
-//////////////////////////////////////////////////////////////
 template <int T>
 void QuaternionT<T>::normalize()
 {
@@ -78,14 +72,12 @@ void QuaternionT<T>::normalize()
                           m_imaginary.m_z/mag );
 }
 
-//////////////////////////////////////////////////////////////
 template <int T>
 float QuaternionT<T>::magnitude() const
 {
     return sqrt(magnitude_squared());
 }
 
-//////////////////////////////////////////////////////////////
 template <int T>
 float QuaternionT<T>::magnitude_squared() const
 {

@@ -4,7 +4,6 @@
 #include "Collision_strategy.h"
 #include "Collision_solver.h"
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Physics {
 

@@ -3,7 +3,6 @@
 
 #include <Utils.h>
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Renderer {
 
@@ -56,7 +55,6 @@ private:
     float               m_alpha = 1.0f;
 };
 
-//////////////////////////////////////////////////////////////
 inline bool operator==( const Color& a, const Color& b )
 {
     return Math::equals(a.red(), b.red()) &&

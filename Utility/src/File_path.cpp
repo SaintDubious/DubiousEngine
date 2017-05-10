@@ -1,14 +1,12 @@
 #include "File_path.h"
 #include <sstream>
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Utility {
 
 namespace 
 {
 
-//////////////////////////////////////////////////////////////
 std::vector<std::string> tokenizer( const std::string& input )
 {
     std::vector<std::string> result;
@@ -33,7 +31,6 @@ std::vector<std::string> tokenizer( const std::string& input )
 
 }
 
-//////////////////////////////////////////////////////////////
 File_path::File_path( const std::string& path )
 {
     if (path.length() == 0) {
@@ -43,13 +40,11 @@ File_path::File_path( const std::string& path )
     m_absolute	= (path[0] == '/');
 }
 
-//////////////////////////////////////////////////////////////
 std::string File_path::full_path() const
 {
     return path() + file();
 }
 
-//////////////////////////////////////////////////////////////
 std::string File_path::path() const
 {
     std::ostringstream result;
@@ -62,13 +57,11 @@ std::string File_path::path() const
     return result.str();
 }
 
-//////////////////////////////////////////////////////////////
 std::string File_path::file() const
 {
     return m_parts.back();
 }
 
-//////////////////////////////////////////////////////////////
 std::ostream& operator<<( std::ostream& os, const File_path& Input )
 {
     os << Input.full_path();

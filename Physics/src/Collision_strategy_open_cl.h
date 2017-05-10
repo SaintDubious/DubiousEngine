@@ -8,7 +8,6 @@
 #include <set>
 #include <mutex>
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Physics {
 

@@ -5,11 +5,9 @@
 #include "Unit_vector.h"
 #include "Point.h"
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Math {
 
-//////////////////////////////////////////////////////////////
 template <int T>
 VectorT<T> cross_product( const VectorT<T>& a, const VectorT<T>& b )
 {
@@ -18,7 +16,6 @@ VectorT<T> cross_product( const VectorT<T>& a, const VectorT<T>& b )
         (a.x()*b.y()) - (a.y()*b.x()));
 }
 
-//////////////////////////////////////////////////////////////
 template <int T>
 VectorT<T> cross_product( const Unit_vectorT<T>& a, const Unit_vectorT<T>& b )
 {
@@ -27,21 +24,18 @@ VectorT<T> cross_product( const Unit_vectorT<T>& a, const Unit_vectorT<T>& b )
         (a.x()*b.y()) - (a.y()*b.x()));
 }
 
-//////////////////////////////////////////////////////////////
 template <int T>
 float dot_product( const VectorT<T>& a, const VectorT<T>& b )
 {
     return a.x()*b.x() + a.y()*b.y() + a.z()*b.z();
 }
 
-//////////////////////////////////////////////////////////////
 template <int T>
 float dot_product( const Unit_vectorT<T>& a, const Unit_vectorT<T>& b )
 {
     return a.x()*b.x() + a.y()*b.y() + a.z()*b.z();
 }
 
-//////////////////////////////////////////////////////////////
 // As much as I'd like to enforce that points and vectors are
 // unique things that can't be arbitrarily converted, there
 // do exists realities when points just need to be vectors.
@@ -53,7 +47,6 @@ VectorT<T> to_vector( const PointT<T>& p )
     return VectorT<T>( p.x(), p.y(), p.z() );
 }
 
-//////////////////////////////////////////////////////////////
 template <int T>
 PointT<T> to_point( const VectorT<T>& v )
 {

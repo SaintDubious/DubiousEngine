@@ -5,7 +5,6 @@
 
 #include <ostream>
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Math {
 
@@ -61,7 +60,6 @@ struct Triple {
     float               m_z = 0;
 };
 
-//////////////////////////////////////////////////////////////
 inline bool operator==( const Triple& a, const Triple& b )
 {
     return equals(a.m_x, b.m_x) &&
@@ -69,7 +67,6 @@ inline bool operator==( const Triple& a, const Triple& b )
            equals(a.m_z, b.m_z);
 }
 
-//////////////////////////////////////////////////////////////
 inline bool operator!=(const Triple& a, const Triple& b)
 {
     return !equals(a.m_x, b.m_x) ||
@@ -77,19 +74,16 @@ inline bool operator!=(const Triple& a, const Triple& b)
            !equals(a.m_z, b.m_z);
 }
 
-//////////////////////////////////////////////////////////////
 inline Triple operator+(const Triple& a, const Triple& b)
 {
     return Triple(a.m_x + b.m_x, a.m_y + b.m_y, a.m_z + b.m_z);
 }
 
-//////////////////////////////////////////////////////////////
 inline Triple operator-(const Triple& a, const Triple& b)
 {
     return Triple(a.m_x - b.m_x, a.m_y - b.m_y, a.m_z - b.m_z);
 }
 
-//////////////////////////////////////////////////////////////
 inline std::ostream& operator<<(std::ostream& o, const Triple& a)
 {
     o << "(" << a.m_x << ", " << a.m_y << ", " << a.m_z << ")";

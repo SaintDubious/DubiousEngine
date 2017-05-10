@@ -3,11 +3,9 @@
 #include <tuple>
 #include <cassert>
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Physics {
 
-//////////////////////////////////////////////////////////////
 Minkowski_polytope::Minkowski_polytope( const Minkowski_simplex& simplex )
 {
     if (simplex.size() != 4) {
@@ -25,7 +23,6 @@ Minkowski_polytope::Minkowski_polytope( const Minkowski_simplex& simplex )
     m_triangles.emplace_back( b, d, c );
 }
 
-//////////////////////////////////////////////////////////////
 std::tuple<Minkowski_polytope::Triangle,float> Minkowski_polytope::find_closest_triangle()
 {
     auto distance = std::numeric_limits<float>::max();
@@ -41,7 +38,6 @@ std::tuple<Minkowski_polytope::Triangle,float> Minkowski_polytope::find_closest_
     return std::make_tuple(*ret, distance);
 }
 
-//////////////////////////////////////////////////////////////
 void Minkowski_polytope::push_back( Minkowski_vector&& v )
 {
     m_edges.clear();
@@ -66,7 +62,6 @@ void Minkowski_polytope::push_back( Minkowski_vector&& v )
     }
 }
 
-//////////////////////////////////////////////////////////////
 void Minkowski_polytope::push_edge( const Minkowski_vector& a, const Minkowski_vector& b )
 {
     for (auto iter=m_edges.cbegin(), end=m_edges.cend(); iter!=end; ++iter) {

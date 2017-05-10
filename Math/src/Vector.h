@@ -3,7 +3,6 @@
 
 #include "Triple.h"
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Math {
 
@@ -98,56 +97,48 @@ private:
     Triple              m_coords;
 };
 
-//////////////////////////////////////////////////////////////
 template<int T> 
 bool operator==( const VectorT<T>& a, const VectorT<T>& b )
 {
     return a.m_coords == b.m_coords;
 }
 
-//////////////////////////////////////////////////////////////
 template<int T> 
 bool operator!=( const VectorT<T>& a, const VectorT<T>& b )
 {
     return a.m_coords != b.m_coords;
 }
 
-//////////////////////////////////////////////////////////////
 template <int T> 
 VectorT<T> operator+( const VectorT<T>& a, const VectorT<T>& b )
 {
     return VectorT<T>( a.m_coords + b.m_coords );
 }
 
-//////////////////////////////////////////////////////////////
 template <int T> 
 VectorT<T> operator-( const VectorT<T>& a, const VectorT<T>& b )
 {
     return VectorT<T>( a.m_coords - b.m_coords );
 }
 
-//////////////////////////////////////////////////////////////
 template <int T> 
 VectorT<T> operator*( const VectorT<T>& a, float b )
 {
     return VectorT<T>( a.m_coords.m_x*b, a.m_coords.m_y*b, a.m_coords.m_z*b );
 }
 
-//////////////////////////////////////////////////////////////
 template <int T> 
 VectorT<T> operator*( float a, const VectorT<T>& b )
 {
     return VectorT<T>( a*b.m_coords.m_x, a*b.m_coords.m_y, a*b.m_coords.m_z );
 }
 
-//////////////////////////////////////////////////////////////
 template <int T> 
 VectorT<T> operator/( const VectorT<T>& a, float b )
 {
     return VectorT<T>( a.m_coords.m_x/b, a.m_coords.m_y/b, a.m_coords.m_z/b );
 }
 
-//////////////////////////////////////////////////////////////
 template <int T> 
 std::ostream& operator<<(std::ostream& o, const VectorT<T>& a)
 {

@@ -8,7 +8,6 @@
 #include <memory>
 #include <list>
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Renderer {
 

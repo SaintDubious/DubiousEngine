@@ -6,7 +6,6 @@
 #include <tuple>
 #include <memory>
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Physics {
 

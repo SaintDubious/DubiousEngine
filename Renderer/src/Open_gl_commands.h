@@ -9,7 +9,6 @@
 #include <SDL_opengl.h>
 #include <gl/GLU.h>
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Renderer {
 

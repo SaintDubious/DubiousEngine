@@ -6,11 +6,9 @@
 
 #include <Vector_math.h>
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Renderer {
 
-//////////////////////////////////////////////////////////////
 namespace {
 void draw_shadow_volume( const Math::Local_point& shadow_end, const Math::Local_vector& offset, const Visible_object::Silhouette& sil )
 {
@@ -31,7 +29,6 @@ void draw_shadow_volume( const Math::Local_point& shadow_end, const Math::Local_
 }
 }
 
-//////////////////////////////////////////////////////////////
 void Shadow_renderer::render_shadow_volume( const std::shared_ptr<Visible_object>& object, const Math::Local_point& ligh_position )
 {
     Visible_object::Silhouette sil;

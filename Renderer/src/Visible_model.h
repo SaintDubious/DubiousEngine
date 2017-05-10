@@ -11,7 +11,6 @@
 
 namespace RendererTest { class Visible_model_test; }
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 
 namespace Utility { 

@@ -2,11 +2,9 @@
 #include "Visible_model.h"
 #include <Vector_math.h>
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Renderer {
 
-//////////////////////////////////////////////////////////////
 Visible_object::Visible_object( const std::shared_ptr<Visible_model>& model, const std::shared_ptr<Visible_model>& shadow_model )
     : m_model( model )
     , m_shadow_model( shadow_model )
@@ -14,7 +12,6 @@ Visible_object::Visible_object( const std::shared_ptr<Visible_model>& model, con
 {
 }
 
-//////////////////////////////////////////////////////////////
 namespace {
 void build( const Visible_model& model, const Math::Local_point &light_pos, Visible_object::Silhouette &sil )
 {
@@ -53,7 +50,6 @@ void build( const Visible_model& model, const Math::Local_point &light_pos, Visi
 }
 }
 
-//////////////////////////////////////////////////////////////
 void Visible_object::build_silhouette(const Math::Local_point &light_pos, Silhouette &sil) const
 {
     sil.edges.clear();

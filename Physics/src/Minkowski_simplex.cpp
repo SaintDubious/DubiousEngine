@@ -5,30 +5,25 @@
 
 #include <tuple>
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Physics {
 
-//////////////////////////////////////////////////////////////
 Minkowski_simplex::Minkowski_simplex( const Minkowski_vector& start )
 {
     m_v[0] = start;
     m_size = 1;
 }
 
-//////////////////////////////////////////////////////////////
 Minkowski_simplex::Minkowski_simplex()
     : m_size( 0 )
 {
 }
 
-//////////////////////////////////////////////////////////////
 void Minkowski_simplex::push_back( const Minkowski_vector& v )
 {
     m_v[m_size++] = v;
 }
 
-//////////////////////////////////////////////////////////////
 std::tuple<bool,Math::Vector> Minkowski_simplex::build()
 {
     switch (m_size) {
@@ -43,7 +38,6 @@ std::tuple<bool,Math::Vector> Minkowski_simplex::build()
     }
 }
 
-//////////////////////////////////////////////////////////////
 // Due to the tests that created this line segment, the origin
 // must be somewhere between A and B, so this is pretty trivial
 std::tuple<bool,Math::Vector> Minkowski_simplex::build_2()
@@ -69,7 +63,6 @@ std::tuple<bool,Math::Vector> Minkowski_simplex::build_2()
     return std::make_tuple( false, direction );
 }
 
-//////////////////////////////////////////////////////////////
 std::tuple<bool,Math::Vector> Minkowski_simplex::build_3()
 {
     // Winding order is important for our triangle. I've tried my 
@@ -121,7 +114,6 @@ std::tuple<bool,Math::Vector> Minkowski_simplex::build_3()
     return std::make_tuple(false,ab_x_ac*-1);
 }
 
-//////////////////////////////////////////////////////////////
 std::tuple<bool,Math::Vector> Minkowski_simplex::build_4()
 {
     // The winding order of the tetrahedron is important. Point A is on the

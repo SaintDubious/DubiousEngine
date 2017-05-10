@@ -4,7 +4,6 @@
 #include <SDL_opengl.h>
 #include <stdexcept>
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Utility {
 
@@ -16,7 +15,6 @@ static const int MOUSE_SCROLL_UP		= 4;
 static const int MOUSE_SCROLL_DOWN		= 5;
 }
 
-//////////////////////////////////////////////////////////////
 Sdl_manager::Sdl_manager()
 {
     if (SDL_Init( SDL_INIT_VIDEO ) < 0) {
@@ -27,7 +25,6 @@ Sdl_manager::Sdl_manager()
     SDL_GL_SetAttribute( SDL_GL_STENCIL_SIZE, 8 );
 }
 
-//////////////////////////////////////////////////////////////
 Sdl_manager::~Sdl_manager()
 {
     if (m_gl_context != nullptr) {
@@ -39,7 +36,6 @@ Sdl_manager::~Sdl_manager()
     SDL_Quit();
 }
 
-//////////////////////////////////////////////////////////////
 void Sdl_manager::create_root_window( const std::string& title, int width, int height, bool full_screen )
 {
     int mode = SDL_WINDOW_OPENGL;
@@ -56,7 +52,6 @@ void Sdl_manager::create_root_window( const std::string& title, int width, int h
     }
 }
 
-//////////////////////////////////////////////////////////////
 void Sdl_manager::run()
 {
     Timer loop_timer;
@@ -122,7 +117,6 @@ void Sdl_manager::run()
     }
 }
 
-//////////////////////////////////////////////////////////////
 void Sdl_manager::stop()
 {
     m_quit = true;

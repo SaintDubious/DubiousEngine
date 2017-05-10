@@ -8,7 +8,6 @@
 #include <memory>
 #include <map>
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Physics {
 

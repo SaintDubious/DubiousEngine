@@ -7,7 +7,6 @@
 #include <memory>
 #include <vector>
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Utility {
 

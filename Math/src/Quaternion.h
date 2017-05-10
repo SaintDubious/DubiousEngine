@@ -9,7 +9,6 @@
 namespace Math_test { class Quaternion_test; }
 namespace Physics_test { class Collision_solver_test; }
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Math {
 
@@ -149,7 +148,6 @@ private:
     Triple              m_imaginary;
 };
 
-//////////////////////////////////////////////////////////////
 template<int T> 
 bool operator==( const QuaternionT<T>& a, const QuaternionT<T>& b )
 {
@@ -157,7 +155,6 @@ bool operator==( const QuaternionT<T>& a, const QuaternionT<T>& b )
            a.m_imaginary == b.m_imaginary;
 }
 
-//////////////////////////////////////////////////////////////
 template<int T> 
 bool operator!=( const QuaternionT<T>& a, const QuaternionT<T>& b )
 {
@@ -165,7 +162,6 @@ bool operator!=( const QuaternionT<T>& a, const QuaternionT<T>& b )
            a.m_imaginary != b.m_imaginary;
 }
 
-//////////////////////////////////////////////////////////////
 template <int T> 
 QuaternionT<T> operator+( const QuaternionT<T>& a, const QuaternionT<T>& b )
 {
@@ -177,7 +173,6 @@ QuaternionT<T> operator+( const QuaternionT<T>& a, const QuaternionT<T>& b )
     return result;
 }
 
-//////////////////////////////////////////////////////////////
 template <int T> 
 QuaternionT<T> operator*( const QuaternionT<T>& a, const QuaternionT<T>& b )
 {
@@ -191,14 +186,12 @@ QuaternionT<T> operator*( const QuaternionT<T>& a, const QuaternionT<T>& b )
     return result;
 }
 
-//////////////////////////////////////////////////////////////
 template <int T> 
 QuaternionT<T> operator*( const VectorT<T>& a, const QuaternionT<T>& b )
 { 
     return Quaternion( 0, Triple( a.x(), a.y(), a.z() ) ) * b;
 }
 
-//////////////////////////////////////////////////////////////
 template <int T> 
 QuaternionT<T> operator*( const QuaternionT<T>& a, float b )
 {
@@ -212,7 +205,6 @@ QuaternionT<T> operator*( const QuaternionT<T>& a, float b )
     return result;
 }
 
-//////////////////////////////////////////////////////////////
 template <int T> 
 std::ostream& operator<<(std::ostream& o, const QuaternionT<T>& q)
 {

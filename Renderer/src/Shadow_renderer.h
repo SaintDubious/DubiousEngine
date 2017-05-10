@@ -3,7 +3,6 @@
 
 #include "Visible_object.h"
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Renderer {
 

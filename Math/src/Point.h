@@ -5,7 +5,6 @@
 #include "Vector.h"
 #include "Unit_vector.h"
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Math {
 
@@ -58,56 +57,48 @@ private:
     Triple              m_coords;
 };
 
-//////////////////////////////////////////////////////////////
 template <int T> 
 VectorT<T> operator-( const PointT<T>& a, const PointT<T>& b )
 {
     return VectorT<T>( a.x()-b.x(), a.y()-b.y(), a.z()-b.z() );
 }
 
-//////////////////////////////////////////////////////////////
 template <int T> 
 PointT<T> operator+( const PointT<T>& a, const VectorT<T>& b )
 {
     return PointT<T>( a.x()+b.x(), a.y()+b.y(), a.z()+b.z() );
 }
 
-//////////////////////////////////////////////////////////////
 template <int T> 
 PointT<T> operator-( const PointT<T>& a, const VectorT<T>& b )
 {
     return PointT<T>( a.x()-b.x(), a.y()-b.y(), a.z()-b.z() );
 }
 
-//////////////////////////////////////////////////////////////
 template <int T> 
 PointT<T> operator+( const PointT<T>& a, const Unit_vectorT<T>& b )
 {
     return PointT<T>( a.x()+b.x(), a.y()+b.y(), a.z()+b.z() );
 }
 
-//////////////////////////////////////////////////////////////
 template <int T> 
 PointT<T> operator-( const PointT<T>& a, const Unit_vectorT<T>& b )
 {
     return PointT<T>( a.x()-b.x(), a.y()-b.y(), a.z()-b.z() );
 }
 
-//////////////////////////////////////////////////////////////
 template<int T> 
 bool operator==( const PointT<T>& a, const PointT<T>& b )
 {
     return a.m_coords == b.m_coords;
 }
 
-//////////////////////////////////////////////////////////////
 template<int T> 
 bool operator!=( const PointT<T>& a, const PointT<T>& b )
 {
     return a.m_coords != b.m_coords;
 }
 
-//////////////////////////////////////////////////////////////
 template<int T> 
 std::ostream& operator<<(std::ostream& o, const PointT<T>& a)
 {

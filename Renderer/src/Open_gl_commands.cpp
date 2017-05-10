@@ -1,11 +1,9 @@
 #include "Open_gl_commands.h"
 #include "Color.h"
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Renderer {
 
-//////////////////////////////////////////////////////////////
 void Open_gl_commands::material( int light, const Color& c )
 {
     float raw_colour[4];

@@ -9,17 +9,14 @@
 
 #include <Vector_math.h>
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Renderer {
 
-//////////////////////////////////////////////////////////////
 Scene::Scene( const std::shared_ptr<Open_gl_context_store>& store )
     : m_context_store( store )
 {
 }
 
-//////////////////////////////////////////////////////////////
 void Scene::render( Camera& camera )
 {
     Open_gl_attributes::clear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
@@ -74,25 +71,21 @@ void Scene::render( Camera& camera )
     }
 }
 
-//////////////////////////////////////////////////////////////
 void Scene::add_object( const std::shared_ptr<Visible_object>& object )
 {
     m_objects.push_back( object );
 }
 
-//////////////////////////////////////////////////////////////
 void Scene::remove_object( const std::shared_ptr<Visible_object>& object )
 {
     m_objects.remove( object );
 }
 
-//////////////////////////////////////////////////////////////
 void Scene::remove_all_objects()
 {
     m_objects.clear();
 }
 
-//////////////////////////////////////////////////////////////
 void Scene::setup_light( Open_gl_attributes& attribs, bool in_shadow ) const
 {
     attribs.enable( Open_gl_attributes::LIGHTING );

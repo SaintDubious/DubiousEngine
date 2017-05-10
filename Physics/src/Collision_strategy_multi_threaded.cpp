@@ -6,18 +6,15 @@
 #include <set>
 #include <future>
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Physics {
 
-//////////////////////////////////////////////////////////////
 Collision_strategy_multi_threaded::Collision_strategy_multi_threaded( float manifold_persistent_threshold, unsigned int workgroup_size )
     : m_manifold_persistent_threshold( manifold_persistent_threshold )
     , m_workgroup_size( workgroup_size )
 {
 }
 
-//////////////////////////////////////////////////////////////
 void Collision_strategy_multi_threaded::find_contacts( const std::vector<std::shared_ptr<Physics_object>>& objects,
                                                std::map<Physics_object_pair, Contact_manifold>& manifolds )
 {
@@ -62,7 +59,6 @@ void Collision_strategy_multi_threaded::find_contacts( const std::vector<std::sh
     }
 }
 
-//////////////////////////////////////////////////////////////
 #pragma warning( disable : 4503 ) // decorated name length exceeded, name was truncated
 std::set<Collision_strategy::Physics_object_pair> Collision_strategy_multi_threaded::solve_inner( size_t start, size_t length,
                                                   const std::vector<std::shared_ptr<Physics_object>>& objects,
@@ -94,7 +90,6 @@ std::set<Collision_strategy::Physics_object_pair> Collision_strategy_multi_threa
     return new_pairs;
 }
 
-//////////////////////////////////////////////////////////////
 #pragma warning( disable : 4503 ) // decorated name length exceeded, name was truncated
 std::set<Collision_strategy::Physics_object_pair> Collision_strategy_multi_threaded::solve_outer( size_t a_start, size_t a_length, size_t b_start, size_t b_length,
                                                   const std::vector<std::shared_ptr<Physics_object>>& objects,

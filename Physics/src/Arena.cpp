@@ -11,7 +11,6 @@
 #include <iostream>
 #include <future>
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Physics {
 
@@ -50,13 +49,11 @@ Arena::Arena( const Settings& settings )
     }
 }
 
-//////////////////////////////////////////////////////////////
 void Arena::push_back( std::shared_ptr<Physics_object> obj )
 {
     m_objects.push_back( obj );
 }
 
-//////////////////////////////////////////////////////////////
 void Arena::run_physics( float elapsed )
 {
     m_elapsed += elapsed;

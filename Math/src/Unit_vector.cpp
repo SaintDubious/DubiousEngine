@@ -1,11 +1,9 @@
 #include "Unit_vector.h"
 #include "Vector.h"
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Math {
 
-//////////////////////////////////////////////////////////////
 template <int T>
 Unit_vectorT<T>::Unit_vectorT( float x, float y, float z)
 {
@@ -16,7 +14,6 @@ Unit_vectorT<T>::Unit_vectorT( float x, float y, float z)
     m_coords = Triple( x/length, y/length, z/length );
 }
 
-//////////////////////////////////////////////////////////////
 template<int T>
 Unit_vectorT<T>::Unit_vectorT(const VectorT<T>& v)
 {

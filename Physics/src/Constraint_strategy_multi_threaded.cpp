@@ -2,22 +2,18 @@
 
 #include <future>
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Physics {
 
-//////////////////////////////////////////////////////////////
 Constraint_strategy_multi_threaded::Constraint_strategy_multi_threaded( float time_step, float beta, float cor, float slop )
     : m_constraint_solver( time_step, beta, cor, slop )
 {
 }
 
-//////////////////////////////////////////////////////////////
 Constraint_strategy_multi_threaded::~Constraint_strategy_multi_threaded()
 {
 }
 
-//////////////////////////////////////////////////////////////
 void Constraint_strategy_multi_threaded::warm_start( std::map<std::tuple<Physics_object*,Physics_object*>, Contact_manifold> &manifolds )
 {
     std::vector<std::future<void>> futures;
@@ -41,7 +37,6 @@ void Constraint_strategy_multi_threaded::warm_start( std::map<std::tuple<Physics
 
 }
 
-//////////////////////////////////////////////////////////////
 void Constraint_strategy_multi_threaded::solve( int iterations, std::map<std::tuple<Physics_object*,Physics_object*>, Contact_manifold> &manifolds )
 {
     for (int i=0; i<iterations; ++i) {
@@ -65,7 +60,6 @@ void Constraint_strategy_multi_threaded::solve( int iterations, std::map<std::tu
     }
 }
 
-//////////////////////////////////////////////////////////////
 void Constraint_strategy_multi_threaded::warm_start_internal( std::vector<Manifold_info> &&manifolds )
 {
     for (auto &m : manifolds) {
@@ -73,7 +67,6 @@ void Constraint_strategy_multi_threaded::warm_start_internal( std::vector<Manifo
     }
 }
 
-//////////////////////////////////////////////////////////////
 void Constraint_strategy_multi_threaded::solve_internal( std::vector<Manifold_info> &&manifolds )
 {
     for (auto &m : manifolds) {

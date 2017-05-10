@@ -1,7 +1,6 @@
 #ifndef INCLUDED_RENDERER_OPENGLMATRIX
 #define INCLUDED_RENDERER_OPENGLMATRIX
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Renderer {
 

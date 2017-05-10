@@ -6,7 +6,6 @@
 #include <map>
 #include <memory>
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Renderer {
 

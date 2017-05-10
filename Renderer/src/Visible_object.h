@@ -8,7 +8,6 @@
 #include <memory>
 #include <vector>
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Renderer {
 

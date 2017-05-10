@@ -11,13 +11,11 @@
 #include <list>
 #include <tuple>
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Physics {
 
 namespace {
 
-//////////////////////////////////////////////////////////////
 Math::Local_vector support( const Physics_model& model, const Math::Local_vector& direction )
 {
     Math::Local_vector result;
@@ -33,7 +31,6 @@ Math::Local_vector support( const Physics_model& model, const Math::Local_vector
 }
 
 
-//////////////////////////////////////////////////////////////
 // This function is used to check the top level models a and b.
 // The children of these models are not tested at this level.
 // The first step of this is to perform the GJK test to find if
@@ -96,7 +93,6 @@ bool model_intersection( const Physics_model& a, const Math::Coordinate_space& c
 }
 
 
-//////////////////////////////////////////////////////////////
 // Taken from http://hacktank.net/blog/?p=119 , which was apparently
 // taken from Crister Erickson's Real-Time Collision Detection
 std::tuple<float,float,float> barycentric(const Math::Vector &p, const Math::Vector &a, const Math::Vector &b, const Math::Vector &c ) 
@@ -116,7 +112,6 @@ std::tuple<float,float,float> barycentric(const Math::Vector &p, const Math::Vec
      return std::make_tuple( u, v, w );
 }
 
-//////////////////////////////////////////////////////////////
 // Perform EPA to find the point of collision
 void find_collision_point( const Physics_model& a, const Math::Coordinate_space& ca, 
                            const Physics_model& b, const Math::Coordinate_space& cb,
@@ -163,7 +158,6 @@ void find_collision_point( const Physics_model& a, const Math::Coordinate_space&
     }
 }
 
-//////////////////////////////////////////////////////////////
 bool intersection_recurse_b( const Physics_model& a, const Math::Coordinate_space& ca, 
                              const Physics_model& b, const Math::Coordinate_space& cb, 
                              std::vector<Contact_manifold::Contact>& contacts )
@@ -185,7 +179,6 @@ bool intersection_recurse_b( const Physics_model& a, const Math::Coordinate_spac
     return ret_val;
 }
 
-//////////////////////////////////////////////////////////////
 bool intersection_recurse_a( const Physics_model& a, const Math::Coordinate_space& ca, 
                              const Physics_model& b, const Math::Coordinate_space& cb,
                              std::vector<Contact_manifold::Contact>& contacts )
@@ -205,7 +198,6 @@ bool intersection_recurse_a( const Physics_model& a, const Math::Coordinate_spac
 
 }
 
-//////////////////////////////////////////////////////////////
 bool Collision_solver::broad_phase_intersection( const Physics_object& a, const Physics_object& b ) const
 {
     // If the sum of the radius squared is longer then the distance squared
@@ -216,7 +208,6 @@ bool Collision_solver::broad_phase_intersection( const Physics_object& a, const 
     return distance_squared <= radius_sum*radius_sum;
 }
 
-//////////////////////////////////////////////////////////////
 bool Collision_solver::intersection( const Physics_object& a, const Physics_object& b, std::vector<Contact_manifold::Contact>& contacts ) const
 {
     return intersection_recurse_a( a.model(), a.coordinate_space(), b.model(), b.coordinate_space(), contacts );

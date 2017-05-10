@@ -6,7 +6,6 @@
 #include <vector>
 #include <memory>
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Physics {
 

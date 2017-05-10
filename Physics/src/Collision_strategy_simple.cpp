@@ -4,17 +4,14 @@
 
 #include <set>
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Physics {
 
-//////////////////////////////////////////////////////////////
 Collision_strategy_simple::Collision_strategy_simple( float manifold_persistent_threshold )
     : m_manifold_persistent_threshold( manifold_persistent_threshold )
 {
 }
 
-//////////////////////////////////////////////////////////////
 void Collision_strategy_simple::find_contacts( const std::vector<std::shared_ptr<Physics_object>>& objects,
                                                std::map<Physics_object_pair, Contact_manifold>& manifolds )
 {

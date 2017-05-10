@@ -2,17 +2,14 @@
 #include <Ac3d_file_reader.h>
 #include <Vector_math.h>
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Renderer {
 
-//////////////////////////////////////////////////////////////
 Visible_model::Visible_model()
     : m_color( Color::WHITE )
 {
 }
 
-//////////////////////////////////////////////////////////////
 Visible_model::Visible_model( const Utility::Ac3d_file& file, bool include_edges )
     : m_color( Color::WHITE )
 {
@@ -30,7 +27,6 @@ Visible_model::surface build_surface( const std::vector<Math::Local_point>& poin
 
 }
 
-//////////////////////////////////////////////////////////////
 void Visible_model::construct( const Utility::Ac3d_model& ac3d_model, const std::vector<Utility::Ac3d_material>& materials, bool include_edges )
 {
     m_offset = ac3d_model.offset();
@@ -52,7 +48,6 @@ void Visible_model::construct( const Utility::Ac3d_model& ac3d_model, const std:
     }
 }
 
-//////////////////////////////////////////////////////////////
 void Visible_model::compute_point_normals()
 {
     for( size_t i=0; i<m_points.size(); ++i ){
@@ -68,7 +63,6 @@ void Visible_model::compute_point_normals()
     }
 }
 
-//////////////////////////////////////////////////////////////
 void Visible_model::build_edges()
 {
     size_t j = 0;
@@ -106,7 +100,6 @@ void Visible_model::build_edges()
     }
 }
 
-////////////////////////////////////////////////////////////////////////////////////
 void Visible_model::add_edge( unsigned short p0, unsigned short p1, unsigned short s0, unsigned short s1 )
 {
     Edge	new_edge;

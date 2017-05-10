@@ -4,11 +4,9 @@
 #include <assert.h>
 #include <stdexcept>
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Renderer {
 
-////////////////////////////////////////////////////////////////////////////////////
 Open_gl_attributes::Open_gl_attributes( int bit_field, bool restore )
     : m_restore( restore )
     , m_group_bits( bit_field )
@@ -17,20 +15,17 @@ Open_gl_attributes::Open_gl_attributes( int bit_field, bool restore )
         glPushAttrib( m_group_bits );
 }
 
-////////////////////////////////////////////////////////////////////////////////////
 Open_gl_attributes::~Open_gl_attributes()
 {
     if( m_restore )
         glPopAttrib();
 }
 
-////////////////////////////////////////////////////////////////////////////////////
 void Open_gl_attributes::clear(int group_bit_field)
 {
     glClear( group_bit_field );
 }
 
-////////////////////////////////////////////////////////////////////////////////////
 void Open_gl_attributes::enable( Attr_bits bit_field ) const
 {
 #ifdef _DEBUG
@@ -39,7 +34,6 @@ void Open_gl_attributes::enable( Attr_bits bit_field ) const
     glEnable( bit_field );
 }
 
-////////////////////////////////////////////////////////////////////////////////////
 void Open_gl_attributes::disable( Attr_bits bit_field ) const
 {
 #ifdef _DEBUG
@@ -48,7 +42,6 @@ void Open_gl_attributes::disable( Attr_bits bit_field ) const
     glDisable( bit_field );
 }
 
-////////////////////////////////////////////////////////////////////////////////////
 void Open_gl_attributes::light_position( int light, const Math::Point& position ) const
 {
     float light_params[4];
@@ -60,7 +53,6 @@ void Open_gl_attributes::light_position( int light, const Math::Point& position 
 
 }
 
-////////////////////////////////////////////////////////////////////////////////////
 void Open_gl_attributes::light_color( int light, int type, const Color& color ) const
 {
     float light_params[4];
@@ -71,7 +63,6 @@ void Open_gl_attributes::light_color( int light, int type, const Color& color ) 
     glLightfv( light, type, light_params );
 }
 
-////////////////////////////////////////////////////////////////////////////////////
 void Open_gl_attributes::verify_bits( Attr_bits bit_field ) const
 {
     if( m_group_bits == ALL_ATTRIB_BITS )

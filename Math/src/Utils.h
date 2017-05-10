@@ -1,7 +1,6 @@
 #ifndef INCLUDED_MATH_UTILS
 #define INCLUDED_MATH_UTILS
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Math	{
 

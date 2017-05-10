@@ -5,17 +5,14 @@
 
 #include <algorithm>
 
-//////////////////////////////////////////////////////////////
 namespace Dubious {
 namespace Physics {
 
-//////////////////////////////////////////////////////////////
 Physics_model::Physics_model( const Utility::Ac3d_file& file )
 {
     construct( Math::Local_vector(), *file.model() );
 }
 
-//////////////////////////////////////////////////////////////
 void Physics_model::construct( const Math::Local_vector& offset, const Utility::Ac3d_model& model )
 {
     Math::Local_vector new_offset = offset + (Math::to_vector(model.offset()));
