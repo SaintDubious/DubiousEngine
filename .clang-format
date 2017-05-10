@@ -24,7 +24,7 @@ BreakBeforeBraces:                      Stroustrup
 BreakBeforeTernaryOperators:            true
 BreakConstructorInitializersBeforeComma: true
 BreakStringLiterals:                    true
-ColumnLimit:                            130
+ColumnLimit:                            100
 ConstructorInitializerAllOnOneLineOrOnePerLine: true
 ConstructorInitializerIndentWidth:      4
 ContinuationIndentWidth:                4
