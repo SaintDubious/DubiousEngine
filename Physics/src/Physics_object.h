@@ -19,11 +19,11 @@ class Physics_model;
 class Physics_object {
 public:
     /// @brief Constructor
-    Physics_object( const std::shared_ptr<Physics_model>& model, float mass );
+    Physics_object(const std::shared_ptr<Physics_model>& model, float mass);
 
-    Physics_object( const Physics_object& ) = delete;
+    Physics_object(const Physics_object&) = delete;
 
-    Physics_object& operator=( const Physics_object& ) = delete;
+    Physics_object& operator=(const Physics_object&) = delete;
 
     /// @brief Model Accessor
     ///
@@ -38,7 +38,7 @@ public:
     static const float STATIONARY;
 
     /// @brief Accessor
-    Math::Coordinate_space& coordinate_space() { return m_coordinate_space; }
+    Math::Coordinate_space&       coordinate_space() { return m_coordinate_space; }
     const Math::Coordinate_space& coordinate_space() const { return m_coordinate_space; }
 
     // linear
@@ -57,19 +57,20 @@ public:
 
 private:
     std::shared_ptr<Physics_model> m_model;
-    Math::Coordinate_space m_coordinate_space;
+    Math::Coordinate_space         m_coordinate_space;
 
     // Linear Physics
-    float               m_inverse_mass;
-    Math::Vector        m_velocity;
-    Math::Vector        m_force;
+    float        m_inverse_mass;
+    Math::Vector m_velocity;
+    Math::Vector m_force;
 
     // Angular Physics
-    float               m_inverse_moment_of_inertia;
-    Math::Vector        m_angular_velocity;
-    Math::Vector        m_torque;
+    float        m_inverse_moment_of_inertia;
+    Math::Vector m_angular_velocity;
+    Math::Vector m_torque;
 };
 
-}}
+}  // namespace Physics
+}  // namespace Dubious
 
 #endif

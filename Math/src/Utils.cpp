@@ -6,20 +6,23 @@
 namespace Dubious {
 namespace Math {
 
-bool equals( float a, float b )
+bool
+equals(float a, float b)
 {
-    return fabs(a-b) < 0.000001;
+    return fabs(a - b) < 0.000001;
 }
 
-float to_radians( float degrees )
+float
+to_radians(float degrees)
 {
-    return PI * degrees/180.0f;
+    return PI * degrees / 180.0f;
 }
 
-float to_degrees( float radians )
+float
+to_degrees(float radians)
 {
     return radians * 180.0f / PI;
 }
 
-}
-}
+}  // namespace Math
+}  // namespace Dubious

@@ -5,16 +5,16 @@ namespace Dubious {
 namespace Math {
 
 template <int T>
-Unit_vectorT<T>::Unit_vectorT( float x, float y, float z)
+Unit_vectorT<T>::Unit_vectorT(float x, float y, float z)
 {
-    float length = sqrt(x*x + y*y + z*z);
+    float length = sqrt(x * x + y * y + z * z);
     if (equals(length, 0)) {
-        throw std::runtime_error( "Unit_vectorT created with 0 length" );
+        throw std::runtime_error("Unit_vectorT created with 0 length");
     }
-    m_coords = Triple( x/length, y/length, z/length );
+    m_coords = Triple(x / length, y / length, z / length);
 }
 
-template<int T>
+template <int T>
 Unit_vectorT<T>::Unit_vectorT(const VectorT<T>& v)
 {
     float length = v.length();
@@ -27,4 +27,5 @@ Unit_vectorT<T>::Unit_vectorT(const VectorT<T>& v)
 template class Unit_vectorT<0>;
 template class Unit_vectorT<1>;
 
-}}
+}  // namespace Math
+}  // namespace Dubious

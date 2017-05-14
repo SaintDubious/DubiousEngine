@@ -2,32 +2,32 @@
 #define INCLUDED_MATH_UTILS
 
 namespace Dubious {
-namespace Math	{
+namespace Math {
 
 static const float PI = 3.1415926535f;
 
-/// @brief Tests equality of two floating point numbers.  
+/// @brief Tests equality of two floating point numbers.
 ///
 /// Returns true if they are "close enough" to being equals.  Basically
 ///	does an == that takes rounding into account.
 /// @param A - [in] The first number
 /// @param B - [in] The second number
 /// @returns True if the numbers are "close enough" to being equal
-bool equals( float a, float b );
+bool equals(float a, float b);
 
 /// @brief converts degrees to radians
 ///
 /// @param Degrees - [in] Angle in Degrees
 /// @returns Angle in Radians
-float to_radians( float degrees );
+float to_radians(float degrees);
 
 /// @brief converts radians to degrees
 ///
 /// @param Radians - [in] Angle in Radians
 /// @returns Angle in Degrees
-float to_degrees( float radians );
+float to_degrees(float radians);
 
-}
-}
+}  // namespace Math
+}  // namespace Dubious
 
 #endif

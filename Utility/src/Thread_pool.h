@@ -15,7 +15,7 @@ namespace Utility {
 /// This is a simple queue of work and a pool of threads to
 /// do the work. It's not terribly sophisticated, and it
 /// actually may not work correctly as it's not in use at
-/// the moment. I am playing with threading and C++11 async, 
+/// the moment. I am playing with threading and C++11 async,
 /// so this might go away.
 ///
 /// DO NOT USE
@@ -23,26 +23,26 @@ namespace Utility {
 
 class Thread_pool {
 public:
-    Thread_pool( const int pool_size );
+    Thread_pool(const int pool_size);
     ~Thread_pool();
 
-    typedef std::function<void ()> Func;
+    typedef std::function<void()> Func;
 
-    void                push( Func f );
+    void push(Func f);
 
-    int                 size() const;
+    int size() const;
 
 private:
-    std::queue<Func>    m_queue;
-    std::vector<std::thread> m_threads; 
-    mutable std::mutex  m_mutex;
-    std::condition_variable m_condition;
-    bool                m_drain = false;
+    std::queue<Func>         m_queue;
+    std::vector<std::thread> m_threads;
+    mutable std::mutex       m_mutex;
+    std::condition_variable  m_condition;
+    bool                     m_drain = false;
 
-    void                thread_func();
+    void thread_func();
 };
 
-}}
+}  // namespace Utility
+}  // namespace Dubious
 
 #endif
-

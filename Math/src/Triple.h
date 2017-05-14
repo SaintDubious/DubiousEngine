@@ -28,18 +28,11 @@ struct Triple {
     /// @param x - [in] X component
     /// @param y - [in] Y component
     /// @param z - [in] Z component
-    Triple(float x, float y, float z)
-        : m_x(x)
-        , m_y(y)
-        , m_z(z)
-    {}
+    Triple(float x, float y, float z) : m_x(x), m_y(y), m_z(z) {}
 
-    Triple              operator-() const
-    {
-        return Triple( -m_x, -m_y, -m_z );
-    }
+    Triple operator-() const { return Triple(-m_x, -m_y, -m_z); }
 
-    Triple&             operator+=( const Triple& b )
+    Triple& operator+=(const Triple& b)
     {
         m_x += b.m_x;
         m_y += b.m_y;
@@ -47,7 +40,7 @@ struct Triple {
         return *this;
     }
 
-    Triple&             operator-=( const Triple& b )
+    Triple& operator-=(const Triple& b)
     {
         m_x -= b.m_x;
         m_y -= b.m_y;
@@ -55,42 +48,43 @@ struct Triple {
         return *this;
     }
 
-    float               m_x = 0;
-    float               m_y = 0;
-    float               m_z = 0;
+    float m_x = 0;
+    float m_y = 0;
+    float m_z = 0;
 };
 
-inline bool operator==( const Triple& a, const Triple& b )
+inline bool
+operator==(const Triple& a, const Triple& b)
 {
-    return equals(a.m_x, b.m_x) &&
-           equals(a.m_y, b.m_y) &&
-           equals(a.m_z, b.m_z);
+    return equals(a.m_x, b.m_x) && equals(a.m_y, b.m_y) && equals(a.m_z, b.m_z);
 }
 
-inline bool operator!=(const Triple& a, const Triple& b)
+inline bool
+operator!=(const Triple& a, const Triple& b)
 {
-    return !equals(a.m_x, b.m_x) ||
-           !equals(a.m_y, b.m_y) ||
-           !equals(a.m_z, b.m_z);
+    return !(a == b);
 }
 
-inline Triple operator+(const Triple& a, const Triple& b)
+inline Triple
+operator+(const Triple& a, const Triple& b)
 {
     return Triple(a.m_x + b.m_x, a.m_y + b.m_y, a.m_z + b.m_z);
 }
 
-inline Triple operator-(const Triple& a, const Triple& b)
+inline Triple
+operator-(const Triple& a, const Triple& b)
 {
     return Triple(a.m_x - b.m_x, a.m_y - b.m_y, a.m_z - b.m_z);
 }
 
-inline std::ostream& operator<<(std::ostream& o, const Triple& a)
+inline std::ostream&
+operator<<(std::ostream& o, const Triple& a)
 {
     o << "(" << a.m_x << ", " << a.m_y << ", " << a.m_z << ")";
     return o;
 }
 
-}
-}
+}  // namespace Math
+}  // namespace Dubious
 
 #endif

@@ -6,16 +6,26 @@
 namespace Dubious {
 namespace Math {
 
-template <int T> class VectorT;
-template <int T> class Unit_vectorT;
-template <int T> bool operator==( const VectorT<T>& a, const VectorT<T>& b );
-template <int T> bool operator!=( const VectorT<T>& a, const VectorT<T>& b );
-template <int T> VectorT<T> operator+( const VectorT<T>& a, const VectorT<T>& b );
-template <int T> VectorT<T> operator-( const VectorT<T>& a, const VectorT<T>& b );
-template <int T> VectorT<T> operator*( const VectorT<T>& a, float b );
-template <int T> VectorT<T> operator*( float a, const VectorT<T>& b );
-template <int T> VectorT<T> operator/( const VectorT<T>& a, float b );
-template <int T> std::ostream& operator<<(std::ostream& o, const VectorT<T>& a);
+template <int T>
+class VectorT;
+template <int T>
+class Unit_vectorT;
+template <int T>
+bool operator==(const VectorT<T>& a, const VectorT<T>& b);
+template <int T>
+bool operator!=(const VectorT<T>& a, const VectorT<T>& b);
+template <int T>
+VectorT<T> operator+(const VectorT<T>& a, const VectorT<T>& b);
+template <int T>
+VectorT<T> operator-(const VectorT<T>& a, const VectorT<T>& b);
+template <int T>
+VectorT<T> operator*(const VectorT<T>& a, float b);
+template <int T>
+VectorT<T> operator*(float a, const VectorT<T>& b);
+template <int T>
+VectorT<T> operator/(const VectorT<T>& a, float b);
+template <int T>
+std::ostream& operator<<(std::ostream& o, const VectorT<T>& a);
 
 /// @brief A 3D Vector
 ///
@@ -36,9 +46,7 @@ public:
     /// @param x - [in] X component
     /// @param y - [in] Y component
     /// @param z - [in] Z component
-    VectorT(float x, float y, float z)
-        : m_coords(x, y, z)
-    {}
+    VectorT(float x, float y, float z) : m_coords(x, y, z) {}
 
     /// @brief Construct from Unit Vector
     ///
@@ -47,7 +55,7 @@ public:
     /// can be constructed from Local Unit Vectors, but not
     /// Global Unit Vectors
     /// @param U - [in] Unit Vector to copy
-    VectorT( const Unit_vectorT<T>& u );
+    VectorT(const Unit_vectorT<T>& u);
 
     /// @brief Length Squared
     ///
@@ -56,100 +64,103 @@ public:
     /// squared is a good way to do that as it doesn't require
     /// the costly sqrt function
     /// @returns The length of the vector squared
-    float               length_squared() const;
+    float length_squared() const;
 
     /// @brief Length
     ///
     /// The length of the vector
     /// @returns The Vector length
-    float               length() const;
+    float length() const;
 
     /// @brief X accessor
     /// @returns X coordinate
-    float               x() const { return m_coords.m_x; }
+    float x() const { return m_coords.m_x; }
 
     /// @brief Y accessor
     /// @returns Y coordinate
-    float               y() const { return m_coords.m_y; }
+    float y() const { return m_coords.m_y; }
 
     /// @brief Z accessor
     /// @returns Z coordinate
-    float               z() const { return m_coords.m_z; }
+    float z() const { return m_coords.m_z; }
 
-    friend bool         operator== <>( const VectorT<T>& a, const VectorT<T>& b );
-    friend bool         operator!= <>( const VectorT<T>& a, const VectorT<T>& b );
-    friend VectorT<T>   operator+ <>( const VectorT<T>& a, const VectorT<T>& b );
-    friend VectorT<T>   operator- <>( const VectorT<T>& a, const VectorT<T>& b );
-    friend VectorT<T>   operator* <>( const VectorT<T>& a, float b );
-    friend VectorT<T>   operator* <>( float a, const VectorT<T>& b );
-    friend VectorT<T>   operator/ <>( const VectorT<T>& a, float b );
-    friend std::ostream& operator<< <>(std::ostream& o, const VectorT<T>& a);
+    friend bool          operator==<>(const VectorT<T>& a, const VectorT<T>& b);
+    friend bool          operator!=<>(const VectorT<T>& a, const VectorT<T>& b);
+    friend VectorT<T>    operator+<>(const VectorT<T>& a, const VectorT<T>& b);
+    friend VectorT<T>    operator-<>(const VectorT<T>& a, const VectorT<T>& b);
+    friend VectorT<T>    operator*<>(const VectorT<T>& a, float b);
+    friend VectorT<T>    operator*<>(float a, const VectorT<T>& b);
+    friend VectorT<T>    operator/<>(const VectorT<T>& a, float b);
+    friend std::ostream& operator<<<>(std::ostream& o, const VectorT<T>& a);
 
-    VectorT<T>          operator-() const { return VectorT<T>( -m_coords ); }
-    VectorT<T>&         operator+=( const VectorT<T>& rhs );
-    VectorT<T>&         operator-=( const VectorT<T>& rhs );
+    VectorT<T>  operator-() const { return VectorT<T>(-m_coords); }
+    VectorT<T>& operator+=(const VectorT<T>& rhs);
+    VectorT<T>& operator-=(const VectorT<T>& rhs);
 
 private:
-    VectorT( const Triple& coords )
-        : m_coords( coords )
-    {}
+    VectorT(const Triple& coords) : m_coords(coords) {}
 
-    Triple              m_coords;
+    Triple m_coords;
 };
 
-template<int T> 
-bool operator==( const VectorT<T>& a, const VectorT<T>& b )
+template <int T>
+bool
+operator==(const VectorT<T>& a, const VectorT<T>& b)
 {
     return a.m_coords == b.m_coords;
 }
 
-template<int T> 
-bool operator!=( const VectorT<T>& a, const VectorT<T>& b )
+template <int T>
+bool
+operator!=(const VectorT<T>& a, const VectorT<T>& b)
 {
     return a.m_coords != b.m_coords;
 }
 
-template <int T> 
-VectorT<T> operator+( const VectorT<T>& a, const VectorT<T>& b )
+template <int T>
+VectorT<T>
+operator+(const VectorT<T>& a, const VectorT<T>& b)
 {
-    return VectorT<T>( a.m_coords + b.m_coords );
+    return VectorT<T>(a.m_coords + b.m_coords);
 }
 
-template <int T> 
-VectorT<T> operator-( const VectorT<T>& a, const VectorT<T>& b )
+template <int T>
+VectorT<T>
+operator-(const VectorT<T>& a, const VectorT<T>& b)
 {
-    return VectorT<T>( a.m_coords - b.m_coords );
+    return VectorT<T>(a.m_coords - b.m_coords);
 }
 
-template <int T> 
-VectorT<T> operator*( const VectorT<T>& a, float b )
+template <int T>
+VectorT<T> operator*(const VectorT<T>& a, float b)
 {
-    return VectorT<T>( a.m_coords.m_x*b, a.m_coords.m_y*b, a.m_coords.m_z*b );
+    return VectorT<T>(a.m_coords.m_x * b, a.m_coords.m_y * b, a.m_coords.m_z * b);
 }
 
-template <int T> 
-VectorT<T> operator*( float a, const VectorT<T>& b )
+template <int T>
+VectorT<T> operator*(float a, const VectorT<T>& b)
 {
-    return VectorT<T>( a*b.m_coords.m_x, a*b.m_coords.m_y, a*b.m_coords.m_z );
+    return VectorT<T>(a * b.m_coords.m_x, a * b.m_coords.m_y, a * b.m_coords.m_z);
 }
 
-template <int T> 
-VectorT<T> operator/( const VectorT<T>& a, float b )
+template <int T>
+VectorT<T>
+operator/(const VectorT<T>& a, float b)
 {
-    return VectorT<T>( a.m_coords.m_x/b, a.m_coords.m_y/b, a.m_coords.m_z/b );
+    return VectorT<T>(a.m_coords.m_x / b, a.m_coords.m_y / b, a.m_coords.m_z / b);
 }
 
-template <int T> 
-std::ostream& operator<<(std::ostream& o, const VectorT<T>& a)
+template <int T>
+std::ostream&
+operator<<(std::ostream& o, const VectorT<T>& a)
 {
     o << a.m_coords;
     return o;
 }
 
-typedef VectorT<0>      Vector;
-typedef VectorT<1>      Local_vector;
-}
-}
+typedef VectorT<0> Vector;
+typedef VectorT<1> Local_vector;
+}  // namespace Math
+}  // namespace Dubious
 
 #endif
-

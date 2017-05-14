@@ -18,23 +18,23 @@ class Visible_object;
 ///	RenderObject.
 class Object_renderer {
 public:
-    Object_renderer( const Object_renderer& ) = delete;
+    Object_renderer(const Object_renderer&) = delete;
 
-    Object_renderer& operator=( const Object_renderer& ) = delete;
-    
+    Object_renderer& operator=(const Object_renderer&) = delete;
+
     /// @brief Renders an object
     ///
     /// The function that is called to render the visible object.
     ///	This is a pure virtual, inherited classes will implement
     ///	it differently to acheive different looks.
     ///	@param pObject - [in] the objet to be rendered.
-    virtual void		render( const std::shared_ptr<Visible_object>& object ) = 0;
+    virtual void render(const std::shared_ptr<Visible_object>& object) = 0;
 
 protected:
     Object_renderer() = default;
 };
 
-}
-}
+}  // namespace Renderer
+}  // namespace Dubious
 
 #endif

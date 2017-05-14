@@ -25,18 +25,19 @@ public:
     /// @brief Default constructor
     Collision_solver() = default;
 
-    Collision_solver( const Collision_solver& ) = delete;
-    Collision_solver& operator=( const Collision_solver& ) = delete;
+    Collision_solver(const Collision_solver&) = delete;
+    Collision_solver& operator=(const Collision_solver&) = delete;
 
     /// @brief find the intersection of 2 objects
     ///
     /// This is the main entry point to the collision solver.
-    /// Given two objects, find out if they collide, and if so, 
+    /// Given two objects, find out if they collide, and if so,
     /// where. This is a work in progress.
     /// @param a - [in] the first object
     /// @param b - [in] the second object
     /// @returns true if they collide
-    bool                intersection( const Physics_object& a, const Physics_object& b, std::vector<Contact_manifold::Contact>& contacts ) const;
+    bool intersection(const Physics_object& a, const Physics_object& b,
+                      std::vector<Contact_manifold::Contact>& contacts) const;
 
     /// @brief cheap and cheerful intersection test
     ///
@@ -47,9 +48,10 @@ public:
     /// @param a - [in] the first object
     /// @param b - [in] the second object
     /// @returns true if they might collide
-    bool                broad_phase_intersection( const Physics_object& a, const Physics_object& b ) const;
+    bool broad_phase_intersection(const Physics_object& a, const Physics_object& b) const;
 };
 
-}}
+}  // namespace Physics
+}  // namespace Dubious
 
 #endif

@@ -11,7 +11,7 @@ namespace Dubious {
 namespace Utility {
 
 /// @brief An AC3D Model
-/// 
+///
 /// Respresents a model as described by the AC3D file format.
 ///	AC3D files contains a number of points and then a list of
 ///	surfaces that index those points.  For example if point number
@@ -21,9 +21,9 @@ namespace Utility {
 ///	That info is stored in this object.
 class Ac3d_model {
 public:
-    Ac3d_model() = default;
-    Ac3d_model( const Ac3d_model& ) = delete;
-    Ac3d_model& operator=( const Ac3d_model& ) = delete;
+    Ac3d_model()                  = default;
+    Ac3d_model(const Ac3d_model&) = delete;
+    Ac3d_model& operator=(const Ac3d_model&) = delete;
 
     /// @brief A Surface
     ///
@@ -31,37 +31,36 @@ public:
     ///	array.  Actually AC3D supports any number of points, but I
     ///	restrict the reader to only accepting a model made of triangles.
     ///	It also contains Material information.
-    struct Surface
-    {
-        unsigned short  p0, p1, p2;
-        int             material_index;
+    struct Surface {
+        unsigned short p0, p1, p2;
+        int            material_index;
     };
 
     /// @brief Accessor - the Name, mostly useful for debugging
-    std::string&		name() { return m_name; }
+    std::string& name() { return m_name; }
 
     /// @brief Accessor - Offset from the parent model.  If this is
     ///		the parent model then the offset will be (0,0,0)
-    Math::Local_point&	offset() { return m_offset; }
-    const Math::Local_point&	offset() const { return m_offset; }
+    Math::Local_point&       offset() { return m_offset; }
+    const Math::Local_point& offset() const { return m_offset; }
 
     /// @brief Accessor - the Points that make up the model.
-    std::vector<Math::Local_point>& points() { return m_points; }
+    std::vector<Math::Local_point>&       points() { return m_points; }
     const std::vector<Math::Local_point>& points() const { return m_points; }
 
     /// @brief Accessor - the surfaces that make up the model
-    std::vector<Surface>& surfaces() { return m_surfaces; }
+    std::vector<Surface>&       surfaces() { return m_surfaces; }
     const std::vector<Surface>& surfaces() const { return m_surfaces; }
 
     /// @brief Accessor - child models
     const std::vector<std::unique_ptr<const Ac3d_model>>& kids() const { return m_kids; }
-    void                push_kid( std::unique_ptr<const Ac3d_model> kid ){ m_kids.push_back( std::move(kid) ); }
+    void push_kid(std::unique_ptr<const Ac3d_model> kid) { m_kids.push_back(std::move(kid)); }
 
 private:
-    std::string         m_name;
-    Math::Local_point   m_offset;
-    std::vector<Math::Local_point> m_points;
-    std::vector<Surface>  m_surfaces;
+    std::string                                    m_name;
+    Math::Local_point                              m_offset;
+    std::vector<Math::Local_point>                 m_points;
+    std::vector<Surface>                           m_surfaces;
     std::vector<std::unique_ptr<const Ac3d_model>> m_kids;
 };
 
@@ -72,32 +71,28 @@ private:
 ///	in the base color, so that's all I store.
 class Ac3d_material {
 public:
-    /// @brief A simple 3 channel color.  
+    /// @brief A simple 3 channel color.
     ///
     /// Each channel is described by a number between 0.0 and 1.0
     struct Color {
         /// @brief Constructor - creates the specified RGB color
-        Color( float r, float g, float b )
-            : red( r ), green( g ), blue( b )
-        {}
+        Color(float r, float g, float b) : red(r), green(g), blue(b) {}
         float red, green, blue;
     };
 
     /// @brief Constructor - creates a material from the specified color
     /// @param MaterialColor - [in] the color of the material
-    Ac3d_material( const Color& color )
-        : m_color( color )
-    {}
+    Ac3d_material(const Color& color) : m_color(color) {}
 
     /// @brief Accessor - the material color
-    const Color&		color() const { return m_color; }
+    const Color& color() const { return m_color; }
 
 private:
-    Color				m_color;
+    Color m_color;
 };
 
 /// @brief Abstraction of the AC3D File
-/// 
+///
 /// The AC3DFile class is meant to represent all of the information
 ///	stored in an AC3D file.  This means the material information as well
 ///	as the model.
@@ -106,13 +101,13 @@ public:
     /// @brief Constructor - saves the specified Model and Materials
     /// @param Materials - [in] Materials vector
     /// @param pModel - [in] the model
-    Ac3d_file( std::vector<Ac3d_material>&& materials, std::unique_ptr<const Ac3d_model> model )
-        : m_model( std::move(model) )
-        , m_materials( materials )
-    {}
+    Ac3d_file(std::vector<Ac3d_material>&& materials, std::unique_ptr<const Ac3d_model> model)
+        : m_model(std::move(model)), m_materials(materials)
+    {
+    }
 
-    Ac3d_file( const Ac3d_file& ) = delete;
-    Ac3d_file& operator=( const Ac3d_file& ) = delete;
+    Ac3d_file(const Ac3d_file&) = delete;
+    Ac3d_file& operator=(const Ac3d_file&) = delete;
 
     /// @brief Accessor - the Model itself
     std::shared_ptr<const Ac3d_model> model() const { return m_model; }
@@ -122,7 +117,7 @@ public:
 
 private:
     std::shared_ptr<const Ac3d_model> m_model;
-    std::vector<Ac3d_material> m_materials;
+    std::vector<Ac3d_material>        m_materials;
 };
 
 class File_path;
@@ -136,31 +131,30 @@ class File_path;
 ///	Also, you must choose the Re-Center option for your model so that all
 ///	children will be centered around their middle.
 ///	This class can not be created, it can only be used to read a file.
-class Ac3d_file_reader
-{
+class Ac3d_file_reader {
 public:
-    Ac3d_file_reader() = delete;
-    ~Ac3d_file_reader() = delete;
-    Ac3d_file_reader( const Ac3d_file_reader& ) = delete;
-    Ac3d_file_reader& operator=( const Ac3d_file_reader& ) = delete;
+    Ac3d_file_reader()                        = delete;
+    ~Ac3d_file_reader()                       = delete;
+    Ac3d_file_reader(const Ac3d_file_reader&) = delete;
+    Ac3d_file_reader& operator=(const Ac3d_file_reader&) = delete;
 
     /// @brief Read the specified file and return an AC3DFilePtr
     /// @param FileName - [in] path and file name of the AC3D file
     /// @returns a pointer to the file information
-    static std::unique_ptr<const Ac3d_file> read_file( const File_path& file_name );
+    static std::unique_ptr<const Ac3d_file> read_file(const File_path& file_name);
 
     /// @brief Create a test cube
     /// @param edge - [in] edge length
     /// @returns a pointer to the file information
-    static std::unique_ptr<const Ac3d_file> test_cube( float width, float height, float depth );
+    static std::unique_ptr<const Ac3d_file> test_cube(float width, float height, float depth);
 
     /// @brief Create a test model that has 3 cubes in a group
     /// @param edge - [in] edge length
     /// @returns a pointer to the file information
-    static std::unique_ptr<const Ac3d_file> test_cube_group( float edge_length );
+    static std::unique_ptr<const Ac3d_file> test_cube_group(float edge_length);
 };
 
-}
-}
+}  // namespace Utility
+}  // namespace Dubious
 
 #endif

@@ -13,21 +13,21 @@ public:
     /// @brief calls push matrix
     Open_gl_matrix();
 
-    Open_gl_matrix( const Open_gl_matrix& ) = delete;
+    Open_gl_matrix(const Open_gl_matrix&) = delete;
 
     /// @brief calls pop matrix
     ~Open_gl_matrix();
 
-    Open_gl_matrix& operator=( const Open_gl_matrix& ) = delete;
+    Open_gl_matrix& operator=(const Open_gl_matrix&) = delete;
 
     /// @brief loads the identity matrix
-    static void         load_identity();
+    static void load_identity();
 
     /// @brief glMatrixMode
-    static void			matrix_mode( int mode );
+    static void matrix_mode(int mode);
 };
 
-}
-}
+}  // namespace Renderer
+}  // namespace Dubious
 
 #endif

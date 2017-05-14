@@ -9,10 +9,10 @@ namespace Physics {
 /// @brief A Minkowski Vector used in GJK and EPA
 ///
 /// In the EPA algorithm we need to keep track of the Minkowski Vector,
-/// the point on the Minkowski Simplex and Polytope, as well as the 
-/// support points in global space that corresponds to this point. 
+/// the point on the Minkowski Simplex and Polytope, as well as the
+/// support points in global space that corresponds to this point.
 /// The bulk of GJK and EPA will only use the v() accessor, but once
-/// the contact point is found (on the Minkowski Polytope), the support  
+/// the contact point is found (on the Minkowski Polytope), the support
 /// points will be needed to find that point in global space
 class Minkowski_vector {
 public:
@@ -26,11 +26,11 @@ public:
     /// @param v - [in] point on the Simplex/Polytope
     /// @param support_a - [in] support from object A
     /// @param support_b - [in] support from object B
-    Minkowski_vector( const Math::Vector& v, const Math::Vector& support_a, const Math::Vector& support_b )
-        : m_v( v )
-        , m_support_a( support_a )
-        , m_support_b( support_b )
-    {}
+    Minkowski_vector(const Math::Vector& v, const Math::Vector& support_a,
+                     const Math::Vector& support_b)
+        : m_v(v), m_support_a(support_a), m_support_b(support_b)
+    {
+    }
 
     /// @brief Accessor
     ///
@@ -50,7 +50,7 @@ private:
     Math::Vector m_support_b;
 };
 
-}}
+}  // namespace Physics
+}  // namespace Dubious
 
 #endif
-

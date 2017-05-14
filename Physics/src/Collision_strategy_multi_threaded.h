@@ -19,40 +19,41 @@ class Contact_manifold;
 /// C++11 async and future interface to spin up threads. This
 /// should probably be the fallback option if OpenCL isn't available
 class Collision_strategy_multi_threaded : public Collision_strategy {
-public: 
+public:
     /// @brief Constructor
     ///
     /// @param manifold_persistent_threshold - [in] see Arena::Settings
     /// @param workgroup_size - [in] see Arena::Settings
-    Collision_strategy_multi_threaded( float manifold_persistent_threshold, unsigned int workgroup_size );
+    Collision_strategy_multi_threaded(float        manifold_persistent_threshold,
+                                      unsigned int workgroup_size);
 
     /// @brief Destructor
     ~Collision_strategy_multi_threaded() = default;
 
-    Collision_strategy_multi_threaded( const Collision_strategy_multi_threaded& ) = delete;
-    Collision_strategy_multi_threaded& operator=( const Collision_strategy_multi_threaded& ) = delete;
+    Collision_strategy_multi_threaded(const Collision_strategy_multi_threaded&) = delete;
+    Collision_strategy_multi_threaded& operator=(const Collision_strategy_multi_threaded&) = delete;
 
     /// @brief See Collision_strategy::find_contacts
-    void find_contacts( const std::vector<std::shared_ptr<Physics_object>>& objects,
-                        std::map<Physics_object_pair, Contact_manifold>& manifolds ) final;
+    void find_contacts(const std::vector<std::shared_ptr<Physics_object>>& objects,
+                       std::map<Physics_object_pair, Contact_manifold>&    manifolds) final;
+
 private:
-    Collision_solver    m_collision_solver;
-    const float         m_manifold_persistent_threshold;
-    const unsigned int  m_workgroup_size;
-    std::mutex          m_manifolds_mutex;
-   
-    std::set<Physics_object_pair> solve_inner( size_t start, size_t length,
-                                               const std::vector<std::shared_ptr<Physics_object>>& objects,
-                                               std::map<Physics_object_pair, Contact_manifold>& manifolds );
+    Collision_solver   m_collision_solver;
+    const float        m_manifold_persistent_threshold;
+    const unsigned int m_workgroup_size;
+    std::mutex         m_manifolds_mutex;
 
-    std::set<Physics_object_pair> solve_outer( size_t a_start, size_t a_length, size_t b_start, size_t b_length,
-                                               const std::vector<std::shared_ptr<Physics_object>>& objects,
-                                               std::map<Physics_object_pair, Contact_manifold>& manifolds );
+    std::set<Physics_object_pair> solve_inner(
+        size_t start, size_t length, const std::vector<std::shared_ptr<Physics_object>>& objects,
+        std::map<Physics_object_pair, Contact_manifold>& manifolds);
 
+    std::set<Physics_object_pair> solve_outer(
+        size_t a_start, size_t a_length, size_t b_start, size_t b_length,
+        const std::vector<std::shared_ptr<Physics_object>>& objects,
+        std::map<Physics_object_pair, Contact_manifold>&    manifolds);
 };
 
-}
-}
+}  // namespace Physics
+}  // namespace Dubious
 
 #endif
-
