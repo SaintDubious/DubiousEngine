@@ -29,59 +29,66 @@ using namespace Dubious;
 // 11/23/2016 - GROUP_COUNT=1000 -  4,800 ms - with threading
 // 03/19/2017 - GROUP_COUNT=1000 -  8,100 ms - single threaded - optimized
 // 03/24/2017 - GROUP_COUNT=1000 -  6,100 ms - single threaded - optimized Minkowski_polytope
-// 05/07/2017 - GROUP_COUNT=1000 -  3,100 ms - multi-threaded 
-// 05/07/2017 - GROUP_COUNT=1000 -  2,900 ms - OpenCL 
+// 05/07/2017 - GROUP_COUNT=1000 -  3,100 ms - multi-threaded
+// 05/07/2017 - GROUP_COUNT=1000 -  2,900 ms - OpenCL
 
-void reset_scene( const int group_count, std::vector<std::shared_ptr<Physics::Physics_object>>& physics_objects ) 
+void
+reset_scene(const int                                              group_count,
+            std::vector<std::shared_ptr<Physics::Physics_object>>& physics_objects)
 {
-    const float DENSE = 0.001f;
+    const float DENSE  = 0.001f;
     const float SPARSE = 2.0f;
-    for (int i=0; i<group_count; ++i) {
-        physics_objects[i*2]->coordinate_space().position()     = Math::Point( i*DENSE, 0, 0 );
-        physics_objects[i*2]->coordinate_space().rotation()     = Math::Quaternion();
-        physics_objects[i*2]->velocity()                        = Math::Vector( 0, 0.2f, 0 );
-        physics_objects[i*2]->force()                           = Math::Vector( 0, 1.0f, 0 );
-        physics_objects[i*2]->angular_velocity()                = Math::Vector( 0, 0, 0.2f );
-        physics_objects[i*2]->torque()                          = Math::Vector( 0, 0, 0.2f );
+    for (int i = 0; i < group_count; ++i) {
+        physics_objects[i * 2]->coordinate_space().position() = Math::Point(i * DENSE, 0, 0);
+        physics_objects[i * 2]->coordinate_space().rotation() = Math::Quaternion();
+        physics_objects[i * 2]->velocity()                    = Math::Vector(0, 0.2f, 0);
+        physics_objects[i * 2]->force()                       = Math::Vector(0, 1.0f, 0);
+        physics_objects[i * 2]->angular_velocity()            = Math::Vector(0, 0, 0.2f);
+        physics_objects[i * 2]->torque()                      = Math::Vector(0, 0, 0.2f);
 
-        physics_objects[i*2+1]->coordinate_space().position()   = Math::Point( i*DENSE, 1.0f, 0 );
-        physics_objects[i*2+1]->coordinate_space().rotation()   = Math::Quaternion();
-        physics_objects[i*2+1]->velocity()                      = Math::Vector( 0, -0.2f, 0 );
-        physics_objects[i*2+1]->force()                         = Math::Vector( 0, -1.0f, 0 );
-        physics_objects[i*2+1]->angular_velocity()              = Math::Vector( 0, 0, -0.2f );
-        physics_objects[i*2+1]->torque()                        = Math::Vector( 0, 0, -0.2f );
+        physics_objects[i * 2 + 1]->coordinate_space().position() = Math::Point(i * DENSE, 1.0f, 0);
+        physics_objects[i * 2 + 1]->coordinate_space().rotation() = Math::Quaternion();
+        physics_objects[i * 2 + 1]->velocity()                    = Math::Vector(0, -0.2f, 0);
+        physics_objects[i * 2 + 1]->force()                       = Math::Vector(0, -1.0f, 0);
+        physics_objects[i * 2 + 1]->angular_velocity()            = Math::Vector(0, 0, -0.2f);
+        physics_objects[i * 2 + 1]->torque()                      = Math::Vector(0, 0, -0.2f);
     }
 }
 
-int main( int argc, char** argv )
+int
+main(int argc, char** argv)
 {
     try {
         std::cout << "Starting test\n";
 
-        const int GROUP_COUNT = 1000;
-        Utility::Timer                      frame_timer;
+        const int                                 GROUP_COUNT = 1000;
+        Utility::Timer                            frame_timer;
         Physics::Arena::Collision_solver_settings collision_solver_settings;
-        collision_solver_settings.strategy = Physics::Arena::Collision_solver_settings::Strategy::OPENCL;
+        collision_solver_settings.strategy =
+            Physics::Arena::Collision_solver_settings::Strategy::OPENCL;
         collision_solver_settings.mt_collisions_work_group_size = 500;
-        collision_solver_settings.cl_collisions_per_thread = 10000;
+        collision_solver_settings.cl_collisions_per_thread      = 10000;
         Physics::Arena::Constraint_solver_settings constraint_solver_settings;
         constraint_solver_settings.iterations = 1;
-        Physics::Arena                      arena( Physics::Arena::Settings( collision_solver_settings, constraint_solver_settings ) );
+        Physics::Arena arena(
+            Physics::Arena::Settings(collision_solver_settings, constraint_solver_settings));
 
-        std::vector<std::shared_ptr<Physics::Physics_object>>   physics_objects;
-        auto cube_file = Utility::Ac3d_file_reader::test_cube( 0.5f, 0.5f, 1.5f );
-        auto physics_model = std::make_shared<Physics::Physics_model>( *cube_file );
+        std::vector<std::shared_ptr<Physics::Physics_object>> physics_objects;
+        auto cube_file     = Utility::Ac3d_file_reader::test_cube(0.5f, 0.5f, 1.5f);
+        auto physics_model = std::make_shared<Physics::Physics_model>(*cube_file);
 
-        for (int i=0; i<GROUP_COUNT; ++i) {
-            physics_objects.push_back( std::make_shared<Physics::Physics_object>( physics_model, 1.0f ) );
-            arena.push_back( physics_objects.back() );
-            physics_objects.push_back( std::make_shared<Physics::Physics_object>( physics_model, 1.0f ) );
-            arena.push_back( physics_objects.back() );
+        for (int i = 0; i < GROUP_COUNT; ++i) {
+            physics_objects.push_back(
+                std::make_shared<Physics::Physics_object>(physics_model, 1.0f));
+            arena.push_back(physics_objects.back());
+            physics_objects.push_back(
+                std::make_shared<Physics::Physics_object>(physics_model, 1.0f));
+            arena.push_back(physics_objects.back());
         }
-        reset_scene( GROUP_COUNT, physics_objects );
+        reset_scene(GROUP_COUNT, physics_objects);
 
         frame_timer.start();
-        arena.run_physics( 1.1f/60.0f );
+        arena.run_physics(1.1f / 60.0f);
         std::cout << "elapsed: " << frame_timer.elapsed() << "\n";
 
         std::cout << "Ending Normally\n";
@@ -95,4 +102,3 @@ int main( int argc, char** argv )
     }
     return -1;
 }
-

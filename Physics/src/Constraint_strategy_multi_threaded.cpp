@@ -17,7 +17,7 @@ Constraint_strategy_multi_threaded::~Constraint_strategy_multi_threaded()
 
 void
 Constraint_strategy_multi_threaded::warm_start(
-    std::map<std::tuple<Physics_object*, Physics_object*>, Contact_manifold>& manifolds)
+    std::map<Physics_object_pair, Contact_manifold>& manifolds)
 {
     std::vector<std::future<void>> futures;
     std::vector<Manifold_info>     info;
@@ -45,8 +45,7 @@ Constraint_strategy_multi_threaded::warm_start(
 
 void
 Constraint_strategy_multi_threaded::solve(
-    int                                                                       iterations,
-    std::map<std::tuple<Physics_object*, Physics_object*>, Contact_manifold>& manifolds)
+    int iterations, std::map<Physics_object_pair, Contact_manifold>& manifolds)
 {
     for (int i = 0; i < iterations; ++i) {
         std::vector<std::future<void>> futures;

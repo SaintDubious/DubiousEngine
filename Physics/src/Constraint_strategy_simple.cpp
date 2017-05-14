@@ -14,8 +14,7 @@ Constraint_strategy_simple::~Constraint_strategy_simple()
 }
 
 void
-Constraint_strategy_simple::warm_start(
-    std::map<std::tuple<Physics_object*, Physics_object*>, Contact_manifold>& manifolds)
+Constraint_strategy_simple::warm_start(std::map<Physics_object_pair, Contact_manifold>& manifolds)
 {
     for (auto& manifold : manifolds) {
         Physics_object* a = std::get<0>(manifold.first);
@@ -25,9 +24,8 @@ Constraint_strategy_simple::warm_start(
 }
 
 void
-Constraint_strategy_simple::solve(
-    int                                                                       iterations,
-    std::map<std::tuple<Physics_object*, Physics_object*>, Contact_manifold>& manifolds)
+Constraint_strategy_simple::solve(int                                              iterations,
+                                  std::map<Physics_object_pair, Contact_manifold>& manifolds)
 {
     for (int i = 0; i < iterations; ++i) {
         for (auto& manifold : manifolds) {
