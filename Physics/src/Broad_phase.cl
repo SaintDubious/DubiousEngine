@@ -1,3 +1,5 @@
+const char broad_phase[] = R"(
+
 // This one is not going to be easy to document, but I'll try my best:
 // The basic problem is that given a vector of elements, we want to compare every element pair.
 // This part is not so hard, it can be done with a simple loop, like this:
@@ -47,39 +49,37 @@
 // items can be broken down into smaller items which need an "inner" comparison as
 // well as an "outer" (ie compare objects between two lists).
 //
-const char broad_phase[] = 
 
-"float area_under( float index, float width )\n"
-"{\n"
-"    return index * (width - index/2.0 - 0.5);\n"
-"}\n"
+float area_under( float index, float width )
+{
+    return index * (width - index/2.0 - 0.5);
+}
 
-"__kernel void broad_phase_inner( __global const float *items, int num_elements, __global char *result )\n"
-"{\n"
-"    int global_id = get_global_id(0);\n"
-"    if (global_id >= get_global_size(0)) {\n"
-"        return;\n"
-"    }\n"
+__kernel void broad_phase_inner( __global const float *items, int num_elements, __global char *result )
+{
+    int global_id = get_global_id(0);
+    if (global_id >= get_global_size(0)) {
+        return;
+    }
 
-"    int a_i = (num_elements-0.5) - sqrt((num_elements * (num_elements-1)  - (2 * global_id)) + 0.25 );\n"
-"    while (area_under(a_i+1, num_elements) <= (float)global_id) {\n"
-"      ++a_i;\n"
-"    }\n"
-"    while (area_under(a_i, num_elements) > (float)global_id) {\n"
-"      --a_i;\n"
-"    }\n"
-"    int b_i = a_i + global_id + 1 + a_i * ((0.5*a_i) - (num_elements-0.5));\n"
+    int a_i = (num_elements-0.5) - sqrt((num_elements * (num_elements-1)  - (2 * global_id)) + 0.25 );
+    while (area_under(a_i+1, num_elements) <= (float)global_id) {
+      ++a_i;
+    }
+    while (area_under(a_i, num_elements) > (float)global_id) {
+      --a_i;
+    }
+    int b_i = a_i + global_id + 1 + a_i * ((0.5*a_i) - (num_elements-0.5));
 
-"    a_i = a_i*4;\n"
-"    b_i = b_i*4;\n"
-"    float dx = items[a_i+0] - items[b_i+0];\n"
-"    float dy = items[a_i+1] - items[b_i+1];\n"
-"    float dz = items[a_i+2] - items[b_i+2];\n"
-"    float dist_squared = dx*dx + dy*dy + dz*dz;\n"
-"    float radius_squared = (items[a_i+3]+items[b_i+3]) * (items[a_i+3]+items[b_i+3]);\n"
-
-"    result[global_id] = (radius_squared > dist_squared);\n"
-"}\n"
+    a_i = a_i*4;
+    b_i = b_i*4;
+    float dx = items[a_i+0] - items[b_i+0];
+    float dy = items[a_i+1] - items[b_i+1];
+    float dz = items[a_i+2] - items[b_i+2];
+    float dist_squared = dx*dx + dy*dy + dz*dz;
+    float radius_squared = (items[a_i+3]+items[b_i+3]) * (items[a_i+3]+items[b_i+3]);
+    result[global_id] = (radius_squared > dist_squared);
+}
 
 // Given a large enough array of objects to compare, we can break it down into
 // smaller subsets. However once two subsets complete an "inner" comparison, we 
@@ -97,24 +97,24 @@ const char broad_phase[] =
 // the area of a square is so trivial, and doesn't require a sqrt (ie we can use ints),
 // the result is obvious.
 //
-"__kernel void broad_phase_outer( __global const float *items_a, __global const float *items_b, int num_b, __global char *result )\n"
-"{\n"
-"    int global_id = get_global_id(0);\n"
-"    if (global_id >= get_global_size(0)) {\n"
-"        return;\n"
-"    }\n"
+__kernel void broad_phase_outer( __global const float *items_a, __global const float *items_b, int num_b, __global char *result )
+{
+    int global_id = get_global_id(0);
+    if (global_id >= get_global_size(0)) {
+        return;
+    }
 
-"    int a_i = global_id / num_b;\n"
-"    int b_i = global_id % num_b;\n"
+    int a_i = global_id / num_b;
+    int b_i = global_id % num_b;
 
-"    a_i = a_i*4;\n"
-"    b_i = b_i*4;\n"
-"    float dx = items_a[a_i+0] - items_b[b_i+0];\n"
-"    float dy = items_a[a_i+1] - items_b[b_i+1];\n"
-"    float dz = items_a[a_i+2] - items_b[b_i+2];\n"
-"    float dist_squared = dx*dx + dy*dy + dz*dz;\n"
-"    float radius_squared = (items_a[a_i+3]+items_b[b_i+3]) * (items_a[a_i+3]+items_b[b_i+3]);\n"
+    a_i = a_i*4;
+    b_i = b_i*4;
+    float dx = items_a[a_i+0] - items_b[b_i+0];
+    float dy = items_a[a_i+1] - items_b[b_i+1];
+    float dz = items_a[a_i+2] - items_b[b_i+2];
+    float dist_squared = dx*dx + dy*dy + dz*dz;
+    float radius_squared = (items_a[a_i+3]+items_b[b_i+3]) * (items_a[a_i+3]+items_b[b_i+3]);
 
-"    result[global_id] = (radius_squared > dist_squared);\n"
-"}\n"
-;
+    result[global_id] = (radius_squared > dist_squared);
+}
+)";

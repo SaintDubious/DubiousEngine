@@ -11,24 +11,22 @@ using namespace Dubious::Utility;
 
 namespace TestUtility {
 
-TEST_CLASS(Timer_test) {
+class Timer_test : public ::Microsoft::VisualStudio::CppUnitTestFramework::TestClass<Timer_test> {
 public:
-
     TEST_METHOD(timer_tests)
     {
         Timer t;
-        Assert::IsTrue( t.elapsed() < 100 );
-        
+        Assert::IsTrue(t.elapsed() < 100);
+
         using namespace std::literals;
         std::this_thread::sleep_for(200ms);
-        Assert::IsTrue( t.elapsed() < 1000 );
-        Assert::IsTrue( t.elapsed() > 199 );
+        Assert::IsTrue(t.elapsed() < 1000);
+        Assert::IsTrue(t.elapsed() > 199);
 
-        Assert::IsTrue( t.restart() > 199 );
-        Assert::IsTrue( t.elapsed() < 100 );
+        Assert::IsTrue(t.restart() > 199);
+        Assert::IsTrue(t.elapsed() < 100);
         std::this_thread::sleep_for(200ms);
-        Assert::IsTrue( t.elapsed() > 199 );
+        Assert::IsTrue(t.elapsed() > 199);
     }
-
 };
-}
+}  // namespace TestUtility

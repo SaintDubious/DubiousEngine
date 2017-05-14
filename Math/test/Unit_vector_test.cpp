@@ -10,10 +10,9 @@ using namespace Dubious::Math;
 
 namespace Math_test {
 
-TEST_CLASS(Unit_vector_test)
-{
+class Unit_vector_test
+    : public ::Microsoft::VisualStudio::CppUnitTestFramework::TestClass<Unit_vector_test> {
 public:
-
     TEST_METHOD(unit_vector_construction)
     {
         Unit_vector junk;
@@ -31,7 +30,7 @@ public:
         Assert::IsTrue(equals(q.y(), 0.534522474f));
         Assert::IsTrue(equals(q.z(), 0.801783681f));
 
-        Vector r( 1, 2, 3 );
+        Vector      r(1, 2, 3);
         Unit_vector s(r);
         Assert::IsTrue(equals(s.x(), 0.267261237f));
         Assert::IsTrue(equals(s.y(), 0.534522474f));
@@ -48,7 +47,7 @@ public:
         }
 
         try {
-            Vector v;
+            Vector      v;
             Unit_vector u(v);
             Assert::Fail(L"Unit Vector from empty Vector did not throw std::runtime_error");
         }
@@ -64,17 +63,15 @@ public:
         Unit_vector p(1, 2, 3);
         Unit_vector q(1, 1, 1);
 
-        Assert::IsTrue( q != p );
+        Assert::IsTrue(q != p);
 
         q = p;
         Assert::IsTrue(equals(q.x(), 0.267261237f));
         Assert::IsTrue(equals(q.y(), 0.534522474f));
         Assert::IsTrue(equals(q.z(), 0.801783681f));
 
-        Assert::IsTrue( q == p );
-
+        Assert::IsTrue(q == p);
     }
-
 };
 
-}
+}  // namespace Math_test

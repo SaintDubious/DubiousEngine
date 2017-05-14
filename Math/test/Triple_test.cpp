@@ -9,9 +9,8 @@ using namespace Dubious::Math;
 
 namespace Math_test {
 
-TEST_CLASS(Triple_test) {
+class Triple_test : public ::Microsoft::VisualStudio::CppUnitTestFramework::TestClass<Triple_test> {
 public:
-
     TEST_METHOD(triple_construction)
     {
         Triple p(1, 2, 3);
@@ -39,24 +38,23 @@ public:
     {
         Triple a(1, 10, 100);
         Triple b(a);
-        Assert::IsTrue( a == b );
-        Assert::IsFalse( a != b );
+        Assert::IsTrue(a == b);
+        Assert::IsFalse(a != b);
 
-        Triple c( a+b );
-        Assert::IsTrue( c == Triple(2, 20, 200) );
+        Triple c(a + b);
+        Assert::IsTrue(c == Triple(2, 20, 200));
 
-        b = c-a;
-        Assert::IsTrue( b == Triple(1, 10, 100) );
+        b = c - a;
+        Assert::IsTrue(b == Triple(1, 10, 100));
 
-        Assert::IsTrue( -b == Triple(-1, -10, -100) );
+        Assert::IsTrue(-b == Triple(-1, -10, -100));
 
         b += a;
-        Assert::IsTrue( b == Triple(2, 20, 200) );
+        Assert::IsTrue(b == Triple(2, 20, 200));
 
         b -= a;
-        Assert::IsTrue( b == Triple(1, 10, 100) );
+        Assert::IsTrue(b == Triple(1, 10, 100));
     }
-
 };
 
-}
+}  // namespace Math_test
