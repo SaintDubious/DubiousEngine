@@ -63,7 +63,7 @@ public:
     ///
     /// Settings for the constraint solver
     struct Constraint_solver_settings {
-        enum class Strategy { SINGLE_THREADED, MULTI_THREADED };
+        enum class Strategy { SINGLE_THREADED, MULTI_THREADED, OPENCL };
 
         /// How long, in seconds, for an individual time step. The
         /// engine will always perform physics updates in discrete

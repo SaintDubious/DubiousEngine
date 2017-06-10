@@ -70,7 +70,7 @@ main(int argc, char** argv)
         collision_solver_settings.mt_collisions_work_group_size = 500;
         Physics::Arena::Constraint_solver_settings constraint_solver_settings;
         constraint_solver_settings.strategy =
-            Physics::Arena::Constraint_solver_settings::Strategy::MULTI_THREADED;
+            Physics::Arena::Constraint_solver_settings::Strategy::SINGLE_THREADED;
         arena = std::make_unique<Physics::Arena>(
             Physics::Arena::Settings(collision_solver_settings, constraint_solver_settings));
         elapsed         = 0;

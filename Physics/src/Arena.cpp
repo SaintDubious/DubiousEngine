@@ -6,6 +6,7 @@
 #include "Collision_strategy_open_cl.h"
 #include "Constraint_strategy_simple.h"
 #include "Constraint_strategy_multi_threaded.h"
+#include "Constraint_strategy_open_cl.h"
 
 #include <set>
 #include <iostream>
@@ -44,6 +45,11 @@ Arena::Arena(const Settings& settings) : m_settings(settings)
         break;
     case Constraint_solver_settings::Strategy::MULTI_THREADED:
         m_constraint_strategy = std::make_unique<Constraint_strategy_multi_threaded>(
+            m_settings.constraint.step_size, m_settings.constraint.beta,
+            m_settings.constraint.coefficient_of_restitution, m_settings.constraint.slop);
+        break;
+    case Constraint_solver_settings::Strategy::OPENCL:
+        m_constraint_strategy = std::make_unique<Constraint_strategy_open_cl>(
             m_settings.constraint.step_size, m_settings.constraint.beta,
             m_settings.constraint.coefficient_of_restitution, m_settings.constraint.slop);
         break;
