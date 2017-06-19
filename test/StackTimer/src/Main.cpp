@@ -31,8 +31,6 @@ main(int argc, char** argv)
         collision_solver_settings.mt_collisions_work_group_size = 500;
         collision_solver_settings.cl_collisions_per_thread      = 10000;
         Physics::Arena::Constraint_solver_settings constraint_solver_settings;
-        constraint_solver_settings.strategy =
-            Physics::Arena::Constraint_solver_settings::Strategy::SINGLE_THREADED;
         constraint_solver_settings.iterations = ITERATIONS;
         Physics::Arena arena(
             Physics::Arena::Settings(collision_solver_settings, constraint_solver_settings));

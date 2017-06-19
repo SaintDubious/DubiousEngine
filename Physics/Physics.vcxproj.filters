@@ -15,9 +15,6 @@
     <ClInclude Include="src\Collision_strategy_multi_threaded.h" />
     <ClInclude Include="src\Collision_strategy_open_cl.h" />
     <ClInclude Include="src\Constraint_strategy.h" />
-    <ClInclude Include="src\Constraint_strategy_simple.h" />
-    <ClInclude Include="src\Constraint_strategy_multi_threaded.h" />
-    <ClInclude Include="src\Constraint_strategy_open_cl.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Physics_model.cpp" />
@@ -31,9 +28,6 @@
     <ClCompile Include="src\Collision_strategy_simple.cpp" />
     <ClCompile Include="src\Collision_strategy_multi_threaded.cpp" />
     <ClCompile Include="src\Collision_strategy_open_cl.cpp" />
-    <ClCompile Include="src\Constraint_strategy_simple.cpp" />
-    <ClCompile Include="src\Constraint_strategy_multi_threaded.cpp" />
-    <ClCompile Include="src\Constraint_strategy_open_cl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="kernels">
@@ -42,9 +36,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Broad_phase.cl">
-      <Filter>kernels</Filter>
-    </None>
-    <None Include="src\Constraint_solver.cl">
       <Filter>kernels</Filter>
     </None>
   </ItemGroup>

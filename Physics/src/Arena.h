@@ -2,7 +2,7 @@
 #define INCLUDED_PHYSICS_ARENA
 
 #include "Collision_strategy.h"
-#include "Constraint_strategy.h"
+#include "Constraint_solver.h"
 
 #include <vector>
 #include <memory>
@@ -63,8 +63,6 @@ public:
     ///
     /// Settings for the constraint solver
     struct Constraint_solver_settings {
-        enum class Strategy { SINGLE_THREADED, MULTI_THREADED, OPENCL };
-
         /// How long, in seconds, for an individual time step. The
         /// engine will always perform physics updates in discrete
         /// units of this much time. 1/60th is a good number
@@ -93,11 +91,6 @@ public:
         /// will allow some penetration, but a stabler system. Not
         /// enough slop and things will become unstable.
         float slop = 0.05f;
-
-        /// Which constraint strategy should be used:
-        /// SINGLE_THREADED -> Constraint_strategy_simple
-        /// MULTI_THREADED  -> Constraint_strategy_multithreaded
-        Strategy strategy = Strategy::SINGLE_THREADED;
     };
 
     /// @brief Physics settings
@@ -148,10 +141,10 @@ public:
     }
 
 private:
-    std::unique_ptr<Collision_strategy>  m_collision_strategy;
-    std::unique_ptr<Constraint_strategy> m_constraint_strategy;
-    float                                m_elapsed = 0.0f;
-    const Settings                       m_settings;
+    std::unique_ptr<Collision_strategy> m_collision_strategy;
+    Constraint_solver                   m_constraint_solver;
+    float                               m_elapsed = 0.0f;
+    const Settings                      m_settings;
 
     // m_objects holds everything. The manifolds hold only pointers
     // and references to the m_objects. This is an optimization that got

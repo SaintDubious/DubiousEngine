@@ -4,9 +4,6 @@
 #include "Collision_strategy_simple.h"
 #include "Collision_strategy_multi_threaded.h"
 #include "Collision_strategy_open_cl.h"
-#include "Constraint_strategy_simple.h"
-#include "Constraint_strategy_multi_threaded.h"
-#include "Constraint_strategy_open_cl.h"
 
 #include <set>
 #include <iostream>
@@ -15,7 +12,10 @@
 namespace Dubious {
 namespace Physics {
 
-Arena::Arena(const Settings& settings) : m_settings(settings)
+Arena::Arena(const Settings& settings)
+    : m_constraint_solver(settings.constraint.step_size, settings.constraint.beta,
+                          settings.constraint.coefficient_of_restitution, settings.constraint.slop)
+    , m_settings(settings)
 {
     switch (m_settings.collision.strategy) {
     case Collision_solver_settings::Strategy::SINGLE_THREADED:
@@ -35,26 +35,6 @@ Arena::Arena(const Settings& settings) : m_settings(settings)
         break;
     default:
         throw std::runtime_error("Unknown collision strategy requested");
-    }
-
-    switch (m_settings.constraint.strategy) {
-    case Constraint_solver_settings::Strategy::SINGLE_THREADED:
-        m_constraint_strategy = std::make_unique<Constraint_strategy_simple>(
-            m_settings.constraint.step_size, m_settings.constraint.beta,
-            m_settings.constraint.coefficient_of_restitution, m_settings.constraint.slop);
-        break;
-    case Constraint_solver_settings::Strategy::MULTI_THREADED:
-        m_constraint_strategy = std::make_unique<Constraint_strategy_multi_threaded>(
-            m_settings.constraint.step_size, m_settings.constraint.beta,
-            m_settings.constraint.coefficient_of_restitution, m_settings.constraint.slop);
-        break;
-    case Constraint_solver_settings::Strategy::OPENCL:
-        m_constraint_strategy = std::make_unique<Constraint_strategy_open_cl>(
-            m_settings.constraint.step_size, m_settings.constraint.beta,
-            m_settings.constraint.coefficient_of_restitution, m_settings.constraint.slop);
-        break;
-    default:
-        throw std::runtime_error("Unknown constraint strategy requested");
     }
 }
 
@@ -79,8 +59,19 @@ Arena::run_physics(float elapsed)
 
         m_collision_strategy->find_contacts(m_objects, m_manifolds);
 
-        m_constraint_strategy->warm_start(m_manifolds);
-        m_constraint_strategy->solve(m_settings.constraint.iterations, m_manifolds);
+        for (auto& manifold : m_manifolds) {
+            Physics_object* a = std::get<0>(manifold.first);
+            Physics_object* b = std::get<1>(manifold.first);
+            m_constraint_solver.warm_start(*a, *b, manifold.second);
+        }
+
+        for (int i = 0; i < m_settings.constraint.iterations; ++i) {
+            for (auto& manifold : m_manifolds) {
+                Physics_object* a = std::get<0>(manifold.first);
+                Physics_object* b = std::get<1>(manifold.first);
+                m_constraint_solver.solve(*a, *b, manifold.second);
+            }
+        }
 
         for (const auto& o : m_objects) {
             o->coordinate_space().position() =
