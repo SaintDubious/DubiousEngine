@@ -14,7 +14,6 @@
     <ClInclude Include="src\Collision_strategy.h" />
     <ClInclude Include="src\Collision_strategy_multi_threaded.h" />
     <ClInclude Include="src\Collision_strategy_open_cl.h" />
-    <ClInclude Include="src\Constraint_strategy.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Physics_model.cpp" />
