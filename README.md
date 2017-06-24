@@ -11,3 +11,5 @@ http://dubiousoft.com/2017/01/23/dubious-engine-table-of-contents/
 
 Questions, comments, suggestions, etc are always welcome. The blog listed above would be the
 best place to start the discussion.
+
+Doxygen docs available at http://saintdubious.github.io/DubiousEngine/
