@@ -2,7 +2,7 @@ var class_dubious_1_1_renderer_1_1_visible__model =
 [
     [ "Edge", "struct_dubious_1_1_renderer_1_1_visible__model_1_1_edge.html", "struct_dubious_1_1_renderer_1_1_visible__model_1_1_edge" ],
     [ "surface", "struct_dubious_1_1_renderer_1_1_visible__model_1_1surface.html", "struct_dubious_1_1_renderer_1_1_visible__model_1_1surface" ],
-    [ "Visible_model", "class_dubious_1_1_renderer_1_1_visible__model.html#a5bb84e378fd90858221049a858f56b2e", null ],
+    [ "Visible_model", "class_dubious_1_1_renderer_1_1_visible__model.html#a9be84762cb5f8944f405822e4e9739ee", null ],
     [ "Visible_model", "class_dubious_1_1_renderer_1_1_visible__model.html#aad65a4dcfaf91b32d3430c5171659efa", null ],
     [ "build_edges", "class_dubious_1_1_renderer_1_1_visible__model.html#a261936c9922e98d2050678a18ab9cd04", null ],
     [ "color", "class_dubious_1_1_renderer_1_1_visible__model.html#a3737e9d5fad12399a9245a2845e978da", null ],

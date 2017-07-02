@@ -24,7 +24,7 @@ class Camera;
 class Scene {
 public:
     /// @brief Constructor
-    /// @param pStore - [in] An Open GL Context Store
+    /// @param store - [in] An Open GL Context Store
     Scene(const std::shared_ptr<Open_gl_context_store>& store);
 
     Scene(const Scene&) = delete;
@@ -46,11 +46,11 @@ public:
     void render(Camera& camera);
 
     /// @brief Add an object to the scene
-    /// @param pObject - [in] the object
+    /// @param object - [in] the object
     void add_object(const std::shared_ptr<Visible_object>& object);
 
     /// @brief Remove and object from the scene
-    /// @param pObject - [in] the object
+    /// @param object - [in] the object
     void remove_object(const std::shared_ptr<Visible_object>& object);
 
     /// @brief Remove all objects from the scene

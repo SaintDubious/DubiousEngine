@@ -23,10 +23,10 @@ public:
     /// Specify the group bits and whether or not
     ///	you want to push the attribute stack.  If it is pushed then
     ///	the destructor will pop it.
-    /// @param GroupBitField - [in] Group bits describe what kind of bits
+    /// @param group_bit_field - [in] Group bits describe what kind of bits
     ///	you will be changing.  If you try to change bits that are not
     ///	part of the GroupBit it will generate an assertion in debug
-    /// @param PushStack - [in] whether or not you want to push
+    /// @param push_stack - [in] whether or not you want to push
     Open_gl_attributes(int group_bit_field, bool push_stack);
 
     Open_gl_attributes(const Open_gl_attributes&) = delete;
@@ -77,14 +77,14 @@ public:
     static void clear(int group_bit_field);
 
     /// @brief Sets the light position information.
-    /// @param Light - [in] LIGHT0
-    /// @param Position - [in] For now I only do directional lights.
+    /// @param light - [in] LIGHT0
+    /// @param position - [in] For now I only do directional lights.
     void light_position(int light, const Math::Point& position) const;
 
     /// @brief Sets the light color
-    /// @param Light - [in] LIGHT0
-    /// @param Type - [in] GL_AMBIENT, GL_DIFFUSE, or GL_SPECULAR
-    /// @param Color - [in] what color you want it to be
+    /// @param light - [in] LIGHT0
+    /// @param type - [in] GL_AMBIENT, GL_DIFFUSE, or GL_SPECULAR
+    /// @param color - [in] what color you want it to be
     void light_color(int light, int type, const Renderer::Color& color) const;
 
     /// @brief glDepthFunc

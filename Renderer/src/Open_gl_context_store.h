@@ -33,19 +33,19 @@ public:
     void rebuild();
 
     /// @brief Create a number of new call lists
-    /// @param Count - [in] how many lists you want to make
+    /// @param count - [in] how many lists you want to make
     /// @returns a handle to the list.  Use for subsequent calls
     Call_list_handle create_call_list(int count);
 
     /// @brief Check to see whether or not the specified list exists.
-    /// @param Handle - [in] handle to the list
+    /// @param handle - [in] handle to the list
     /// @returns true if it does
     bool call_list_exists(Call_list_handle handle) const;
 
     /// @brief Get an OpenGL handle for the specified call list.
     ///
     /// Will throw an exception if the specified list does not exist.
-    /// @param Handle - [in] handle to the list
+    /// @param handle - [in] handle to the list
     /// @returns an int you can pass directly to OpenGL
     unsigned int get_call_list(Call_list_handle handle) const;
 

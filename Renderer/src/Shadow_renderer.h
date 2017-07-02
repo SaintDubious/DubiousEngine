@@ -21,8 +21,8 @@ public:
     Shadow_renderer& operator=(const Shadow_renderer&) = delete;
 
     /// @brief Call to render the shadow
-    /// @param pVisibleObject - [in] the object that needs a shadow
-    /// @param LighPosition - [in] Where the light is in the local coord space
+    /// @param object - [in] the object that needs a shadow
+    /// @param ligh_position - [in] Where the light is in the local coord space
     void render_shadow_volume(const std::shared_ptr<Visible_object>& object,
                               const Math::Local_point&               ligh_position);
 };

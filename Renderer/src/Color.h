@@ -15,16 +15,16 @@ public:
     Color() = default;
 
     /// @brief Creates a color of the specified RGB with alpha=1
-    /// @param R - [in] Red
-    /// @param G - [in] Green
-    /// @param B - [in] Blue
+    /// @param r - [in] Red
+    /// @param g - [in] Green
+    /// @param b - [in] Blue
     Color(float r, float g, float b);
 
     /// @brief Creates a color of the specified RGBA
-    /// @param R - [in] Red
-    /// @param G - [in] Green
-    /// @param B - [in] Blue
-    /// @param A - [in] Alpha
+    /// @param r - [in] Red
+    /// @param g - [in] Green
+    /// @param b - [in] Blue
+    /// @param a - [in] Alpha
     Color(float r, float g, float b, float a);
 
     /// @brief Access - read only access to red

@@ -35,9 +35,9 @@ public:
     /// Constructs a model from an AC3D File. Building edges is an
     /// optional operation. These are used by the shadowing renderer
     /// when you want to cast shadows.
-    /// @param File - [in] The file object
-    /// @param IncludeEdges - [in] Set true to build edges
-    Visible_model(const Utility::Ac3d_file& File, bool include_edges);
+    /// @param file - [in] The file object
+    /// @param include_edges - [in] Set true to build edges
+    Visible_model(const Utility::Ac3d_file& file, bool include_edges);
 
     Visible_model(const Visible_model&) = delete;
     Visible_model& operator=(const Visible_model&) = delete;

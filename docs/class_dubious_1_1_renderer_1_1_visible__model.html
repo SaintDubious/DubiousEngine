@@ -133,9 +133,9 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a5bb84e378fd90858221049a858f56b2e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dubious_1_1_renderer_1_1_visible__model.html#a5bb84e378fd90858221049a858f56b2e">Visible_model</a> (const <a class="el" href="class_dubious_1_1_utility_1_1_ac3d__file.html">Utility::Ac3d_file</a> &amp;File, bool include_edges)</td></tr>
-<tr class="memdesc:a5bb84e378fd90858221049a858f56b2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from AC3D Model.  <a href="#a5bb84e378fd90858221049a858f56b2e">More...</a><br /></td></tr>
-<tr class="separator:a5bb84e378fd90858221049a858f56b2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9be84762cb5f8944f405822e4e9739ee"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dubious_1_1_renderer_1_1_visible__model.html#a9be84762cb5f8944f405822e4e9739ee">Visible_model</a> (const <a class="el" href="class_dubious_1_1_utility_1_1_ac3d__file.html">Utility::Ac3d_file</a> &amp;file, bool include_edges)</td></tr>
+<tr class="memdesc:a9be84762cb5f8944f405822e4e9739ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from AC3D Model.  <a href="#a9be84762cb5f8944f405822e4e9739ee">More...</a><br /></td></tr>
+<tr class="separator:a9be84762cb5f8944f405822e4e9739ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aad65a4dcfaf91b32d3430c5171659efa"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dubious_1_1_renderer_1_1_visible__model.html#aad65a4dcfaf91b32d3430c5171659efa">Visible_model</a> (const <a class="el" href="class_dubious_1_1_renderer_1_1_visible__model.html">Visible_model</a> &amp;)=delete</td></tr>
 <tr class="separator:aad65a4dcfaf91b32d3430c5171659efa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a001361a728428286b656fc03f88e36b7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_dubious_1_1_renderer_1_1_visible__model.html">Visible_model</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dubious_1_1_renderer_1_1_visible__model.html#a001361a728428286b656fc03f88e36b7">operator=</a> (const <a class="el" href="class_dubious_1_1_renderer_1_1_visible__model.html">Visible_model</a> &amp;)=delete</td></tr>
@@ -165,7 +165,7 @@ Friends</h2></td></tr>
 <div class="textblock"><p>Representation of a visible model. </p>
 <p>The <a class="el" href="class_dubious_1_1_renderer_1_1_visible__model.html" title="Representation of a visible model. ">Renderer::Visible_model</a> is a model suitable for drawing in OpenGL. It is similar to the Ac3d_model, but it contains more information, like point normals. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="a5bb84e378fd90858221049a858f56b2e"></a>
+<a class="anchor" id="a9be84762cb5f8944f405822e4e9739ee"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -173,7 +173,7 @@ Friends</h2></td></tr>
           <td class="memname">Dubious::Renderer::Visible_model::Visible_model </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="class_dubious_1_1_utility_1_1_ac3d__file.html">Utility::Ac3d_file</a> &amp;&#160;</td>
-          <td class="paramname"><em>File</em>, </td>
+          <td class="paramname"><em>file</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -192,8 +192,8 @@ Friends</h2></td></tr>
 <p>Construct from AC3D Model. </p>
 <p>Constructs a model from an AC3D File. Building edges is an optional operation. These are used by the shadowing renderer when you want to cast shadows. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">File</td><td>- [in] The file object </td></tr>
-    <tr><td class="paramname">IncludeEdges</td><td>- [in] Set true to build edges </td></tr>
+    <tr><td class="paramname">file</td><td>- [in] The file object </td></tr>
+    <tr><td class="paramname">include_edges</td><td>- [in] Set true to build edges </td></tr>
   </table>
   </dd>
 </dl>
@@ -436,7 +436,7 @@ Friends</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespace_dubious.html">Dubious</a></li><li class="navelem"><a class="el" href="namespace_dubious_1_1_renderer.html">Renderer</a></li><li class="navelem"><a class="el" href="class_dubious_1_1_renderer_1_1_visible__model.html">Visible_model</a></li>
-    <li class="footer">Generated on Sat Jun 24 2017 08:14:20 for DubiousEngine by
+    <li class="footer">Generated on Sun Jul 2 2017 13:38:53 for DubiousEngine by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.10 </li>
   </ul>

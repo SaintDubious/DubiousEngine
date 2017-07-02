@@ -19,7 +19,7 @@ class Open_gl_context_store;
 class Simple_object_renderer : public Object_renderer {
 public:
     /// @brief Constructor
-    /// @param pContextStore - [in] the openGL context store.  This
+    /// @param context_store - [in] the openGL context store.  This
     ///		will be used to create call lists
     Simple_object_renderer(const std::shared_ptr<Open_gl_context_store>& context_store);
 
@@ -30,7 +30,7 @@ public:
     /// @brief RenderObject is called to actually render the object.
     ///
     ///	It will render it as a collection of flat surfaces
-    /// @param pObject - [in] the object to render
+    /// @param object - [in] the object to render
     virtual void render(const std::shared_ptr<Visible_object>& object);
 
 private:

@@ -54,7 +54,7 @@ public:
     /// the template parameter must match, so Local Vectors
     /// can be constructed from Local Unit Vectors, but not
     /// Global Unit Vectors
-    /// @param U - [in] Unit Vector to copy
+    /// @param u - [in] Unit Vector to copy
     VectorT(const Unit_vectorT<T>& u);
 
     /// @brief Length Squared

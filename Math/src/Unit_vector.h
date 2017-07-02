@@ -54,7 +54,7 @@ public:
     ///
     /// Creates a Unit Vector from the passed in Vector. This
     /// serves as a Normalize function
-    /// @param V - [in] Vector to copy
+    /// @param v - [in] Vector to copy
     Unit_vectorT(const VectorT<T>& v);
 
     /// @brief X accessor

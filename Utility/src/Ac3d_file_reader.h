@@ -81,7 +81,7 @@ public:
     };
 
     /// @brief Constructor - creates a material from the specified color
-    /// @param MaterialColor - [in] the color of the material
+    /// @param color - [in] the color of the material
     Ac3d_material(const Color& color) : m_color(color) {}
 
     /// @brief Accessor - the material color
@@ -99,8 +99,8 @@ private:
 class Ac3d_file {
 public:
     /// @brief Constructor - saves the specified Model and Materials
-    /// @param Materials - [in] Materials vector
-    /// @param pModel - [in] the model
+    /// @param materials - [in] Materials vector
+    /// @param model - [in] the model
     Ac3d_file(std::vector<Ac3d_material>&& materials, std::unique_ptr<const Ac3d_model> model)
         : m_model(std::move(model)), m_materials(materials)
     {
@@ -139,17 +139,19 @@ public:
     Ac3d_file_reader& operator=(const Ac3d_file_reader&) = delete;
 
     /// @brief Read the specified file and return an AC3DFilePtr
-    /// @param FileName - [in] path and file name of the AC3D file
+    /// @param file_name - [in] path and file name of the AC3D file
     /// @returns a pointer to the file information
     static std::unique_ptr<const Ac3d_file> read_file(const File_path& file_name);
 
     /// @brief Create a test cube
-    /// @param edge - [in] edge length
+    /// @param width - [in] edge width
+    /// @param height - [in] edge height
+    /// @param depth - [in] edge depth
     /// @returns a pointer to the file information
     static std::unique_ptr<const Ac3d_file> test_cube(float width, float height, float depth);
 
     /// @brief Create a test model that has 3 cubes in a group
-    /// @param edge - [in] edge length
+    /// @param edge_length - [in] edge length
     /// @returns a pointer to the file information
     static std::unique_ptr<const Ac3d_file> test_cube_group(float edge_length);
 };

@@ -30,7 +30,7 @@ public:
     };
 
     /// @brief Constructor, calls glBegin
-    /// @param TheType - [in] The type of the primitive
+    /// @param type - [in] The type of the primitive
     Open_gl_primitive(Primitive_type type) { glBegin(type); }
 
     Open_gl_primitive(const Open_gl_primitive&) = delete;
@@ -41,7 +41,7 @@ public:
     Open_gl_primitive& operator=(const Open_gl_primitive&) = delete;
 
     /// @brief Calls glVertex
-    /// @param V - [in] The vector you want to rander
+    /// @param v - [in] The vector you want to rander
     template <int T>
     void vertex(const Math::PointT<T>& v) const
     {
@@ -49,7 +49,7 @@ public:
     }
 
     /// @brief Calls glNormal
-    /// @param N - [in] The normal you want to rander
+    /// @param n - [in] The normal you want to rander
     template <int T>
     void normal(const Math::Unit_vectorT<T>& n) const
     {

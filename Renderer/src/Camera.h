@@ -24,11 +24,11 @@ public:
     ///
     /// Creates a camera at position (0,0,0) looking
     ///	down the positive Z axis in first person mode.
-    /// @param X - [in] the viewport X
-    /// @param Y - [in] the viewport Y
-    /// @param Width - [in] the viewport Width
-    /// @param Height - [in] the viewport Height
-    /// @param FOVY - [in] The Field Of View Y axis
+    /// @param x - [in] the viewport X
+    /// @param y - [in] the viewport Y
+    /// @param width - [in] the viewport Width
+    /// @param height - [in] the viewport Height
+    /// @param fovy - [in] The Field Of View Y axis
     Camera(int x, int y, int width, int height, float fovy);
 
     Camera(const Camera& Other) = delete;
@@ -46,7 +46,7 @@ public:
     ///
     /// Takes the given 2D point and converts it into a point in
     /// 3D space.
-    /// @param P - [in] Point to convert
+    /// @param p - [in] Point to convert
     /// @returns The resulting vector
     Math::Point unproject(const std::pair<int, int>& p) const;
 

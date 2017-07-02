@@ -35,6 +35,7 @@ public:
     /// where. This is a work in progress.
     /// @param a - [in] the first object
     /// @param b - [in] the second object
+    /// @param contacts - [out] contact information
     /// @returns true if they collide
     bool intersection(const Physics_object& a, const Physics_object& b,
                       std::vector<Contact_manifold::Contact>& contacts) const;

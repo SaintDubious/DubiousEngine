@@ -25,8 +25,8 @@ class Shadow_renderer;
 class Visible_object {
 public:
     /// @brief Constructor.  A Model is required
-    /// @param pModel - [in] the model representing this object
-    /// @param pShadowModel - [in] the model that represents the shadow.
+    /// @param model - [in] the model representing this object
+    /// @param shadow_model - [in] the model that represents the shadow.
     ///		This can be an empty pointer for non-shadow casting objects
     Visible_object(const std::shared_ptr<Visible_model>& model,
                    const std::shared_ptr<Visible_model>& shadow_model);
@@ -47,8 +47,8 @@ public:
     };
 
     /// @brief Builds a Silhououette for use with shadow casting.
-    /// @param LightPos - [in] Position of the light in local coord space
-    /// @param Sil - [out] The resulting Silhouette
+    /// @param light_post - [in] Position of the light in local coord space
+    /// @param sil - [out] The resulting Silhouette
     void build_silhouette(const Math::Local_point& light_post, Silhouette& sil) const;
 
     /// @brief Accessor

@@ -21,7 +21,7 @@ namespace Renderer {
 class Open_gl_commands {
 public:
     /// @brief glTranslate
-    /// @param V - [in] translate by this amount
+    /// @param v - [in] translate by this amount
     template <int T>
     static void translate(const Math::VectorT<T>& v)
     {
@@ -54,13 +54,13 @@ public:
     /// @brief glMultMatrix
     static void mult_matrix(float m[16]) { glMultMatrixf(m); }
 
-    /// @bief glNewList
+    /// @brief glNewList
     static void new_list(unsigned int handle, int mode) { glNewList(handle, mode); }
 
-    /// @bief glEndList
+    /// @brief glEndList
     static void end_list() { glEndList(); }
 
-    /// @bief glCallList
+    /// @brief glCallList
     static void call_list(unsigned int handle) { glCallList(handle); }
 
     /// @brief glMaterial

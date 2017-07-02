@@ -33,10 +33,10 @@ public:
     /// @brief Creates a root window of the specified dimensions.
     ///
     /// Probably the first thing you will call.
-    ///	@param Title - [in] the window title
-    /// @param Width - [in] window width, in pixels
-    /// @param Height - [in] window height, in pixels
-    /// @param FullScreen - [in] whether or not you want a full screen of a window
+    ///	@param title - [in] the window title
+    /// @param width - [in] window width, in pixels
+    /// @param height - [in] window height, in pixels
+    /// @param full_screen - [in] whether or not you want a full screen of a window
     void create_root_window(const std::string& title, int width, int height, bool full_screen);
 
     /// @brief Main function for running a program
@@ -67,35 +67,26 @@ public:
     typedef std::pair<int, int> Mouse_point;
 
     /// @brief called when the mouse is moved.
-    /// @param Point - [in] The location of the mouse relative to the application window.
     std::function<void(const Mouse_point&)>& on_mouse_motion() { return m_on_mouse_motion; }
 
     /// @brief called when the left mouse button is pressed
-    /// @param Point - [in] the location of the mouse relative to the application window.
     std::function<void(const Mouse_point&)>& on_mouse_left_down() { return m_on_mouse_left_down; }
 
     /// @brief called when the left mouse button is released
-    /// @param Point - [in] the location of the mouse relative to the application window.
     std::function<void(const Mouse_point&)>& on_mouse_left_up() { return m_on_mouse_left_up; }
 
     /// @brief called when the right mouse button is pressed
-    /// @param Point - [in] the location of the mouse relative to the application window.
     std::function<void(const Mouse_point&)>& on_mouse_right_down() { return m_on_mouse_right_down; }
 
     /// @brief called when the right mouse button is released
-    /// @param Point - [in] the location of the mouse relative to the application window.
     std::function<void(const Mouse_point&)>& on_mouse_right_up() { return m_on_mouse_right_up; }
 
     /// @brief called when the scroll wheel is moved
-    /// @param Point - [in] the location of the mouse relative to the application window.
-    /// @param WheelUp - [in] true if the wheel is scrolled up
     std::function<void(int)>& on_mouse_wheel() { return m_on_mouse_wheel; }
 
     /// @brief called when a key is pressed.
     ///
     /// See the SDL docs for specifics on the meanings of the arguments
-    /// @param key - [in] the key that was pressed
-    /// @param mod - [in] information about other keys that may be down
     std::function<void(SDL_Keycode, unsigned short)>& on_key_down() { return m_on_key_down; }
 
 private:

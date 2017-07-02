@@ -27,7 +27,7 @@ public:
     /// The function that is called to render the visible object.
     ///	This is a pure virtual, inherited classes will implement
     ///	it differently to acheive different looks.
-    ///	@param pObject - [in] the objet to be rendered.
+    ///	@param object - [in] the objet to be rendered.
     virtual void render(const std::shared_ptr<Visible_object>& object) = 0;
 
 protected:

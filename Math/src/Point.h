@@ -34,9 +34,9 @@ public:
     /// @brief Constructor
     ///
     /// Creates the point at the coordinate specified
-    /// @param X - [in] X component
-    /// @param Y - [in] Y component
-    /// @param Z - [in] Z component
+    /// @param x - [in] X component
+    /// @param y - [in] Y component
+    /// @param z - [in] Z component
     PointT(float x, float y, float z) : m_coords(x, y, z) {}
 
     /// @brief X accessor
