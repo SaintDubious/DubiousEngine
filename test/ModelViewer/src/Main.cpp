@@ -13,6 +13,7 @@
 #include <Open_gl_context_store.h>
 #include <Vector_math.h>
 #include <Timer.h>
+#include <Quaternion.h>
 
 #include <memory>
 #include <iostream>
@@ -133,7 +134,7 @@ on_quit()
 void
 on_idle()
 {
-    Math::Quaternion Q(Math::Vector(0, 1.0f, 0), Math::to_radians(1.0f));
+    Math::Unit_quaternion Q(Math::Vector(0, 1.0f, 0), Math::to_radians(1.0f));
     object->coordinate_space().rotate(Q);
     scene->render(*camera);
 
@@ -154,8 +155,8 @@ on_mouse_motion(const Utility::Sdl_manager::Mouse_point& p)
     if (left_button_down) {
         Utility::Sdl_manager::Mouse_point offset =
             std::make_pair(left_down_point.first - p.first, left_down_point.second - p.second);
-        Math::Quaternion y_rotation(Math::Vector(0, 1.0f, 0),
-                                    Math::to_radians(static_cast<float>(offset.first)));
+        Math::Unit_quaternion y_rotation(Math::Vector(0, 1.0f, 0),
+                                         Math::to_radians(static_cast<float>(offset.first)));
         camera->coordinate_space().rotate(y_rotation);
 
         // Rotation around the local XAxis is limited to about 80 degrees in
@@ -168,7 +169,7 @@ on_mouse_motion(const Utility::Sdl_manager::Mouse_point& p)
         if (offset.second > 0) {
             if (Math::dot_product(max_y, vz) >
                 -(camera->z_axis_offset() * camera->z_axis_offset()) * 0.9f) {
-                Math::Local_quaternion x_rotation(
+                Math::Local_unit_quaternion x_rotation(
                     Math::Local_vector(1.0f, 0, 0),
                     Math::to_radians(static_cast<float>(offset.second)));
                 camera->coordinate_space().rotate(x_rotation);
@@ -177,7 +178,7 @@ on_mouse_motion(const Utility::Sdl_manager::Mouse_point& p)
         else if (offset.second < 0) {
             if (Math::dot_product(max_y, vz) <
                 (camera->z_axis_offset() * camera->z_axis_offset()) * 0.9f) {
-                Math::Local_quaternion x_rotation(
+                Math::Local_unit_quaternion x_rotation(
                     Math::Local_vector(1.0f, 0, 0),
                     Math::to_radians(static_cast<float>(offset.second)));
                 camera->coordinate_space().rotate(x_rotation);

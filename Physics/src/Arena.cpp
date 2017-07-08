@@ -5,6 +5,8 @@
 #include "Collision_strategy_multi_threaded.h"
 #include "Collision_strategy_open_cl.h"
 
+#include <Quaternion.h>
+
 #include <set>
 #include <iostream>
 #include <future>
@@ -78,9 +80,8 @@ Arena::run_physics(float elapsed)
                 o->coordinate_space().position() + o->velocity() * m_settings.constraint.step_size;
             o->coordinate_space().rotation() =
                 o->coordinate_space().rotation() +
-                (o->angular_velocity() * o->coordinate_space().rotation() * 0.5) *
+                (o->angular_velocity() * (o->coordinate_space().rotation() * 0.5)) *
                     m_settings.constraint.step_size;
-            o->coordinate_space().rotation().normalize();
         }
 
         m_elapsed -= m_settings.constraint.step_size;

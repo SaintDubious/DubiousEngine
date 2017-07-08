@@ -12,5 +12,6 @@
     <ClCompile Include="Quaternion_test.cpp" />
     <ClCompile Include="Point_test.cpp" />
     <ClCompile Include="Coordinate_space_test.cpp" />
+    <ClCompile Include="Unit_quaternion_test.cpp" />
   </ItemGroup>
 </Project>

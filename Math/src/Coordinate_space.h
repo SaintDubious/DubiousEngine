@@ -2,7 +2,7 @@
 #define INCLUDED_MATH_COORDINATESPACE
 
 #include "Point.h"
-#include "Quaternion.h"
+#include "Unit_quaternion.h"
 
 namespace Physics_test {
 class Collision_solver_test;
@@ -46,8 +46,8 @@ public:
     Point&       position() { return m_position; }
 
     /// @brief Rotation accessor
-    const Quaternion& rotation() const { return m_rotation; }
-    Quaternion&       rotation() { return m_rotation; }
+    const Unit_quaternion& rotation() const { return m_rotation; }
+    Unit_quaternion&       rotation() { return m_rotation; }
 
     /// @brief Move by the amount specified
     ///
@@ -68,14 +68,14 @@ public:
     /// This version takes a global quaternion, therefore it
     /// rotates relative to global space
     /// @param diff - [in] The amount to rotate
-    void rotate(const Quaternion& diff);
+    void rotate(const Unit_quaternion& diff);
 
     /// @brief Rotate the coordinate space
     ///
     /// This version takes a local quaternion, therefore it
     /// rotates relative to local space
     /// @param diff - [in] The amount to rotate
-    void rotate(const Local_quaternion& diff);
+    void rotate(const Local_unit_quaternion& diff);
 
     /// @brief Converts the local vector to the global coord space.
     ///
@@ -108,16 +108,14 @@ public:
 private:
     friend class Physics_test::Collision_solver_test;
 
-    friend bool          operator==(const Coordinate_space& a, const Coordinate_space& b);
-    friend std::ostream& operator<<(std::ostream& o, const Coordinate_space& c);
+    Coordinate_space(const Point& p, const Unit_quaternion& r);
 
-    Coordinate_space(const Point& p, const Quaternion& r);
-
-    Point      m_position;
-    Quaternion m_rotation;
+    Point           m_position;
+    Unit_quaternion m_rotation;
 };
 
 bool          operator==(const Coordinate_space& a, const Coordinate_space& b);
+bool          operator!=(const Coordinate_space& a, const Coordinate_space& b);
 std::ostream& operator<<(std::ostream& o, const Coordinate_space& c);
 
 }  // namespace Math

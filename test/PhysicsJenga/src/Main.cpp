@@ -20,6 +20,7 @@
 #include <Arena.h>
 #include <Physics_object.h>
 #include <Physics_model.h>
+#include <Unit_quaternion.h>
 
 #include <memory>
 #include <iostream>
@@ -177,13 +178,13 @@ build_layer(float y)
     visible_objects.back()->base_color() = object_color;
     visible_objects.back()->coordinate_space().translate(Math::Vector(0, y + 1.001f, -1));
     visible_objects.back()->coordinate_space().rotate(
-        Math::Quaternion(Math::Unit_vector(0, 1, 0), Math::to_radians(90.0f)));
+        Math::Unit_quaternion(Math::Unit_vector(0, 1, 0), Math::to_radians(90.0f)));
     visible_objects.back()->renderer() = simple_renderer;
     scene->add_object(visible_objects.back());
     physics_objects.push_back(std::make_shared<Physics::Physics_object>(physics_model, 1.0f));
     physics_objects.back()->coordinate_space().translate(Math::Vector(0, y + 1.001f, -1));
     physics_objects.back()->coordinate_space().rotate(
-        Math::Quaternion(Math::Unit_vector(0, 1, 0), Math::to_radians(90.0f)));
+        Math::Unit_quaternion(Math::Unit_vector(0, 1, 0), Math::to_radians(90.0f)));
     arena->push_back(physics_objects.back());
 
     visible_objects.push_back(
@@ -191,13 +192,13 @@ build_layer(float y)
     visible_objects.back()->base_color() = object_color;
     visible_objects.back()->coordinate_space().translate(Math::Vector(0, y + 1.001f, 1));
     visible_objects.back()->coordinate_space().rotate(
-        Math::Quaternion(Math::Unit_vector(0, 1, 0), Math::to_radians(90.0f)));
+        Math::Unit_quaternion(Math::Unit_vector(0, 1, 0), Math::to_radians(90.0f)));
     visible_objects.back()->renderer() = simple_renderer;
     scene->add_object(visible_objects.back());
     physics_objects.push_back(std::make_shared<Physics::Physics_object>(physics_model, 1.0f));
     physics_objects.back()->coordinate_space().translate(Math::Vector(0, y + 1.001f, 1));
     physics_objects.back()->coordinate_space().rotate(
-        Math::Quaternion(Math::Unit_vector(0, 1, 0), Math::to_radians(90.0f)));
+        Math::Unit_quaternion(Math::Unit_vector(0, 1, 0), Math::to_radians(90.0f)));
     arena->push_back(physics_objects.back());
 
     return y + 2.002f;
@@ -221,8 +222,8 @@ on_idle()
     arena->run_physics(frame_timer.restart() / 1000.0f);
 
     for (int i = 1; i < NUM_LAYERS * OBJECTS_PER_LAYER + 1; ++i) {
-        Math::Point      new_position    = physics_objects[i]->coordinate_space().position();
-        Math::Quaternion new_orientation = physics_objects[i]->coordinate_space().rotation();
+        Math::Point           new_position    = physics_objects[i]->coordinate_space().position();
+        Math::Unit_quaternion new_orientation = physics_objects[i]->coordinate_space().rotation();
         //      if (new_position.y() < 0.0f) {
         //          new_position = Math::Point( new_position.x(), 0.0f, new_position.z() );
         //            physics_objects[i]->coordinate_space().position() = new_position;
@@ -278,8 +279,8 @@ on_mouse_motion(const Utility::Sdl_manager::Mouse_point& p)
     if (left_button_down) {
         Utility::Sdl_manager::Mouse_point offset =
             std::make_pair(left_down_point.first - p.first, left_down_point.second - p.second);
-        Math::Quaternion y_rotation(Math::Vector(0, 1.0f, 0),
-                                    Math::to_radians(static_cast<float>(offset.first)));
+        Math::Unit_quaternion y_rotation(Math::Vector(0, 1.0f, 0),
+                                         Math::to_radians(static_cast<float>(offset.first)));
         camera->coordinate_space().rotate(y_rotation);
 
         // Rotation around the local XAxis is limited to about 80 degrees in
@@ -292,7 +293,7 @@ on_mouse_motion(const Utility::Sdl_manager::Mouse_point& p)
         if (offset.second > 0) {
             if (Math::dot_product(max_y, vz) >
                 -(camera->z_axis_offset() * camera->z_axis_offset()) * 0.9f) {
-                Math::Local_quaternion x_rotation(
+                Math::Local_unit_quaternion x_rotation(
                     Math::Local_vector(1.0f, 0, 0),
                     Math::to_radians(static_cast<float>(offset.second)));
                 camera->coordinate_space().rotate(x_rotation);
@@ -301,7 +302,7 @@ on_mouse_motion(const Utility::Sdl_manager::Mouse_point& p)
         else if (offset.second < 0) {
             if (Math::dot_product(max_y, vz) <
                 (camera->z_axis_offset() * camera->z_axis_offset()) * 0.9f) {
-                Math::Local_quaternion x_rotation(
+                Math::Local_unit_quaternion x_rotation(
                     Math::Local_vector(1.0f, 0, 0),
                     Math::to_radians(static_cast<float>(offset.second)));
                 camera->coordinate_space().rotate(x_rotation);

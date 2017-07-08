@@ -6,6 +6,7 @@
 #include <Arena.h>
 #include <Physics_object.h>
 #include <Physics_model.h>
+#include <Unit_quaternion.h>
 
 #include <memory>
 #include <iostream>
@@ -31,6 +32,7 @@ using namespace Dubious;
 // 03/24/2017 - GROUP_COUNT=1000 -  6,100 ms - single threaded - optimized Minkowski_polytope
 // 05/07/2017 - GROUP_COUNT=1000 -  3,100 ms - multi-threaded
 // 05/07/2017 - GROUP_COUNT=1000 -  2,900 ms - OpenCL
+// 07/03/2017 - GROUP_COUNT=1000 -  7,300 ms - proper quaternions
 
 void
 reset_scene(const int                                              group_count,
@@ -40,14 +42,14 @@ reset_scene(const int                                              group_count,
     const float SPARSE = 2.0f;
     for (int i = 0; i < group_count; ++i) {
         physics_objects[i * 2]->coordinate_space().position() = Math::Point(i * DENSE, 0, 0);
-        physics_objects[i * 2]->coordinate_space().rotation() = Math::Quaternion();
+        physics_objects[i * 2]->coordinate_space().rotation() = Math::Unit_quaternion();
         physics_objects[i * 2]->velocity()                    = Math::Vector(0, 0.2f, 0);
         physics_objects[i * 2]->force()                       = Math::Vector(0, 1.0f, 0);
         physics_objects[i * 2]->angular_velocity()            = Math::Vector(0, 0, 0.2f);
         physics_objects[i * 2]->torque()                      = Math::Vector(0, 0, 0.2f);
 
         physics_objects[i * 2 + 1]->coordinate_space().position() = Math::Point(i * DENSE, 1.0f, 0);
-        physics_objects[i * 2 + 1]->coordinate_space().rotation() = Math::Quaternion();
+        physics_objects[i * 2 + 1]->coordinate_space().rotation() = Math::Unit_quaternion();
         physics_objects[i * 2 + 1]->velocity()                    = Math::Vector(0, -0.2f, 0);
         physics_objects[i * 2 + 1]->force()                       = Math::Vector(0, -1.0f, 0);
         physics_objects[i * 2 + 1]->angular_velocity()            = Math::Vector(0, 0, -0.2f);
@@ -65,7 +67,7 @@ main(int argc, char** argv)
         Utility::Timer                            frame_timer;
         Physics::Arena::Collision_solver_settings collision_solver_settings;
         collision_solver_settings.strategy =
-            Physics::Arena::Collision_solver_settings::Strategy::OPENCL;
+            Physics::Arena::Collision_solver_settings::Strategy::SINGLE_THREADED;
         collision_solver_settings.mt_collisions_work_group_size = 500;
         collision_solver_settings.cl_collisions_per_thread      = 10000;
         Physics::Arena::Constraint_solver_settings constraint_solver_settings;

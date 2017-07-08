@@ -9,12 +9,14 @@
     <ClInclude Include="src\Unit_vector.h" />
     <ClInclude Include="src\Coordinate_space.h" />
     <ClInclude Include="src\Vector_math.h" />
+    <ClInclude Include="src\Unit_quaternion.h" />
+    <ClInclude Include="src\Quaternion_math.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Utils.cpp" />
     <ClCompile Include="src\Vector.cpp" />
-    <ClCompile Include="src\Quaternion.cpp" />
     <ClCompile Include="src\Unit_vector.cpp" />
     <ClCompile Include="src\Coordinate_space.cpp" />
+    <ClCompile Include="src\Unit_quaternion.cpp" />
   </ItemGroup>
 </Project>

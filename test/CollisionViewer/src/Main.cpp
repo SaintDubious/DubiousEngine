@@ -20,6 +20,7 @@
 #include <Collision_solver.h>
 #include <Physics_object.h>
 #include <Physics_model.h>
+#include <Unit_quaternion.h>
 
 #include <memory>
 #include <iostream>
@@ -182,8 +183,8 @@ on_mouse_motion(const Utility::Sdl_manager::Mouse_point& p)
     if (left_button_down) {
         Utility::Sdl_manager::Mouse_point offset =
             std::make_pair(left_down_point.first - p.first, left_down_point.second - p.second);
-        Math::Quaternion y_rotation(Math::Vector(0, 1.0f, 0),
-                                    Math::to_radians(static_cast<float>(offset.first)));
+        Math::Unit_quaternion y_rotation(Math::Vector(0, 1.0f, 0),
+                                         Math::to_radians(static_cast<float>(offset.first)));
         camera->coordinate_space().rotate(y_rotation);
 
         // Rotation around the local XAxis is limited to about 80 degrees in
@@ -196,7 +197,7 @@ on_mouse_motion(const Utility::Sdl_manager::Mouse_point& p)
         if (offset.second > 0) {
             if (Math::dot_product(max_y, vz) >
                 -(camera->z_axis_offset() * camera->z_axis_offset()) * 0.9f) {
-                Math::Local_quaternion x_rotation(
+                Math::Local_unit_quaternion x_rotation(
                     Math::Local_vector(1.0f, 0, 0),
                     Math::to_radians(static_cast<float>(offset.second)));
                 camera->coordinate_space().rotate(x_rotation);
@@ -205,7 +206,7 @@ on_mouse_motion(const Utility::Sdl_manager::Mouse_point& p)
         else if (offset.second < 0) {
             if (Math::dot_product(max_y, vz) <
                 (camera->z_axis_offset() * camera->z_axis_offset()) * 0.9f) {
-                Math::Local_quaternion x_rotation(
+                Math::Local_unit_quaternion x_rotation(
                     Math::Local_vector(1.0f, 0, 0),
                     Math::to_radians(static_cast<float>(offset.second)));
                 camera->coordinate_space().rotate(x_rotation);
@@ -283,7 +284,7 @@ on_key_down(SDL_Keycode key, unsigned short mod)
         Utility::Timer t;
 
         for (int i = 0; i < PROFILE_COUNT; ++i) {
-            Math::Quaternion Q(Math::Vector(0, 1, 0), 0.1f);
+            Math::Unit_quaternion Q(Math::Vector(0, 1, 0), 0.1f);
             physics_object_1->coordinate_space().rotate(Q);
             physics_object_2->coordinate_space().rotate(Q);
             contact_manifold.clear();
@@ -338,7 +339,7 @@ on_key_down(SDL_Keycode key, unsigned short mod)
     } break;
     case SDLK_r: {
         srand(static_cast<unsigned long>(time(NULL)));
-        Math::Quaternion Q(
+        Math::Unit_quaternion Q(
             Math::Vector(static_cast<float>(rand()) / static_cast<float>(RAND_MAX),
                          static_cast<float>(rand()) / static_cast<float>(RAND_MAX),
                          static_cast<float>(rand()) / static_cast<float>(RAND_MAX)),

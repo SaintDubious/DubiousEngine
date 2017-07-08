@@ -166,6 +166,7 @@
     <ClCompile Include="Point_test.cpp" />
     <ClCompile Include="Quaternion_test.cpp" />
     <ClCompile Include="Triple_test.cpp" />
+    <ClCompile Include="Unit_quaternion_test.cpp" />
     <ClCompile Include="Unit_vector_test.cpp" />
     <ClCompile Include="Utils_test.cpp" />
     <ClCompile Include="Vector_math_test.cpp" />

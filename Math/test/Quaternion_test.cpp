@@ -4,9 +4,9 @@
 #include <Unit_vector.h>
 #include <Utils.h>
 #include <Triple.h>
+#include <Quaternion_math.h>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
-
 using namespace Dubious::Math;
 
 namespace Math_test {
@@ -16,129 +16,99 @@ class Quaternion_test
 public:
     TEST_METHOD(quaternion_construction)
     {
-        Quaternion q;
-        Assert::IsTrue(equals(q.m_real, 1));
-        Assert::IsTrue(q.m_imaginary == Triple(0, 0, 0));
-        Assert::IsTrue(equals(q.magnitude(), 1));
+        {
+            Quaternion q;
+            Assert::IsTrue(equals(q.w(), 0.0f));
+            Assert::IsTrue(q.v() == Vector());
+        }
+        {
+            float      w = 34.5;
+            Vector     v(12.4f, 876.9f, 98.04f);
+            Quaternion q(w, v);
+            Assert::IsTrue(equals(q.w(), w));
+            Assert::IsTrue(q.v() == v);
 
-        Quaternion r(Unit_vector(1, 0, 0), to_radians(60));
-        Assert::IsTrue(equals(r.m_real, cosf(to_radians(60) / 2.0f)));
-        float HalfSin = sinf(to_radians(60) / 2.0f);
-        Assert::IsTrue(r.m_imaginary == Triple(HalfSin, 0, 0));
-        Assert::IsTrue(equals(r.magnitude(), 1));
-
-        Quaternion s(r);
-        Assert::IsTrue(equals(s.m_real, cosf(to_radians(60) / 2.0f)));
-        Assert::IsTrue(s.m_imaginary == Triple(HalfSin, 0, 0));
-        Assert::IsTrue(equals(s.magnitude(), 1));
-
-        q = s;
-        Assert::IsTrue(equals(q.m_real, cosf(to_radians(60) / 2.0f)));
-        Assert::IsTrue(q.m_imaginary == Triple(HalfSin, 0, 0));
-        Assert::IsTrue(equals(q.magnitude(), 1));
+            Quaternion q1(q);
+            Assert::IsTrue(equals(q1.w(), w));
+            Assert::IsTrue(q1.v() == v);
+        }
     }
 
+    // This is a pretty stupid test as I've just unrolled the dot and cross product
+    // math that makes up the usual quaternion multiplication. But in theory this will
+    // be much less tempting to change, so hopefully it should keep the real code honest
+    void q_multiply(const Quaternion& a, const Quaternion& b, float& w, Vector& v)
+    {
+        w = a.w() * b.w() - (a.v().x() * b.v().x() + a.v().y() * b.v().y() + a.v().z() * b.v().z());
+        float x =
+            a.w() * b.v().x() + b.w() * a.v().x() + (a.v().y() * b.v().z() - a.v().z() * b.v().y());
+        float y =
+            a.w() * b.v().y() + b.w() * a.v().y() + (a.v().z() * b.v().x() - a.v().x() * b.v().z());
+        float z =
+            a.w() * b.v().z() + b.w() * a.v().z() + (a.v().x() * b.v().y() - a.v().y() * b.v().x());
+        v = Vector(x, y, z);
+    }
+
+    // Just like the quaternion math code, this code is cut and pasted into the unit quaternion
+    // test (with chnages to make the values magnitude=1 obviously). If you discover a bug
+    // here, you may want to change it in both places.
     TEST_METHOD(quaternion_operators)
     {
-        Quaternion r(Unit_vector(0, 1, 0), to_radians(60));
-        Quaternion q;
-        Assert::IsTrue(equals(q.magnitude(), 1));
-        Assert::IsTrue(equals(r.magnitude(), 1));
+        float  qw = 3.5f;
+        Vector qv(2.4f, 8.9f, 9.04f);
+        float  rw = 4.5f;
+        Vector rv(2.14f, 6.39f, 8.94f);
 
+        Quaternion q(qw, qv);
+        Quaternion q1(q);
+        Quaternion r(rw, rv);
+
+        // equality
+        Assert::IsTrue(q == q1);
         Assert::IsTrue(q != r);
-        q = r;
-        Assert::IsTrue(q == r);
-        Assert::IsTrue(equals(q.m_real, cosf(to_radians(60) / 2.0f)));
-        float half_sin = sinf(to_radians(60) / 2.0f);
-        Assert::IsTrue(q.m_imaginary == Triple(0, half_sin, 0));
+        q1 = r;
+        Assert::IsTrue(q1 == r);
 
-        Quaternion s(Unit_vector(0, 1, 0), to_radians(20));
-        Assert::IsTrue(equals(s.magnitude(), 1));
-        Quaternion t = s * r;
-        Assert::IsTrue(equals(t.magnitude(), 1));
-        Quaternion u(Unit_vector(0, 1, 0), to_radians(80));
-        Assert::IsTrue(t == u);
+        // addition subtraction
+        q1 = q + r;
+        Assert::IsTrue(equals(q1.w(), qw + rw));
+        Assert::IsTrue(q1.v() == qv + rv);
 
-        s = Quaternion(Unit_vector(0, 1, 0), to_radians(10));
-        t = Quaternion(Unit_vector(0, 1, 0), to_radians(10));
-        for (int i = 2; i < 18; ++i) {
-            s = t * s;
-            u = Quaternion(Unit_vector(0, 1, 0), to_radians(i * 10.0f));
-            Assert::IsTrue(equals(u.magnitude(), 1));
-            Assert::IsTrue(s == u);
-            Quaternion conjugate = s.conjugate();
-            Assert::IsTrue(equals(conjugate.magnitude(), 1));
-            Assert::IsTrue(conjugate.m_real == s.m_real);
-            Assert::IsTrue(conjugate.m_imaginary.m_x == -s.m_imaginary.m_x);
-            Assert::IsTrue(conjugate.m_imaginary.m_y == -s.m_imaginary.m_y);
-            Assert::IsTrue(conjugate.m_imaginary.m_z == -s.m_imaginary.m_z);
-        }
-        s = Quaternion(Unit_vector(0, 1, 0), to_radians(10));
-        t = Quaternion(Unit_vector(0, 1, 0), to_radians(10));
-        u = s + t;
-        Assert::IsFalse(equals(u.magnitude(), 1));
-        u.normalize();
-        Assert::IsTrue(equals(u.magnitude(), 1));
-        u = s * 10;
-        Assert::IsFalse(equals(u.magnitude(), 1));
-        u.normalize();
-        Assert::IsTrue(equals(u.magnitude(), 1));
-    }
+        q1 = q - r;
+        Assert::IsTrue(equals(q1.w(), qw - rw));
+        Assert::IsTrue(q1.v() == qv - rv);
 
-    TEST_METHOD(quaternion_length)
-    {
-        // My understanding of Quaternion construction from Axis and
-        // angle is that it results in a unit quaternion. This just
-        // checks to see if that holds true for a bunch of samples
-        for (int i = -10; i < 50; ++i) {
-            for (int j = -360; j <= 360; j += 10) {
-                Quaternion r(Unit_vector(static_cast<float>(25 - i), static_cast<float>(i),
-                                         static_cast<float>(i - 10)),
-                             to_radians(static_cast<float>(j)));
-                Assert::IsTrue(equals(r.magnitude(), 1));
-            }
-        }
-    }
+        // multiplication
+        q1 = q * r;
+        float  w;
+        Vector v;
+        q_multiply(q, r, w, v);
+        Assert::IsTrue(equals(q1.w(), w));
+        Assert::IsTrue(v == q1.v());
 
-    TEST_METHOD(quaternion_matrix)
-    {
-        float      matrix[16];
-        Quaternion a;
-        a.get_matrix(matrix);
+        // multiplication is not Commutative
+        Quaternion q2 = r * q;
+        Assert::IsTrue(q1 != q2);
 
-        using namespace Dubious::Math::Matrix_index;
+        // vector multiplication
+        q1 = q.v() * r;
+        q_multiply(Quaternion(0, q.v()), r, w, v);
+        Assert::IsTrue(equals(q1.w(), w));
+        Assert::IsTrue(v == q1.v());
 
-        Assert::IsTrue(equals(matrix[_11], 1));
-        Assert::IsTrue(equals(matrix[_22], 1));
-        Assert::IsTrue(equals(matrix[_33], 1));
+        q1 = r * q.v();
+        q_multiply(r, Quaternion(0, q.v()), w, v);
+        Assert::IsTrue(equals(q1.w(), w));
+        Assert::IsTrue(v == q1.v());
 
-        Quaternion b(Unit_vector(0, 1, 0), to_radians(30));
-        b.get_matrix(matrix);
-        // X Axis
-        Assert::IsTrue(equals(matrix[_11], cosf(to_radians(30))));
-        Assert::IsTrue(equals(matrix[_21], 0));
-        Assert::IsTrue(equals(matrix[_31], -sinf(to_radians(30))));
-        // Y Axis
-        Assert::IsTrue(equals(matrix[_12], 0));
-        Assert::IsTrue(equals(matrix[_22], 1));
-        Assert::IsTrue(equals(matrix[_32], 0));
-        // Z Axis
-        Assert::IsTrue(equals(matrix[_13], sinf(to_radians(30))));
-        Assert::IsTrue(equals(matrix[_23], 0));
-        Assert::IsTrue(equals(matrix[_33], cosf(to_radians(30))));
-    }
+        // scalar multiplication (is Commutative)
+        q1 = q * 5.0f;
+        Assert::IsTrue(equals(q1.w(), q.w() * 5.0f));
+        Assert::IsTrue(q1.v() == q.v() * 5.0f);
 
-    TEST_METHOD(quaternion_axis_angle)
-    {
-        Unit_vector axis(0.5f, 1.7f, -1.1f);
-        float       angle = 1.2345f;
-        Quaternion  a(axis, angle);
-        Unit_vector test_axis;
-        float       test_angle;
-        std::tie(test_axis, test_angle) = a.get_axis_angle();
-
-        Assert::IsTrue(axis == test_axis);
-        Assert::IsTrue(angle == test_angle);
+        q1 = 5.0f * q;
+        Assert::IsTrue(equals(q1.w(), q.w() * 5.0f));
+        Assert::IsTrue(q1.v() == q.v() * 5.0f);
     }
 };
 

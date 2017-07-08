@@ -22,7 +22,9 @@
     <ClInclude Include="src\Coordinate_space.h" />
     <ClInclude Include="src\Point.h" />
     <ClInclude Include="src\Quaternion.h" />
+    <ClInclude Include="src\Quaternion_math.h" />
     <ClInclude Include="src\Triple.h" />
+    <ClInclude Include="src\Unit_quaternion.h" />
     <ClInclude Include="src\Unit_vector.h" />
     <ClInclude Include="src\Utils.h" />
     <ClInclude Include="src\Vector.h" />
@@ -30,7 +32,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Coordinate_space.cpp" />
-    <ClCompile Include="src\Quaternion.cpp" />
+    <ClCompile Include="src\Unit_quaternion.cpp" />
     <ClCompile Include="src\Unit_vector.cpp" />
     <ClCompile Include="src\Utils.cpp" />
     <ClCompile Include="src\Vector.cpp" />

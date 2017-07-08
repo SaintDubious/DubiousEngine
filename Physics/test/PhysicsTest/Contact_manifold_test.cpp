@@ -7,6 +7,7 @@
 #include <Collision_solver.h>
 #include <Point.h>
 #include <Vector_math.h>
+#include <Unit_quaternion.h>
 
 #include <tuple>
 
@@ -72,7 +73,7 @@ public:
         contact_manifold.prune_old_contacts();
         Assert::IsTrue(contact_manifold.contacts().size() == 1);
 
-        b->coordinate_space().rotate(Quaternion(Unit_vector(0, 0, 1), to_radians(20)));
+        b->coordinate_space().rotate(Unit_quaternion(Unit_vector(0, 0, 1), to_radians(20)));
         contact_manifold.prune_old_contacts();
         Assert::IsTrue(contact_manifold.contacts().size() == 0);
     }
