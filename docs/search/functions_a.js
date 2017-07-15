@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['magnitude',['magnitude',['../class_dubious_1_1_math_1_1_quaternion_t.html#a3ca0046fa87710f8dd2f9e58adc203c7',1,'Dubious::Math::QuaternionT']]],
-  ['magnitude_5fsquared',['magnitude_squared',['../class_dubious_1_1_math_1_1_quaternion_t.html#a77895309248c8834618e800ef44ac688',1,'Dubious::Math::QuaternionT']]],
   ['manifolds',['manifolds',['../class_dubious_1_1_physics_1_1_arena.html#ab29bc5bcc78ed17bc5b4e8e5a727d55f',1,'Dubious::Physics::Arena']]],
   ['material',['material',['../class_dubious_1_1_renderer_1_1_open__gl__commands.html#aff32cc3f2d2789f92a7d1a0d0592b18e',1,'Dubious::Renderer::Open_gl_commands']]],
   ['materials',['materials',['../class_dubious_1_1_utility_1_1_ac3d__file.html#a2ef1987fa08f55d9d2d73571e276af19',1,'Dubious::Utility::Ac3d_file']]],

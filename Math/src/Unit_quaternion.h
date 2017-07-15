@@ -48,11 +48,28 @@ class Unit_quaternionT;
 template <int T>
 Unit_quaternionT<T> operator*(const Unit_quaternionT<T>& a, const Unit_quaternionT<T>& b);
 
+/// @brief Unit Quaternions are used to represent rotation
+///
+/// Everyone's favorite 4 dimensional, completely mysterious mathmatical construct.
+/// Quaternions with magnitude 1, Unit Quaternions, can be used to represent rotations
+/// in 3D space. This class implements all of the basic math (basically copy and paste
+/// of that found in Quaternion) but with more careful considerations for type conversions
+/// back to non-Unit Quaternions. It goes a bit further to include some functions for
+/// converting to other rotation representations.
+///
+/// Here are some resources I found useful in understanding Quaternions
+/// https://www.youtube.com/watch?v=mHVwd8gYLnI
+/// https://www.3dgep.com/understanding-quaternions/
 template <int T>
 class Unit_quaternionT {
 public:
+    /// @brief Default Constructor
+    ///
+    /// Will create a Quaternion that has X, Y, Z axis aligned with
+    /// the global X, Y, and Z.
     Unit_quaternionT() = default;
 
+    /// @brief Copy Constructor
     Unit_quaternionT(const QuaternionT<T>& q);
 
     /// @brief Construct from axis and angle
@@ -65,15 +82,16 @@ public:
     /// @param angle - [in] Magnitude of Rotation (in radians)
     Unit_quaternionT(const Unit_vectorT<T>& axis, float angle);
 
+    /// @brief real component accessor
     float w() const { return m_w; }
 
+    /// @brief imaginary component accessor
     const VectorT<T>& v() const { return m_v; }
 
     /// @brief The conjugate
     ///
-    /// This is needed to rotate a Vector by the rotation represented
-    /// by this quaternion. The conjugate is simply:
-    /// (w, -v)
+    /// The conjugate is simply (w, -v)
+    /// The magnitude of the Unit Quaternion is maintained
     /// @returns the conjugate
     Unit_quaternionT conjugate() const { return Unit_quaternionT(m_w, -m_v); }
 

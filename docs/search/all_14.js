@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['v',['v',['../class_dubious_1_1_physics_1_1_minkowski__simplex.html#a421b93b66ead5700c829dce0084668fe',1,'Dubious::Physics::Minkowski_simplex::v()'],['../class_dubious_1_1_physics_1_1_minkowski__vector.html#a708b2559a14c9beccadd62e3d2667c71',1,'Dubious::Physics::Minkowski_vector::v()']]],
+  ['v',['v',['../class_dubious_1_1_math_1_1_quaternion_t.html#a0ef0eaeaa5483a3300da43255c11ae23',1,'Dubious::Math::QuaternionT::v()'],['../class_dubious_1_1_math_1_1_unit__quaternion_t.html#aa0b663ae43aed5f8adf427cfa84aa2c2',1,'Dubious::Math::Unit_quaternionT::v()'],['../class_dubious_1_1_physics_1_1_minkowski__simplex.html#a421b93b66ead5700c829dce0084668fe',1,'Dubious::Physics::Minkowski_simplex::v()'],['../class_dubious_1_1_physics_1_1_minkowski__vector.html#a708b2559a14c9beccadd62e3d2667c71',1,'Dubious::Physics::Minkowski_vector::v()']]],
   ['vector',['Vector',['../namespace_dubious_1_1_math.html#a48c8a9a026a352d22232354bf2451a98',1,'Dubious::Math']]],
   ['vector_2ecpp',['Vector.cpp',['../_vector_8cpp.html',1,'']]],
   ['vector_2eh',['Vector.h',['../_vector_8h.html',1,'']]],

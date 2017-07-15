@@ -123,14 +123,17 @@ $(document).ready(function(){initNavTree('class_dubious_1_1_physics_1_1_constrai
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a4bfab202863f8f83ea7384c5df663c2c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dubious_1_1_physics_1_1_constraint__solver.html#a4bfab202863f8f83ea7384c5df663c2c">Constraint_solver</a> (float time_step, float beta, float cor, float slop)</td></tr>
+<tr class="memdesc:a4bfab202863f8f83ea7384c5df663c2c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#a4bfab202863f8f83ea7384c5df663c2c">More...</a><br /></td></tr>
 <tr class="separator:a4bfab202863f8f83ea7384c5df663c2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a807cdfd7d0b1cfa3fa922c6c374cca81"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dubious_1_1_physics_1_1_constraint__solver.html#a807cdfd7d0b1cfa3fa922c6c374cca81">Constraint_solver</a> (const <a class="el" href="class_dubious_1_1_physics_1_1_constraint__solver.html">Constraint_solver</a> &amp;)=delete</td></tr>
 <tr class="separator:a807cdfd7d0b1cfa3fa922c6c374cca81"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7f88b9fc1cc3cc37b0baa2eeea684a8a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_dubious_1_1_physics_1_1_constraint__solver.html">Constraint_solver</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dubious_1_1_physics_1_1_constraint__solver.html#a7f88b9fc1cc3cc37b0baa2eeea684a8a">operator=</a> (const <a class="el" href="class_dubious_1_1_physics_1_1_constraint__solver.html">Constraint_solver</a> &amp;)=delete</td></tr>
 <tr class="separator:a7f88b9fc1cc3cc37b0baa2eeea684a8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab944587522b79f059c2536004bce3299"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dubious_1_1_physics_1_1_constraint__solver.html#ab944587522b79f059c2536004bce3299">warm_start</a> (<a class="el" href="class_dubious_1_1_physics_1_1_physics__object.html">Physics_object</a> &amp;a, <a class="el" href="class_dubious_1_1_physics_1_1_physics__object.html">Physics_object</a> &amp;b, <a class="el" href="class_dubious_1_1_physics_1_1_contact__manifold.html">Contact_manifold</a> &amp;contact_manifold)</td></tr>
-<tr class="separator:ab944587522b79f059c2536004bce3299"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a65b842bdf5845a3f1f754389e8308493"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dubious_1_1_physics_1_1_constraint__solver.html#a65b842bdf5845a3f1f754389e8308493">warm_start</a> (<a class="el" href="class_dubious_1_1_physics_1_1_physics__object.html">Physics_object</a> &amp;a, <a class="el" href="class_dubious_1_1_physics_1_1_physics__object.html">Physics_object</a> &amp;b, const <a class="el" href="class_dubious_1_1_physics_1_1_contact__manifold.html">Contact_manifold</a> &amp;contact_manifold)</td></tr>
+<tr class="memdesc:a65b842bdf5845a3f1f754389e8308493"><td class="mdescLeft">&#160;</td><td class="mdescRight">Re-apply forces from previous time step.  <a href="#a65b842bdf5845a3f1f754389e8308493">More...</a><br /></td></tr>
+<tr class="separator:a65b842bdf5845a3f1f754389e8308493"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aec6b1efab4390a187fb3c420ce8cd643"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dubious_1_1_physics_1_1_constraint__solver.html#aec6b1efab4390a187fb3c420ce8cd643">solve</a> (<a class="el" href="class_dubious_1_1_physics_1_1_physics__object.html">Physics_object</a> &amp;a, <a class="el" href="class_dubious_1_1_physics_1_1_physics__object.html">Physics_object</a> &amp;b, <a class="el" href="class_dubious_1_1_physics_1_1_contact__manifold.html">Contact_manifold</a> &amp;contact_manifold)</td></tr>
+<tr class="memdesc:aec6b1efab4390a187fb3c420ce8cd643"><td class="mdescLeft">&#160;</td><td class="mdescRight">The heart of constraint solving.  <a href="#aec6b1efab4390a187fb3c420ce8cd643">More...</a><br /></td></tr>
 <tr class="separator:aec6b1efab4390a187fb3c420ce8cd643"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -172,6 +175,17 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Constructor. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">time_step</td><td>- [in] See <a class="el" href="struct_dubious_1_1_physics_1_1_arena_1_1_constraint__solver__settings.html#abb21b88d7166f02887516dae8b7346f4">Arena::Constraint_solver_settings::step_size</a> </td></tr>
+    <tr><td class="paramname">beta</td><td>- [in] See <a class="el" href="struct_dubious_1_1_physics_1_1_arena_1_1_constraint__solver__settings.html#ab7c235954b4693c5502c6c11eb2490cf">Arena::Constraint_solver_settings::beta</a> </td></tr>
+    <tr><td class="paramname">cor</td><td>- [in] See <a class="el" href="struct_dubious_1_1_physics_1_1_arena_1_1_constraint__solver__settings.html#a9a92650d641012e922616f810bc01bd5">Arena::Constraint_solver_settings::coefficient_of_restitution</a> </td></tr>
+    <tr><td class="paramname">slop</td><td>- [in] See <a class="el" href="struct_dubious_1_1_physics_1_1_arena_1_1_constraint__solver__settings.html#a014a545ab74e669e56d50fdc8daa3a9d">Arena::Constraint_solver_settings::slop</a> </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -254,9 +268,19 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>The heart of constraint solving. </p>
+<p>Given two objects that are known to be colliding, and up to 4 points that are in the contact manifold. Figures out all of the forces at each point. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">a</td><td>- [in,out] The first object in the colliding pair. Its velocities will be updated. </td></tr>
+    <tr><td class="paramname">b</td><td>- [in,out] The second object in the colliding pair. Its velocities will be updated. </td></tr>
+    <tr><td class="paramname">contact_manifold</td><td>- [in,out] Up to 4 points that define the collision. Its forces will be updated </td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
-<a class="anchor" id="ab944587522b79f059c2536004bce3299"></a>
+<a class="anchor" id="a65b842bdf5845a3f1f754389e8308493"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -275,7 +299,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="class_dubious_1_1_physics_1_1_contact__manifold.html">Contact_manifold</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="class_dubious_1_1_physics_1_1_contact__manifold.html">Contact_manifold</a> &amp;&#160;</td>
           <td class="paramname"><em>contact_manifold</em>&#160;</td>
         </tr>
         <tr>
@@ -285,6 +309,16 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Re-apply forces from previous time step. </p>
+<p>See the discussion by Allen Chou on his web page. The general idea is that often the previous time step's forces are mostly pertinent to the current time step. For exmaple a bunch of blocks at rest all have the same gravity every time step. So this just re-applies the same force. Allen Chou says he actually applies a fraction of the previous force, so this should probably be updated at some point. But in my current tests it gets good results </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">a</td><td>- [in,out] The first object in the colliding pair. Its velocities will be updated. </td></tr>
+    <tr><td class="paramname">b</td><td>- [in,out] The second object in the colliding pair. Its velocities will be updated. </td></tr>
+    <tr><td class="paramname">contact_manifold</td><td>- [in] Up to 4 points that define the collision </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -298,7 +332,7 @@ Public Member Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespace_dubious.html">Dubious</a></li><li class="navelem"><a class="el" href="namespace_dubious_1_1_physics.html">Physics</a></li><li class="navelem"><a class="el" href="class_dubious_1_1_physics_1_1_constraint__solver.html">Constraint_solver</a></li>
-    <li class="footer">Generated on Sun Jul 2 2017 13:42:31 for DubiousEngine by
+    <li class="footer">Generated on Sat Jul 15 2017 11:27:05 for DubiousEngine by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.10 </li>
   </ul>

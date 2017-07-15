@@ -32,8 +32,8 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "_ac3d__file__reader_8cpp.html",
-"class_dubious_1_1_math_1_1_vector_t.html#a5ed003aad0df9a5b446a9506e918e44b",
-"class_dubious_1_1_utility_1_1_ac3d__model.html"
+"class_dubious_1_1_math_1_1_unit__quaternion_t.html#af99e58e6c3088fcec80dc1defae57fa6",
+"class_dubious_1_1_renderer_1_1_visible__object.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

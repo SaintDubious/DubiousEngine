@@ -18,6 +18,7 @@ var searchData=
   ['local_5fpoint_5fa',['local_point_a',['../struct_dubious_1_1_physics_1_1_contact__manifold_1_1_contact.html#aec1d28b95e2bfb2cd9371feb80ef02de',1,'Dubious::Physics::Contact_manifold::Contact']]],
   ['local_5fpoint_5fb',['local_point_b',['../struct_dubious_1_1_physics_1_1_contact__manifold_1_1_contact.html#a1aebcc406d569dbfb7884c84b4b27885',1,'Dubious::Physics::Contact_manifold::Contact']]],
   ['local_5fquaternion',['Local_quaternion',['../namespace_dubious_1_1_math.html#a16be06616a9637c9bf8ddf3f41533556',1,'Dubious::Math']]],
+  ['local_5funit_5fquaternion',['Local_unit_quaternion',['../namespace_dubious_1_1_math.html#ab65565428066e4b13a19de96df15fd52',1,'Dubious::Math']]],
   ['local_5funit_5fvector',['Local_unit_vector',['../namespace_dubious_1_1_math.html#aaae428c4af3eec330869a10947b5a2fc',1,'Dubious::Math']]],
   ['local_5fvector',['Local_vector',['../namespace_dubious_1_1_math.html#ae03f75ece46c38470ef6282963da63ac',1,'Dubious::Math']]],
   ['look_5fat',['look_at',['../class_dubious_1_1_renderer_1_1_open__gl__commands.html#a6395f3733d9a525ac42032e859b7feb0',1,'Dubious::Renderer::Open_gl_commands']]]

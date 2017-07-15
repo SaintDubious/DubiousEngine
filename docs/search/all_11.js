@@ -28,6 +28,7 @@ var searchData=
   ['simple_5fobject_5frenderer_2eh',['Simple_object_renderer.h',['../_simple__object__renderer_8h.html',1,'']]],
   ['single_5fthreaded',['SINGLE_THREADED',['../struct_dubious_1_1_physics_1_1_arena_1_1_collision__solver__settings.html#a14e830342e47672a7140f8bebb655487a09cfaaf2d43c95b3073a77d203b08d17',1,'Dubious::Physics::Arena::Collision_solver_settings']]],
   ['size',['size',['../class_dubious_1_1_physics_1_1_minkowski__simplex.html#ac7dc62ccfc651123fa67565f81b1192c',1,'Dubious::Physics::Minkowski_simplex::size()'],['../class_dubious_1_1_utility_1_1_thread__pool.html#af4df14fa1f2a9b29c2685887fb2ab80c',1,'Dubious::Utility::Thread_pool::size()']]],
+  ['slerp',['slerp',['../namespace_dubious_1_1_math.html#a0840f982d44c9662dbc11627646c1129',1,'Dubious::Math']]],
   ['slop',['slop',['../struct_dubious_1_1_physics_1_1_arena_1_1_constraint__solver__settings.html#a014a545ab74e669e56d50fdc8daa3a9d',1,'Dubious::Physics::Arena::Constraint_solver_settings']]],
   ['solve',['solve',['../class_dubious_1_1_physics_1_1_constraint__solver.html#aec6b1efab4390a187fb3c420ce8cd643',1,'Dubious::Physics::Constraint_solver']]],
   ['specular',['specular',['../struct_dubious_1_1_renderer_1_1_scene_1_1_light.html#a23763e8c5b2ef356c4cd09e71618763c',1,'Dubious::Renderer::Scene::Light']]],

@@ -11,8 +11,8 @@ var searchData=
   ['render_5fshadow_5fvolume',['render_shadow_volume',['../class_dubious_1_1_renderer_1_1_shadow__renderer.html#a1e68ac63934b99ae9ec57f5044eab366',1,'Dubious::Renderer::Shadow_renderer']]],
   ['renderer',['renderer',['../class_dubious_1_1_renderer_1_1_visible__object.html#a798160362d23f9ff3bc1587ae75ed55b',1,'Dubious::Renderer::Visible_object']]],
   ['restart',['restart',['../class_dubious_1_1_utility_1_1_timer.html#a86bec0bd868a94ea63ab8ba79aa9e005',1,'Dubious::Utility::Timer']]],
-  ['rotate',['rotate',['../class_dubious_1_1_math_1_1_coordinate__space.html#ae48f9817bf6d153e64344f934fc64d58',1,'Dubious::Math::Coordinate_space::rotate(const Quaternion &amp;diff)'],['../class_dubious_1_1_math_1_1_coordinate__space.html#ad716698ff29c8b4beae1d84880a699f1',1,'Dubious::Math::Coordinate_space::rotate(const Local_quaternion &amp;diff)']]],
-  ['rotation',['rotation',['../class_dubious_1_1_math_1_1_coordinate__space.html#a8dea656cdb46cd07af027791d84ea194',1,'Dubious::Math::Coordinate_space::rotation() const '],['../class_dubious_1_1_math_1_1_coordinate__space.html#a2ed5a35f04214a7ed50e6907077e243c',1,'Dubious::Math::Coordinate_space::rotation()']]],
+  ['rotate',['rotate',['../class_dubious_1_1_math_1_1_coordinate__space.html#a747e60a6676991cfa43a65c9a554ff79',1,'Dubious::Math::Coordinate_space::rotate(const Unit_quaternion &amp;diff)'],['../class_dubious_1_1_math_1_1_coordinate__space.html#a2c3873960325d18528f2293973aef7da',1,'Dubious::Math::Coordinate_space::rotate(const Local_unit_quaternion &amp;diff)']]],
+  ['rotation',['rotation',['../class_dubious_1_1_math_1_1_coordinate__space.html#a4fa97df5140ea9dd825322390009389e',1,'Dubious::Math::Coordinate_space::rotation() const '],['../class_dubious_1_1_math_1_1_coordinate__space.html#a019c7f42e1e8cc153f1ddb33ecb1e8c2',1,'Dubious::Math::Coordinate_space::rotation()']]],
   ['run',['run',['../class_dubious_1_1_utility_1_1_sdl__manager.html#a5da6f43603b60ce866a609d9feed8515',1,'Dubious::Utility::Sdl_manager']]],
   ['run_5fphysics',['run_physics',['../class_dubious_1_1_physics_1_1_arena.html#a8c5d126f91a1bfcae7a11e6431cf9f56',1,'Dubious::Physics::Arena']]]
 ];

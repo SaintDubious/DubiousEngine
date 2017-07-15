@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['unit_5fquaterniont',['Unit_quaternionT',['../class_dubious_1_1_math_1_1_unit__quaternion_t.html#ab63ae1801df11fa3e9c8793aeddaada5',1,'Dubious::Math::Unit_quaternionT::Unit_quaternionT()=default'],['../class_dubious_1_1_math_1_1_unit__quaternion_t.html#ae7b2c0bb1339dc07d1810b4101ff2174',1,'Dubious::Math::Unit_quaternionT::Unit_quaternionT(const QuaternionT&lt; T &gt; &amp;q)'],['../class_dubious_1_1_math_1_1_unit__quaternion_t.html#adca0b7e22080d9672747e79e7f8fecff',1,'Dubious::Math::Unit_quaternionT::Unit_quaternionT(const Unit_vectorT&lt; T &gt; &amp;axis, float angle)']]],
   ['unit_5fvectort',['Unit_vectorT',['../class_dubious_1_1_math_1_1_unit__vector_t.html#a45fc95b94fc49c29a95cb1a104c9da13',1,'Dubious::Math::Unit_vectorT::Unit_vectorT()=default'],['../class_dubious_1_1_math_1_1_unit__vector_t.html#ab3bdd94276ef2b65fd99e80a13342e62',1,'Dubious::Math::Unit_vectorT::Unit_vectorT(float x, float y, float z)'],['../class_dubious_1_1_math_1_1_unit__vector_t.html#a84eb84d9ad8d336b8c170572af7e10b2',1,'Dubious::Math::Unit_vectorT::Unit_vectorT(const VectorT&lt; T &gt; &amp;v)']]],
   ['unproject',['unproject',['../class_dubious_1_1_renderer_1_1_camera.html#a6a21abfb503348b93102b71134e2f712',1,'Dubious::Renderer::Camera']]]
 ];

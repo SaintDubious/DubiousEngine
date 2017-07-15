@@ -61,6 +61,7 @@ public:
     /// and if so, maybe use the older ones? Or newer ones?
     void insert(const std::vector<Contact>& contacts);
 
+    /// @brief contacts accessors
     std::vector<Contact>&       contacts() { return m_contacts; }
     const std::vector<Contact>& contacts() const { return m_contacts; }
 

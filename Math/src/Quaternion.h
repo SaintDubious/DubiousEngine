@@ -10,39 +10,35 @@ namespace Math {
 template <int T>
 class QuaternionT;
 
-/// @brief Unit Quaternion
+/// @brief Quaternion
 ///
+/// Everyone's favorite 4 dimensional, completely mysterious mathmatical construct.
+/// While a Unit Quaternion is useful for handling rotations in 3D, the humble
+/// non-Unit version appears in the middle of equations that have Unit Quaternions
+/// on each end. Rather then have a Unit Quaternion that was sometimes not, I
+/// decided to make a specific instance of this. It's mostly the basic math as
+/// described all over the web (sometimes correctly).
+///
+/// Here are some resources I found useful in understanding Quaternions
 /// https://www.youtube.com/watch?v=mHVwd8gYLnI
 /// https://www.3dgep.com/understanding-quaternions/
-
-/// Everyone's favorite 4 dimensional, completely mysterious
-/// mathmatical construct. The Unit Quaternion is meant to represent
-/// rotations in this game engine. There are a million quaternion
-/// resources online. Here are some I'm fond of:
-/// http://www.cprogramming.com/tutorial/3d/quaternions.html
-/// http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/slerp/
-/// http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToAngle/index.htm
-///
-/// I'm not sure exactly when to make sure it's a Unit Quaternion and when it can
-/// be just a regular one. Operations like scalar multiply will result in a
-/// non-Unit Quaternion. I gather from docs that only a Unit Quaternion represents
-/// a rotation. The Physics Integrator has steps where non-Unit Quaternions emerge
-/// and are used to create rotations. Maybe they have to then be normalized in the
-/// end? Maybe this class should have a plain and unit version like my Vectors?
 template <int T>
 class QuaternionT {
 public:
     /// @brief Default Constructor
-    ///
-    /// The default constructor will create a rotation that represents
-    /// Axis aligned with global X, Y, and Z. In other words this will
-    /// create exactly what you'd expect for a default constructor
     QuaternionT() = default;
 
+    /// @brief Constructor
+    ///
+    /// Made from constituent parts
+    /// @param w - [in] the real component
+    /// @param v - [in] the imaginary component
     QuaternionT(float w, const VectorT<T>& v) : m_w(w), m_v(v) {}
 
+    /// @brief real accessor
     float w() const { return m_w; }
 
+    /// @brief imaginary accessor
     const VectorT<T>& v() const { return m_v; }
 
 private:

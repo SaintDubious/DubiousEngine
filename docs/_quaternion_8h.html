@@ -113,35 +113,25 @@ $(document).ready(function(){initNavTree('_quaternion_8h.html','');});
 <div class="title">Quaternion.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="_triple_8h_source.html">Triple.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="_vector_8h_source.html">Vector.h</a>&quot;</code><br />
-<code>#include &lt;tuple&gt;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="_vector_8h_source.html">Vector.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="_vector__math_8h_source.html">Vector_math.h</a>&quot;</code><br />
 </div>
 <p><a href="_quaternion_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dubious_1_1_math_1_1_unit__vector_t.html">Dubious::Math::Unit_vectorT&lt; T &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A 3D Unit Vector.  <a href="class_dubious_1_1_math_1_1_unit__vector_t.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">Dubious::Math::QuaternionT&lt; T &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Quaternion.  <a href="class_dubious_1_1_math_1_1_quaternion_t.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">Dubious::Math::QuaternionT&lt; T &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unit Quaternion.  <a href="class_dubious_1_1_math_1_1_quaternion_t.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">Dubious::Math::QuaternionT&lt; T &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unit Quaternion.  <a href="class_dubious_1_1_math_1_1_quaternion_t.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Quaternion.  <a href="class_dubious_1_1_math_1_1_quaternion_t.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
 Namespaces</h2></td></tr>
-<tr class="memitem:namespace_math__test"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_math__test.html">Math_test</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:namespace_physics__test"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_physics__test.html">Physics_test</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespace_dubious"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_dubious.html">Dubious</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespace_dubious_1_1_math"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_dubious_1_1_math.html">Dubious::Math</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:namespace_dubious_1_1_math_1_1_matrix__index"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_dubious_1_1_math_1_1_matrix__index.html">Dubious::Math::Matrix_index</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
@@ -159,21 +149,30 @@ Functions</h2></td></tr>
 <tr class="memitem:ac65836f0b563e780f76d17ba28623c37"><td class="memTemplParams" colspan="2">template&lt;int T&gt; </td></tr>
 <tr class="memitem:ac65836f0b563e780f76d17ba28623c37"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespace_dubious_1_1_math.html#ac65836f0b563e780f76d17ba28623c37">Dubious::Math::operator!=</a> (const QuaternionT&lt; T &gt; &amp;a, const QuaternionT&lt; T &gt; &amp;b)</td></tr>
 <tr class="separator:ac65836f0b563e780f76d17ba28623c37"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abda8b521981744b188bc9efbf4c202ba"><td class="memTemplParams" colspan="2">template&lt;int T&gt; </td></tr>
-<tr class="memitem:abda8b521981744b188bc9efbf4c202ba"><td class="memTemplItemLeft" align="right" valign="top">QuaternionT&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespace_dubious_1_1_math.html#abda8b521981744b188bc9efbf4c202ba">Dubious::Math::operator+</a> (const QuaternionT&lt; T &gt; &amp;a, const QuaternionT&lt; T &gt; &amp;b)</td></tr>
-<tr class="separator:abda8b521981744b188bc9efbf4c202ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7c134e4ecbe82d9f95f1ab1d25ce9548"><td class="memTemplParams" colspan="2">template&lt;int T&gt; </td></tr>
-<tr class="memitem:a7c134e4ecbe82d9f95f1ab1d25ce9548"><td class="memTemplItemLeft" align="right" valign="top">QuaternionT&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespace_dubious_1_1_math.html#a7c134e4ecbe82d9f95f1ab1d25ce9548">Dubious::Math::operator*</a> (const QuaternionT&lt; T &gt; &amp;a, const QuaternionT&lt; T &gt; &amp;b)</td></tr>
-<tr class="separator:a7c134e4ecbe82d9f95f1ab1d25ce9548"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a743a1bbc8583c6389e55ac52d562ca31"><td class="memTemplParams" colspan="2">template&lt;int T&gt; </td></tr>
-<tr class="memitem:a743a1bbc8583c6389e55ac52d562ca31"><td class="memTemplItemLeft" align="right" valign="top">QuaternionT&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespace_dubious_1_1_math.html#a743a1bbc8583c6389e55ac52d562ca31">Dubious::Math::operator*</a> (const VectorT&lt; T &gt; &amp;a, const QuaternionT&lt; T &gt; &amp;b)</td></tr>
-<tr class="separator:a743a1bbc8583c6389e55ac52d562ca31"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab8860ddad9b052fa4ec46abfda500d5a"><td class="memTemplParams" colspan="2">template&lt;int T&gt; </td></tr>
-<tr class="memitem:ab8860ddad9b052fa4ec46abfda500d5a"><td class="memTemplItemLeft" align="right" valign="top">QuaternionT&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespace_dubious_1_1_math.html#ab8860ddad9b052fa4ec46abfda500d5a">Dubious::Math::operator*</a> (const QuaternionT&lt; T &gt; &amp;a, float b)</td></tr>
-<tr class="separator:ab8860ddad9b052fa4ec46abfda500d5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a891827f6053efbc783d304be74a655ed"><td class="memTemplParams" colspan="2">template&lt;int T&gt; </td></tr>
-<tr class="memitem:a891827f6053efbc783d304be74a655ed"><td class="memTemplItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespace_dubious_1_1_math.html#a891827f6053efbc783d304be74a655ed">Dubious::Math::operator&lt;&lt;</a> (std::ostream &amp;o, const QuaternionT&lt; T &gt; &amp;q)</td></tr>
-<tr class="separator:a891827f6053efbc783d304be74a655ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a58f0cada3e0a68dbb22c57a9235334a1"><td class="memTemplParams" colspan="2">template&lt;int T&gt; </td></tr>
+<tr class="memitem:a58f0cada3e0a68dbb22c57a9235334a1"><td class="memTemplItemLeft" align="right" valign="top">QuaternionT&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespace_dubious_1_1_math.html#a58f0cada3e0a68dbb22c57a9235334a1">Dubious::Math::operator+</a> (const QuaternionT&lt; T &gt; &amp;a, const QuaternionT&lt; T &gt; &amp;b)</td></tr>
+<tr class="separator:a58f0cada3e0a68dbb22c57a9235334a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa9c1b686a1501dfcbe2bb690ea6928e2"><td class="memTemplParams" colspan="2">template&lt;int T&gt; </td></tr>
+<tr class="memitem:aa9c1b686a1501dfcbe2bb690ea6928e2"><td class="memTemplItemLeft" align="right" valign="top">QuaternionT&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespace_dubious_1_1_math.html#aa9c1b686a1501dfcbe2bb690ea6928e2">Dubious::Math::operator-</a> (const QuaternionT&lt; T &gt; &amp;a, const QuaternionT&lt; T &gt; &amp;b)</td></tr>
+<tr class="separator:aa9c1b686a1501dfcbe2bb690ea6928e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d4dbfca4da116bd1d04f10690e28021"><td class="memTemplParams" colspan="2">template&lt;int T&gt; </td></tr>
+<tr class="memitem:a4d4dbfca4da116bd1d04f10690e28021"><td class="memTemplItemLeft" align="right" valign="top">QuaternionT&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespace_dubious_1_1_math.html#a4d4dbfca4da116bd1d04f10690e28021">Dubious::Math::operator*</a> (const QuaternionT&lt; T &gt; &amp;a, const QuaternionT&lt; T &gt; &amp;b)</td></tr>
+<tr class="separator:a4d4dbfca4da116bd1d04f10690e28021"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a13b0201ea4c1807ebf23376d6be09959"><td class="memTemplParams" colspan="2">template&lt;int T&gt; </td></tr>
+<tr class="memitem:a13b0201ea4c1807ebf23376d6be09959"><td class="memTemplItemLeft" align="right" valign="top">QuaternionT&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespace_dubious_1_1_math.html#a13b0201ea4c1807ebf23376d6be09959">Dubious::Math::operator*</a> (const VectorT&lt; T &gt; &amp;a, const QuaternionT&lt; T &gt; &amp;b)</td></tr>
+<tr class="separator:a13b0201ea4c1807ebf23376d6be09959"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af223eff690793c33404e49ed84269fbe"><td class="memTemplParams" colspan="2">template&lt;int T&gt; </td></tr>
+<tr class="memitem:af223eff690793c33404e49ed84269fbe"><td class="memTemplItemLeft" align="right" valign="top">QuaternionT&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespace_dubious_1_1_math.html#af223eff690793c33404e49ed84269fbe">Dubious::Math::operator*</a> (const QuaternionT&lt; T &gt; &amp;a, const VectorT&lt; T &gt; &amp;b)</td></tr>
+<tr class="separator:af223eff690793c33404e49ed84269fbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7061da991f132229c60f616f64a8ba88"><td class="memTemplParams" colspan="2">template&lt;int T&gt; </td></tr>
+<tr class="memitem:a7061da991f132229c60f616f64a8ba88"><td class="memTemplItemLeft" align="right" valign="top">QuaternionT&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespace_dubious_1_1_math.html#a7061da991f132229c60f616f64a8ba88">Dubious::Math::operator*</a> (const QuaternionT&lt; T &gt; &amp;a, float b)</td></tr>
+<tr class="separator:a7061da991f132229c60f616f64a8ba88"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6f18bac05d119e57f706812821338c5a"><td class="memTemplParams" colspan="2">template&lt;int T&gt; </td></tr>
+<tr class="memitem:a6f18bac05d119e57f706812821338c5a"><td class="memTemplItemLeft" align="right" valign="top">QuaternionT&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespace_dubious_1_1_math.html#a6f18bac05d119e57f706812821338c5a">Dubious::Math::operator*</a> (float a, const QuaternionT&lt; T &gt; &amp;b)</td></tr>
+<tr class="separator:a6f18bac05d119e57f706812821338c5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a22b6c748a614e07b0bb678fbede6e9b8"><td class="memTemplParams" colspan="2">template&lt;int T&gt; </td></tr>
+<tr class="memitem:a22b6c748a614e07b0bb678fbede6e9b8"><td class="memTemplItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespace_dubious_1_1_math.html#a22b6c748a614e07b0bb678fbede6e9b8">Dubious::Math::operator&lt;&lt;</a> (std::ostream &amp;o, const QuaternionT&lt; T &gt; &amp;q)</td></tr>
+<tr class="separator:a22b6c748a614e07b0bb678fbede6e9b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 </div><!-- doc-content -->
@@ -181,7 +180,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_5bce4665f02041fc00c7e7e07b63c945.html">Math</a></li><li class="navelem"><a class="el" href="dir_36cbffb27dbc414bdbf9fadbe3b5b00f.html">src</a></li><li class="navelem"><a class="el" href="_quaternion_8h.html">Quaternion.h</a></li>
-    <li class="footer">Generated on Sun Jul 2 2017 13:42:31 for DubiousEngine by
+    <li class="footer">Generated on Sat Jul 15 2017 11:27:05 for DubiousEngine by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.10 </li>
   </ul>

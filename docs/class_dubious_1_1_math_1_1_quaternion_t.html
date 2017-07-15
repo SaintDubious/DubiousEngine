@@ -109,14 +109,13 @@ $(document).ready(function(){initNavTree('class_dubious_1_1_math_1_1_quaternion_
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#friends">Friends</a> &#124;
 <a href="class_dubious_1_1_math_1_1_quaternion_t-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">Dubious::Math::QuaternionT&lt; T &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>Unit Quaternion.  
+<p>Quaternion.  
  <a href="class_dubious_1_1_math_1_1_quaternion_t.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="_quaternion_8h_source.html">Quaternion.h</a>&gt;</code></p>
@@ -126,58 +125,23 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a38cdca05fa0c2a3c232f9407b19df926"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html#a38cdca05fa0c2a3c232f9407b19df926">QuaternionT</a> ()=default</td></tr>
 <tr class="memdesc:a38cdca05fa0c2a3c232f9407b19df926"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default Constructor.  <a href="#a38cdca05fa0c2a3c232f9407b19df926">More...</a><br /></td></tr>
 <tr class="separator:a38cdca05fa0c2a3c232f9407b19df926"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaac9d525748566829707434207bd29c5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html#aaac9d525748566829707434207bd29c5">QuaternionT</a> (const <a class="el" href="class_dubious_1_1_math_1_1_unit__vector_t.html">Unit_vectorT</a>&lt; T &gt; &amp;axis, float angle)</td></tr>
-<tr class="memdesc:aaac9d525748566829707434207bd29c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from axis and angle.  <a href="#aaac9d525748566829707434207bd29c5">More...</a><br /></td></tr>
-<tr class="separator:aaac9d525748566829707434207bd29c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a18f02b993d9dd8dbbf781f12d2d8032d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">QuaternionT</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html#a18f02b993d9dd8dbbf781f12d2d8032d">conjugate</a> () const </td></tr>
-<tr class="memdesc:a18f02b993d9dd8dbbf781f12d2d8032d"><td class="mdescLeft">&#160;</td><td class="mdescRight">The conjugate.  <a href="#a18f02b993d9dd8dbbf781f12d2d8032d">More...</a><br /></td></tr>
-<tr class="separator:a18f02b993d9dd8dbbf781f12d2d8032d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abea8a746db9b8521d14c3fb10cc0e3de"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html#abea8a746db9b8521d14c3fb10cc0e3de">get_matrix</a> (float matrix[16]) const </td></tr>
-<tr class="memdesc:abea8a746db9b8521d14c3fb10cc0e3de"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the rotation matrix.  <a href="#abea8a746db9b8521d14c3fb10cc0e3de">More...</a><br /></td></tr>
-<tr class="separator:abea8a746db9b8521d14c3fb10cc0e3de"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afe48e91ec9aa02e3ae277d82f32e1f5b"><td class="memItemLeft" align="right" valign="top">std::tuple&lt; <a class="el" href="class_dubious_1_1_math_1_1_unit__vector_t.html">Unit_vectorT</a>&lt; T &gt;, float &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html#afe48e91ec9aa02e3ae277d82f32e1f5b">get_axis_angle</a> () const </td></tr>
-<tr class="memdesc:afe48e91ec9aa02e3ae277d82f32e1f5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the Axis and Angle.  <a href="#afe48e91ec9aa02e3ae277d82f32e1f5b">More...</a><br /></td></tr>
-<tr class="separator:afe48e91ec9aa02e3ae277d82f32e1f5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aac5a665e7104c828ce2bf3063682ba9e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html#aac5a665e7104c828ce2bf3063682ba9e">normalize</a> ()</td></tr>
-<tr class="memdesc:aac5a665e7104c828ce2bf3063682ba9e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Normalize the Quaternion.  <a href="#aac5a665e7104c828ce2bf3063682ba9e">More...</a><br /></td></tr>
-<tr class="separator:aac5a665e7104c828ce2bf3063682ba9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3ca0046fa87710f8dd2f9e58adc203c7"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html#a3ca0046fa87710f8dd2f9e58adc203c7">magnitude</a> () const </td></tr>
-<tr class="memdesc:a3ca0046fa87710f8dd2f9e58adc203c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Quaternion magnitude (like length)  <a href="#a3ca0046fa87710f8dd2f9e58adc203c7">More...</a><br /></td></tr>
-<tr class="separator:a3ca0046fa87710f8dd2f9e58adc203c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a77895309248c8834618e800ef44ac688"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html#a77895309248c8834618e800ef44ac688">magnitude_squared</a> () const </td></tr>
-<tr class="memdesc:a77895309248c8834618e800ef44ac688"><td class="mdescLeft">&#160;</td><td class="mdescRight">Quaternion magnitude squared.  <a href="#a77895309248c8834618e800ef44ac688">More...</a><br /></td></tr>
-<tr class="separator:a77895309248c8834618e800ef44ac688"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
-Friends</h2></td></tr>
-<tr class="memitem:ac57ee57fcfea40bdef29bab18b055883"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html#ac57ee57fcfea40bdef29bab18b055883">Math_test::Quaternion_test</a></td></tr>
-<tr class="separator:ac57ee57fcfea40bdef29bab18b055883"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a28ceeac502062fa47e90fc98f69fa425"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html#a28ceeac502062fa47e90fc98f69fa425">Physics_test::Collision_solver_test</a></td></tr>
-<tr class="separator:a28ceeac502062fa47e90fc98f69fa425"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a808608cf51516602c0c776b0106fef94"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html#a808608cf51516602c0c776b0106fef94">Coordinate_space</a></td></tr>
-<tr class="separator:a808608cf51516602c0c776b0106fef94"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa41f731b234c84721050ee034ca37391"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html#aa41f731b234c84721050ee034ca37391">operator==</a> (const <a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">QuaternionT</a>&lt; T &gt; &amp;a, const <a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">QuaternionT</a>&lt; T &gt; &amp;b)</td></tr>
-<tr class="separator:aa41f731b234c84721050ee034ca37391"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aef263088b3c531b9febfbdc025f8a411"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html#aef263088b3c531b9febfbdc025f8a411">operator!=</a> (const <a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">QuaternionT</a>&lt; T &gt; &amp;a, const <a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">QuaternionT</a>&lt; T &gt; &amp;b)</td></tr>
-<tr class="separator:aef263088b3c531b9febfbdc025f8a411"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a480c7bc78719a8354daf3ab102caf916"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">QuaternionT</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html#a480c7bc78719a8354daf3ab102caf916">operator+</a> (const <a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">QuaternionT</a>&lt; T &gt; &amp;a, const <a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">QuaternionT</a>&lt; T &gt; &amp;b)</td></tr>
-<tr class="separator:a480c7bc78719a8354daf3ab102caf916"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad351faca5b738c68c252470663b5fe37"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">QuaternionT</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html#ad351faca5b738c68c252470663b5fe37">operator*</a> (const <a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">QuaternionT</a>&lt; T &gt; &amp;a, const <a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">QuaternionT</a>&lt; T &gt; &amp;b)</td></tr>
-<tr class="separator:ad351faca5b738c68c252470663b5fe37"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a25a532b04d95d10f4c2cc928632c2244"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">QuaternionT</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html#a25a532b04d95d10f4c2cc928632c2244">operator*</a> (const <a class="el" href="class_dubious_1_1_math_1_1_vector_t.html">VectorT</a>&lt; T &gt; &amp;a, const <a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">QuaternionT</a>&lt; T &gt; &amp;b)</td></tr>
-<tr class="separator:a25a532b04d95d10f4c2cc928632c2244"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9c7b19878144b8468a0009e5ef24e0e0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">QuaternionT</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html#a9c7b19878144b8468a0009e5ef24e0e0">operator*</a> (const <a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">QuaternionT</a>&lt; T &gt; &amp;a, float b)</td></tr>
-<tr class="separator:a9c7b19878144b8468a0009e5ef24e0e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae0cd3e9d350f7023ebd6f1b35c22f7ac"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html#ae0cd3e9d350f7023ebd6f1b35c22f7ac">operator&lt;&lt;</a> (std::ostream &amp;o, const <a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">QuaternionT</a>&lt; T &gt; &amp;q)</td></tr>
-<tr class="separator:ae0cd3e9d350f7023ebd6f1b35c22f7ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43ab9e0f3494eef6d84dcd29d46f9f2e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html#a43ab9e0f3494eef6d84dcd29d46f9f2e">QuaternionT</a> (float <a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html#ad89e4abe4b53913b8e664ec941112018">w</a>, const <a class="el" href="class_dubious_1_1_math_1_1_vector_t.html">VectorT</a>&lt; T &gt; &amp;<a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html#a0ef0eaeaa5483a3300da43255c11ae23">v</a>)</td></tr>
+<tr class="memdesc:a43ab9e0f3494eef6d84dcd29d46f9f2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#a43ab9e0f3494eef6d84dcd29d46f9f2e">More...</a><br /></td></tr>
+<tr class="separator:a43ab9e0f3494eef6d84dcd29d46f9f2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad89e4abe4b53913b8e664ec941112018"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html#ad89e4abe4b53913b8e664ec941112018">w</a> () const </td></tr>
+<tr class="memdesc:ad89e4abe4b53913b8e664ec941112018"><td class="mdescLeft">&#160;</td><td class="mdescRight">real accessor  <a href="#ad89e4abe4b53913b8e664ec941112018">More...</a><br /></td></tr>
+<tr class="separator:ad89e4abe4b53913b8e664ec941112018"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ef0eaeaa5483a3300da43255c11ae23"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="class_dubious_1_1_math_1_1_vector_t.html">VectorT</a>&lt; T &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html#a0ef0eaeaa5483a3300da43255c11ae23">v</a> () const </td></tr>
+<tr class="memdesc:a0ef0eaeaa5483a3300da43255c11ae23"><td class="mdescLeft">&#160;</td><td class="mdescRight">imaginary accessor  <a href="#a0ef0eaeaa5483a3300da43255c11ae23">More...</a><br /></td></tr>
+<tr class="separator:a0ef0eaeaa5483a3300da43255c11ae23"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;int T&gt;<br />
 class Dubious::Math::QuaternionT&lt; T &gt;</h3>
 
-<p>Unit Quaternion. </p>
-<p>Everyone's favorite 4 dimensional, completely mysterious mathmatical construct. The Unit Quaternion is meant to represent rotations in this game engine. There are a million quaternion resources online. Here are some I'm fond of: <a href="http://www.cprogramming.com/tutorial/3d/quaternions.html">http://www.cprogramming.com/tutorial/3d/quaternions.html</a> <a href="http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/slerp/">http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/slerp/</a> <a href="http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToAngle/index.htm">http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToAngle/index.htm</a></p>
-<p>I'm not sure exactly when to make sure it's a Unit Quaternion and when it can be just a regular one. Operations like scalar multiply will result in a non-Unit Quaternion. I gather from docs that only a Unit Quaternion represents a rotation. The <a class="el" href="namespace_dubious_1_1_physics.html">Physics</a> Integrator has steps where non-Unit Quaternions emerge and are used to create rotations. Maybe they have to then be normalized in the end? Maybe this class should have a plain and unit version like my Vectors? </p>
+<p>Quaternion. </p>
+<p>Everyone's favorite 4 dimensional, completely mysterious mathmatical construct. While a Unit Quaternion is useful for handling rotations in 3D, the humble non-Unit version appears in the middle of equations that have Unit Quaternions on each end. Rather then have a Unit Quaternion that was sometimes not, I decided to make a specific instance of this. It's mostly the basic math as described all over the web (sometimes correctly).</p>
+<p>Here are some resources I found useful in understanding Quaternions <a href="https://www.youtube.com/watch?v=mHVwd8gYLnI">https://www.youtube.com/watch?v=mHVwd8gYLnI</a> <a href="https://www.3dgep.com/understanding-quaternions/">https://www.3dgep.com/understanding-quaternions/</a> </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a38cdca05fa0c2a3c232f9407b19df926"></a>
 <div class="memitem">
@@ -203,27 +167,29 @@ template&lt;int T&gt; </div>
 </div><div class="memdoc">
 
 <p>Default Constructor. </p>
-<p>The default constructor will create a rotation that represents Axis aligned with global X, Y, and Z. In other words this will create exactly what you'd expect for a default constructor </p>
 
 </div>
 </div>
-<a class="anchor" id="aaac9d525748566829707434207bd29c5"></a>
+<a class="anchor" id="a43ab9e0f3494eef6d84dcd29d46f9f2e"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
 template&lt;int T&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">Dubious::Math::QuaternionT</a>&lt; T &gt;::<a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">QuaternionT</a> </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="class_dubious_1_1_math_1_1_unit__vector_t.html">Unit_vectorT</a>&lt; T &gt; &amp;&#160;</td>
-          <td class="paramname"><em>axis</em>, </td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>w</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>angle</em>&#160;</td>
+          <td class="paramtype">const <a class="el" href="class_dubious_1_1_math_1_1_vector_t.html">VectorT</a>&lt; T &gt; &amp;&#160;</td>
+          <td class="paramname"><em>v</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -231,13 +197,18 @@ template&lt;int T&gt; </div>
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
-<p>Construct from axis and angle. </p>
-<p>This is a more useful constructor where you can specify an axis and an angle around that axis. This is a right hand coordinate system, so the angle is counter-clockwise rotation around the axis </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Constructor. </p>
+<p>Made from constituent parts </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">axis</td><td>- [in] The axis around which we will rotate </td></tr>
-    <tr><td class="paramname">angle</td><td>- [in] Magnitude of Rotation (in radians) </td></tr>
+    <tr><td class="paramname">w</td><td>- [in] the real component </td></tr>
+    <tr><td class="paramname">v</td><td>- [in] the imaginary component </td></tr>
   </table>
   </dd>
 </dl>
@@ -245,454 +216,62 @@ template&lt;int T&gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a18f02b993d9dd8dbbf781f12d2d8032d"></a>
+<a class="anchor" id="a0ef0eaeaa5483a3300da43255c11ae23"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
 template&lt;int T&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">QuaternionT</a>&lt; T &gt; <a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">Dubious::Math::QuaternionT</a>&lt; T &gt;::conjugate </td>
+          <td class="memname">const <a class="el" href="class_dubious_1_1_math_1_1_vector_t.html">VectorT</a>&lt;T&gt;&amp; <a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">Dubious::Math::QuaternionT</a>&lt; T &gt;::v </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
-<p>The conjugate. </p>
-<p>This is needed to rotate a Vector by the rotation represented by this quaternion. The conjugate is simply: (w, -x, -y, -z) </p><dl class="section return"><dt>Returns</dt><dd>the conjugate </dd></dl>
+<p>imaginary accessor </p>
 
 </div>
 </div>
-<a class="anchor" id="afe48e91ec9aa02e3ae277d82f32e1f5b"></a>
+<a class="anchor" id="ad89e4abe4b53913b8e664ec941112018"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
 template&lt;int T&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::tuple&lt; <a class="el" href="class_dubious_1_1_math_1_1_unit__vector_t.html">Unit_vectorT</a>&lt; T &gt;, float &gt; <a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">Dubious::Math::QuaternionT</a>&lt; T &gt;::get_axis_angle </td>
+          <td class="memname">float <a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">Dubious::Math::QuaternionT</a>&lt; T &gt;::w </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
-</div><div class="memdoc">
-
-<p>Get the Axis and Angle. </p>
-<p>Return a unit vector representing the axis of rotation, as well as a float representing the angle around that axis, in radians </p><dl class="section return"><dt>Returns</dt><dd>tuple of axis and angle </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="abea8a746db9b8521d14c3fb10cc0e3de"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;int T&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">void <a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">Dubious::Math::QuaternionT</a>&lt; T &gt;::get_matrix </td>
-          <td>(</td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>matrix</em>[16]</td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Get the rotation matrix. </p>
-<p>Return the rotation matrix representation of this quaternion. This is basically a shortcut for OpenGL rotation as it takes this same matrix as an input. It's also handy for finding the three axis of rotation in one call </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">matrix</td><td>- [out] Will be filled with the rotation matrix </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a class="anchor" id="a3ca0046fa87710f8dd2f9e58adc203c7"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;int T&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">float <a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">Dubious::Math::QuaternionT</a>&lt; T &gt;::magnitude </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Quaternion magnitude (like length) </p>
-<dl class="section return"><dt>Returns</dt><dd>magnitude </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="a77895309248c8834618e800ef44ac688"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;int T&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">float <a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">Dubious::Math::QuaternionT</a>&lt; T &gt;::magnitude_squared </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Quaternion magnitude squared. </p>
-<p>Same as with the Vecrot.length_squared. Sometimes you want a comparable magnitude without the cost of a sqrt </p><dl class="section return"><dt>Returns</dt><dd>magnitude squared </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="aac5a665e7104c828ce2bf3063682ba9e"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;int T&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">void <a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">Dubious::Math::QuaternionT</a>&lt; T &gt;::normalize </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Normalize the Quaternion. </p>
-<p>As per the class comment, I'm not entirely sure when this needs to be Unit and when it can be a plain Quaternion. This method will make it a Unit Quaternion </p>
-
-</div>
-</div>
-<h2 class="groupheader">Friends And Related Function Documentation</h2>
-<a class="anchor" id="a808608cf51516602c0c776b0106fef94"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;int T&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">friend class <a class="el" href="class_dubious_1_1_math_1_1_coordinate__space.html">Coordinate_space</a></td>
-        </tr>
-      </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-</div>
-</div>
-<a class="anchor" id="ac57ee57fcfea40bdef29bab18b055883"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;int T&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">friend class Math_test::Quaternion_test</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
+<p>real accessor </p>
 
 </div>
 </div>
-<a class="anchor" id="aef263088b3c531b9febfbdc025f8a411"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;int T&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool operator!= </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">QuaternionT</a>&lt; T &gt; &amp;&#160;</td>
-          <td class="paramname"><em>a</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">QuaternionT</a>&lt; T &gt; &amp;&#160;</td>
-          <td class="paramname"><em>b</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="ad351faca5b738c68c252470663b5fe37"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;int T&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">QuaternionT</a>&lt;T&gt; operator* </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">QuaternionT</a>&lt; T &gt; &amp;&#160;</td>
-          <td class="paramname"><em>a</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">QuaternionT</a>&lt; T &gt; &amp;&#160;</td>
-          <td class="paramname"><em>b</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a25a532b04d95d10f4c2cc928632c2244"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;int T&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">QuaternionT</a>&lt;T&gt; operator* </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="class_dubious_1_1_math_1_1_vector_t.html">VectorT</a>&lt; T &gt; &amp;&#160;</td>
-          <td class="paramname"><em>a</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">QuaternionT</a>&lt; T &gt; &amp;&#160;</td>
-          <td class="paramname"><em>b</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a9c7b19878144b8468a0009e5ef24e0e0"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;int T&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">QuaternionT</a>&lt;T&gt; operator* </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">QuaternionT</a>&lt; T &gt; &amp;&#160;</td>
-          <td class="paramname"><em>a</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>b</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a480c7bc78719a8354daf3ab102caf916"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;int T&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">QuaternionT</a>&lt;T&gt; operator+ </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">QuaternionT</a>&lt; T &gt; &amp;&#160;</td>
-          <td class="paramname"><em>a</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">QuaternionT</a>&lt; T &gt; &amp;&#160;</td>
-          <td class="paramname"><em>b</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="ae0cd3e9d350f7023ebd6f1b35c22f7ac"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;int T&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::ostream&amp; operator&lt;&lt; </td>
-          <td>(</td>
-          <td class="paramtype">std::ostream &amp;&#160;</td>
-          <td class="paramname"><em>o</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">QuaternionT</a>&lt; T &gt; &amp;&#160;</td>
-          <td class="paramname"><em>q</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="aa41f731b234c84721050ee034ca37391"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;int T&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool operator== </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">QuaternionT</a>&lt; T &gt; &amp;&#160;</td>
-          <td class="paramname"><em>a</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">QuaternionT</a>&lt; T &gt; &amp;&#160;</td>
-          <td class="paramname"><em>b</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a28ceeac502062fa47e90fc98f69fa425"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;int T&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">friend class Physics_test::Collision_solver_test</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<hr/>The documentation for this class was generated from the following files:<ul>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li>Math/src/<a class="el" href="_quaternion_8h_source.html">Quaternion.h</a></li>
-<li>Math/src/<a class="el" href="_quaternion_8cpp.html">Quaternion.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
@@ -700,7 +279,7 @@ template&lt;int T&gt; </div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespace_dubious.html">Dubious</a></li><li class="navelem"><a class="el" href="namespace_dubious_1_1_math.html">Math</a></li><li class="navelem"><a class="el" href="class_dubious_1_1_math_1_1_quaternion_t.html">QuaternionT</a></li>
-    <li class="footer">Generated on Sun Jul 2 2017 13:42:31 for DubiousEngine by
+    <li class="footer">Generated on Sat Jul 15 2017 11:27:05 for DubiousEngine by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.10 </li>
   </ul>
