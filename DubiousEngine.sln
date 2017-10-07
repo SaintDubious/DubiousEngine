@@ -101,6 +101,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0AEC09F7-571C-4E73-B72E-CB08D91AE6A4}"
 	ProjectSection(SolutionItems) = preProject
 		.clang-format = .clang-format
+		README.md = README.md
 		StackTimerProfiling.psess = StackTimerProfiling.psess
 	EndProjectSection
 EndProject
