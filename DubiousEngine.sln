@@ -105,9 +105,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Global
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
@@ -131,10 +128,12 @@ Global
 		{A7F7C15D-D13F-43CA-81F8-75E102D4147B}.Release|x64.Build.0 = Release|x64
 		{A7F7C15D-D13F-43CA-81F8-75E102D4147B}.Release|x86.ActiveCfg = Release|Win32
 		{A7F7C15D-D13F-43CA-81F8-75E102D4147B}.Release|x86.Build.0 = Release|Win32
-		{A4B9E642-6D6F-449C-9C66-9E6A03D19460}.Debug|x64.ActiveCfg = Debug|Win32
+		{A4B9E642-6D6F-449C-9C66-9E6A03D19460}.Debug|x64.ActiveCfg = Debug|x64
+		{A4B9E642-6D6F-449C-9C66-9E6A03D19460}.Debug|x64.Build.0 = Debug|x64
 		{A4B9E642-6D6F-449C-9C66-9E6A03D19460}.Debug|x86.ActiveCfg = Debug|Win32
 		{A4B9E642-6D6F-449C-9C66-9E6A03D19460}.Debug|x86.Build.0 = Debug|Win32
-		{A4B9E642-6D6F-449C-9C66-9E6A03D19460}.Release|x64.ActiveCfg = Release|Win32
+		{A4B9E642-6D6F-449C-9C66-9E6A03D19460}.Release|x64.ActiveCfg = Release|x64
+		{A4B9E642-6D6F-449C-9C66-9E6A03D19460}.Release|x64.Build.0 = Release|x64
 		{A4B9E642-6D6F-449C-9C66-9E6A03D19460}.Release|x86.ActiveCfg = Release|Win32
 		{A4B9E642-6D6F-449C-9C66-9E6A03D19460}.Release|x86.Build.0 = Release|Win32
 		{AA17E9B9-C1D0-43DA-857D-DAF6DB8FEFC0}.Debug|x64.ActiveCfg = Debug|x64
@@ -249,6 +248,9 @@ Global
 		{A5BC3645-6259-4754-A43E-A93455FE881A} = {F0B68A64-7E75-4492-8EA3-1CAEA50E55F8}
 		{4DB29D1B-ECB4-4D15-8FD9-333C3E56CAAA} = {F0B68A64-7E75-4492-8EA3-1CAEA50E55F8}
 		{8B961B49-7F59-48B5-822F-0A36F6389C4E} = {F0B68A64-7E75-4492-8EA3-1CAEA50E55F8}
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 	GlobalSection(Performance) = preSolution
 		HasPerformanceSessions = true
