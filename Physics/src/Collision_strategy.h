@@ -24,7 +24,7 @@ class Collision_strategy {
 public:
     Collision_strategy(const Collision_strategy&) = delete;
     Collision_strategy& operator=(const Collision_strategy&) = delete;
-    ~Collision_strategy()                                    = default;
+    virtual ~Collision_strategy()                            = default;
 
     // I try to avoid typedefs, but this one is so long and used
     // so often that it becomes unruly

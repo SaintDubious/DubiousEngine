@@ -231,7 +231,7 @@ Collision_strategy_open_cl::openCL_broad_phase_outer(
     cl_int num_elements = length;
     Utility::Open_cl::set_kernel_arg(m_broad_phase_outer_kernel, 0, sizeof(cl_mem),
                                      &m_broad_phase_buffer_obj_a);
-    Utility::Open_cl::set_kernel_arg(m_broad_phase_outer_kernel, 1, sizeof(cl_int),
+    Utility::Open_cl::set_kernel_arg(m_broad_phase_outer_kernel, 1, sizeof(cl_mem),
                                      &m_broad_phase_buffer_obj_b);
     Utility::Open_cl::set_kernel_arg(m_broad_phase_outer_kernel, 2, sizeof(cl_int), &length_b);
     Utility::Open_cl::set_kernel_arg(m_broad_phase_outer_kernel, 3, sizeof(cl_mem),
