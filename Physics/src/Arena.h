@@ -36,6 +36,14 @@ public:
         /// as the old.
         float manifold_persistent_threshold = 0.05f;
 
+        /// When the manifold is pruned it will examine all existing
+        /// contact points. If any of them have moved too far since the
+        /// last update (for example if the object is moving too fast)
+        /// they will be removed as they are probably no longer valid.
+        /// The movemenet threshold is the distance squared above which
+        /// a contact has moved.
+        float manifold_movement_threshold = 0.05f;
+
         /// After broad phase collision detection we create a vector
         /// of potentially colliding pairs. If the number of these
         /// pairs exceeds this number, the collision detection will
@@ -91,6 +99,11 @@ public:
         /// will allow some penetration, but a stabler system. Not
         /// enough slop and things will become unstable.
         float slop = 0.05f;
+
+        /// Warm starting is when we apply some percentage of the previous
+        /// physics run's force as a first guess to the current run.
+        /// This amount is the scaling factor, 1.0 = 100%
+        float warm_start_scale = 0.5f;
     };
 
     /// @brief Physics settings

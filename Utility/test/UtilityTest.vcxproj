@@ -172,6 +172,11 @@
     <ClCompile Include="File_path_test.cpp" />
     <ClCompile Include="Timer_test.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Utility.vcxproj">
+      <Project>{a4b9e642-6d6f-449c-9c66-9e6a03d19460}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

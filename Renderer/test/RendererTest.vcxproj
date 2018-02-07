@@ -171,6 +171,11 @@
   <ItemGroup>
     <ClCompile Include="Visible_model_test.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Renderer.vcxproj">
+      <Project>{ffcc054d-5156-49eb-9077-e172b5e2857b}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

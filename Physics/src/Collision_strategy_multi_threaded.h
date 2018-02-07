@@ -23,8 +23,10 @@ public:
     /// @brief Constructor
     ///
     /// @param manifold_persistent_threshold - [in] see Arena::Settings
+    /// @param manifold_movement_threshold - [in] see Arena::Settings
     /// @param workgroup_size - [in] see Arena::Settings
     Collision_strategy_multi_threaded(float        manifold_persistent_threshold,
+                                      float        manifold_movement_threshold,
                                       unsigned int workgroup_size);
 
     /// @brief Destructor
@@ -40,6 +42,7 @@ public:
 private:
     Collision_solver   m_collision_solver;
     const float        m_manifold_persistent_threshold;
+    const float        m_manifold_movement_threshold;
     const unsigned int m_workgroup_size;
     std::mutex         m_manifolds_mutex;
 

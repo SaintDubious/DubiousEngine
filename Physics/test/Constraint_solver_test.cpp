@@ -32,7 +32,7 @@ public:
         b->coordinate_space().translate(Vector(2, 0, 0));
         b->velocity() = Vector(-10, 0, 0);
         Assert::IsTrue(collision_solver.intersection(*a, *b, contacts) == true);
-        Contact_manifold contact_manifold(*a, *b, 0.05f);
+        Contact_manifold contact_manifold(*a, *b, 0.05f, 0.05f);
         /*
         Constraint_solver::Velocity_matrix velocities = solver.solve( *a, *b, contact_manifold );
         // This test is in flux as I play with Baumgarte terms and coefficient of

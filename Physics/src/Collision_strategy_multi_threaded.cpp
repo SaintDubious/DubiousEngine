@@ -10,8 +10,10 @@ namespace Dubious {
 namespace Physics {
 
 Collision_strategy_multi_threaded::Collision_strategy_multi_threaded(
-    float manifold_persistent_threshold, unsigned int workgroup_size)
+    float manifold_persistent_threshold, float manifold_movement_threshold,
+    unsigned int workgroup_size)
     : m_manifold_persistent_threshold(manifold_persistent_threshold)
+    , m_manifold_movement_threshold(manifold_movement_threshold)
     , m_workgroup_size(workgroup_size)
 {
 }
@@ -86,7 +88,8 @@ Collision_strategy_multi_threaded::solve_inner(
                         manifolds
                             .insert(std::make_pair(
                                 object_pair,
-                                Contact_manifold(*a, *b, m_manifold_persistent_threshold)))
+                                Contact_manifold(*a, *b, m_manifold_persistent_threshold,
+                                                 m_manifold_movement_threshold)))
                             .first;
                 }
                 contact_manifold->second.prune_old_contacts();
@@ -123,7 +126,8 @@ Collision_strategy_multi_threaded::solve_outer(
                         manifolds
                             .insert(std::make_pair(
                                 object_pair,
-                                Contact_manifold(*a, *b, m_manifold_persistent_threshold)))
+                                Contact_manifold(*a, *b, m_manifold_persistent_threshold,
+                                                 m_manifold_movement_threshold)))
                             .first;
                 }
                 contact_manifold->second.prune_old_contacts();

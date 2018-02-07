@@ -28,7 +28,8 @@ class Physics_object;
 /// http://allenchou.net/2014/01/game-physics-stability-warm-starting/
 class Contact_manifold {
 public:
-    Contact_manifold(const Physics_object& a, const Physics_object& b, float persistent_threshold);
+    Contact_manifold(const Physics_object& a, const Physics_object& b, float persistent_threshold,
+                     float movement_threshold);
 
     /// @brief Contact information
     ///
@@ -67,10 +68,12 @@ public:
 
 private:
     friend class Physics_test::Contact_manifold_test;
+    friend std::ostream& operator<<(std::ostream& o, const Contact_manifold&);
 
     const Physics_object& m_object_a;
     const Physics_object& m_object_b;
     std::vector<Contact>  m_contacts;
+    const float           m_movement_threshold   = 0.05f;
     const float           m_persistent_threshold = 0.05f;
 
     void  cleanup_contacts(std::vector<Contact>& contacts);
@@ -84,6 +87,8 @@ private:
                                                                const Math::Point& c,
                                                                const Math::Point& p) const;
 };
+
+std::ostream& operator<<(std::ostream& o, const Contact_manifold& c);
 
 }  // namespace Physics
 }  // namespace Dubious

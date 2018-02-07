@@ -7,8 +7,10 @@
 namespace Dubious {
 namespace Physics {
 
-Collision_strategy_simple::Collision_strategy_simple(float manifold_persistent_threshold)
+Collision_strategy_simple::Collision_strategy_simple(float manifold_persistent_threshold,
+                                                     float manifold_movement_threshold)
     : m_manifold_persistent_threshold(manifold_persistent_threshold)
+    , m_manifold_movement_threshold(manifold_movement_threshold)
 {
 }
 
@@ -34,7 +36,8 @@ Collision_strategy_simple::find_contacts(
                         manifolds
                             .insert(std::make_pair(
                                 object_pair,
-                                Contact_manifold(*a, *b, m_manifold_persistent_threshold)))
+                                Contact_manifold(*a, *b, m_manifold_persistent_threshold,
+                                                 m_manifold_movement_threshold)))
                             .first;
                 }
                 contact_manifold->second.prune_old_contacts();

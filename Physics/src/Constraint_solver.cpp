@@ -97,31 +97,31 @@ lagrangian_multiplier_friction(const Math::Vector& t, const Math::Vector& r_a,
 
 void
 Constraint_solver::warm_start(Physics_object& a, Physics_object& b,
-                              const Contact_manifold& contact_manifold)
+                              const Contact_manifold& contact_manifold, float scale)
 {
     for (const auto& c : contact_manifold.contacts()) {
         Math::Vector r_a = c.contact_point_a - a.coordinate_space().position();
         Math::Vector r_b = c.contact_point_b - b.coordinate_space().position();
 
         // friction
-        a.velocity() += c.tangent1_impulse * a.inverse_mass() * -c.tangent1 +
-                        c.tangent2_impulse * a.inverse_mass() * -c.tangent2;
-        a.angular_velocity() += c.tangent1_impulse * a.inverse_moment_of_inertia() *
+        a.velocity() += c.tangent1_impulse * scale * a.inverse_mass() * -c.tangent1 +
+                        c.tangent2_impulse * scale * a.inverse_mass() * -c.tangent2;
+        a.angular_velocity() += c.tangent1_impulse * scale * a.inverse_moment_of_inertia() *
                                     (Math::cross_product(-r_a, Math::Vector(c.tangent1))) +
-                                c.tangent2_impulse * a.inverse_moment_of_inertia() *
+                                c.tangent2_impulse * scale * a.inverse_moment_of_inertia() *
                                     (Math::cross_product(-r_a, Math::Vector(c.tangent2)));
-        b.velocity() += c.tangent1_impulse * b.inverse_mass() * c.tangent1 +
-                        c.tangent2_impulse * b.inverse_mass() * c.tangent2;
-        b.angular_velocity() += c.tangent1_impulse * b.inverse_moment_of_inertia() *
+        b.velocity() += c.tangent1_impulse * scale * b.inverse_mass() * c.tangent1 +
+                        c.tangent2_impulse * scale * b.inverse_mass() * c.tangent2;
+        b.angular_velocity() += c.tangent1_impulse * scale * b.inverse_moment_of_inertia() *
                                     (Math::cross_product(r_b, Math::Vector(c.tangent1))) +
-                                c.tangent2_impulse * b.inverse_moment_of_inertia() *
+                                c.tangent2_impulse * scale * b.inverse_moment_of_inertia() *
                                     (Math::cross_product(r_b, Math::Vector(c.tangent2)));
         // normals
-        a.velocity() += c.normal_impulse * a.inverse_mass() * -c.normal;
-        a.angular_velocity() += c.normal_impulse * a.inverse_moment_of_inertia() *
+        a.velocity() += c.normal_impulse * scale * a.inverse_mass() * -c.normal;
+        a.angular_velocity() += c.normal_impulse * scale * a.inverse_moment_of_inertia() *
                                 (Math::cross_product(-r_a, Math::Vector(c.normal)));
-        b.velocity() += c.normal_impulse * b.inverse_mass() * c.normal;
-        b.angular_velocity() += c.normal_impulse * b.inverse_moment_of_inertia() *
+        b.velocity() += c.normal_impulse * scale * b.inverse_mass() * c.normal;
+        b.angular_velocity() += c.normal_impulse * scale * b.inverse_moment_of_inertia() *
                                 (Math::cross_product(r_b, Math::Vector(c.normal)));
     }
 }

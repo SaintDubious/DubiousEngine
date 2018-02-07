@@ -180,6 +180,11 @@
     <ClCompile Include="Contact_manifold_test.cpp" />
     <ClCompile Include="Physics_model_test.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Physics.vcxproj">
+      <Project>{c756e8a4-320f-4039-8136-9496d9c00ebd}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

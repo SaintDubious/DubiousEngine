@@ -180,6 +180,11 @@
     <ClCompile Include="Vector_math_test.cpp" />
     <ClCompile Include="Vector_test.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Math.vcxproj">
+      <Project>{f4f941a2-1058-4e28-b424-9baea08ab096}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

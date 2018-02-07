@@ -24,9 +24,11 @@ public:
     /// @brief Constructor
     ///
     /// @param manifold_persistent_threshold - [in] see Arena::Settings
+    /// @param manifold_movement_threshold - [in] see Arena::Settings
     /// @param collisions_per_thread - [in] see Arena::Settings
     /// @param cl_broadphase_work_group_size - [in] see Arena::Settings
     Collision_strategy_open_cl(float        manifold_persistent_threshold,
+                               float        manifold_movement_threshold,
                                unsigned int collisions_per_thread,
                                int          cl_broadphase_work_group_size);
 
@@ -43,6 +45,7 @@ public:
 private:
     Collision_solver   m_collision_solver;
     const float        m_manifold_persistent_threshold;
+    const float        m_manifold_movement_threshold;
     const unsigned int m_collisions_per_thread;
     const int          m_cl_broadphase_work_group_size;
     std::mutex         m_manifolds_mutex;

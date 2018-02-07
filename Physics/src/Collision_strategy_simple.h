@@ -21,7 +21,9 @@ public:
     /// @brief Constructor
     ///
     /// @param manifold_persistent_threshold - [in] see Arena::Settings
-    Collision_strategy_simple(float manifold_persistent_threshold);
+    /// @param manifold_movement_threshold - [in] see Arena::Settings
+    Collision_strategy_simple(float manifold_persistent_threshold,
+                              float manifold_movement_threshold);
 
     /// @brief Destructor
     ~Collision_strategy_simple() = default;
@@ -36,6 +38,7 @@ public:
 private:
     Collision_solver m_collision_solver;
     const float      m_manifold_persistent_threshold;
+    const float      m_manifold_movement_threshold;
 };
 
 }  // namespace Physics

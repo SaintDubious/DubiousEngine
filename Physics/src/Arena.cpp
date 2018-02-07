@@ -22,16 +22,19 @@ Arena::Arena(const Settings& settings)
     switch (m_settings.collision.strategy) {
     case Collision_solver_settings::Strategy::SINGLE_THREADED:
         m_collision_strategy = std::make_unique<Collision_strategy_simple>(
-            m_settings.collision.manifold_persistent_threshold);
+            m_settings.collision.manifold_persistent_threshold,
+            m_settings.collision.manifold_movement_threshold);
         break;
     case Collision_solver_settings::Strategy::MULTI_THREADED:
         m_collision_strategy = std::make_unique<Collision_strategy_multi_threaded>(
             m_settings.collision.manifold_persistent_threshold,
+            m_settings.collision.manifold_movement_threshold,
             m_settings.collision.mt_collisions_work_group_size);
         break;
     case Collision_solver_settings::Strategy::OPENCL:
         m_collision_strategy = std::make_unique<Collision_strategy_open_cl>(
             m_settings.collision.manifold_persistent_threshold,
+            m_settings.collision.manifold_movement_threshold,
             m_settings.collision.cl_collisions_per_thread,
             m_settings.collision.cl_collisions_work_group_size);
         break;
@@ -64,7 +67,8 @@ Arena::run_physics(float elapsed)
         for (auto& manifold : m_manifolds) {
             Physics_object* a = std::get<0>(manifold.first);
             Physics_object* b = std::get<1>(manifold.first);
-            m_constraint_solver.warm_start(*a, *b, manifold.second);
+            m_constraint_solver.warm_start(*a, *b, manifold.second,
+                                           m_settings.constraint.warm_start_scale);
         }
 
         for (int i = 0; i < m_settings.constraint.iterations; ++i) {

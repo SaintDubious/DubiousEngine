@@ -36,15 +36,16 @@ public:
     /// See the discussion by Allen Chou on his web page. The general idea is that
     /// often the previous time step's forces are mostly pertinent to the current time
     /// step. For exmaple a bunch of blocks at rest all have the same gravity every
-    /// time step. So this just re-applies the same force. Allen Chou says he actually
-    /// applies a fraction of the previous force, so this should probably be updated
-    /// at some point. But in my current tests it gets good results
+    /// time step. So this just re-applies the same force. This force is scaled by the
+    /// 'scale' argument, where 1.0 = 100%
     /// @param a - [in,out] The first object in the colliding pair. Its velocities
     ///        will be updated.
     /// @param b - [in,out] The second object in the colliding pair. Its velocities
     ///        will be updated.
     /// @param contact_manifold - [in] Up to 4 points that define the collision
-    void warm_start(Physics_object& a, Physics_object& b, const Contact_manifold& contact_manifold);
+    /// @param scale - [in] amount to scale the previous force
+    void warm_start(Physics_object& a, Physics_object& b, const Contact_manifold& contact_manifold,
+                    float scale);
 
     /// @brief The heart of constraint solving
     ///

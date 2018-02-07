@@ -31,20 +31,24 @@ const float LIGHT_HEIGHT      = 50.0f;
 const float PI                = 3.1415926535f;
 const int   WIDTH             = 800;
 const int   HEIGHT            = 600;
-const int   NUM_LAYERS        = 30;
+const int   NUM_LAYERS        = 1;
 const int   OBJECTS_PER_LAYER = 4;
+const float OBJECT_WIDTH      = 0.008f;
+const float OBJECT_HEIGHT     = 0.024f;
+const float OBJECT_DEPTH      = 0.12f;
+const float OBJECT_MASS       = 0.1f;
 const int   FIRST_OBJECT      = 1;  // the floor is item 0
 
 // Events
-void  on_quit();
-void  on_idle();
-void  on_mouse_motion(const Utility::Sdl_manager::Mouse_point& P);
-void  on_mouse_right_down(const Utility::Sdl_manager::Mouse_point& P);
-void  on_mouse_left_down(const Utility::Sdl_manager::Mouse_point& P);
-void  on_mouse_left_up(const Utility::Sdl_manager::Mouse_point& P);
-void  on_mouse_wheel(int Y);
-void  on_key_down(SDL_Keycode Key, unsigned short Mod);
-float build_layer(float y);
+void on_quit();
+void on_idle();
+void on_mouse_motion(const Utility::Sdl_manager::Mouse_point& P);
+void on_mouse_right_down(const Utility::Sdl_manager::Mouse_point& P);
+void on_mouse_left_down(const Utility::Sdl_manager::Mouse_point& P);
+void on_mouse_left_up(const Utility::Sdl_manager::Mouse_point& P);
+void on_mouse_wheel(int Y);
+void on_key_down(SDL_Keycode Key, unsigned short Mod);
+void build_layer(float y, float angle);
 
 // Globals
 Utility::Sdl_manager                              sdl;
@@ -56,13 +60,15 @@ std::shared_ptr<Renderer::Simple_object_renderer> simple_renderer;
 Utility::Timer                                    frame_timer;
 float                                             elapsed;
 int                                               frame_count;
+bool                                              paused;
+bool                                              single_step;
 
 std::unique_ptr<Physics::Arena>                        arena;
 std::shared_ptr<Renderer::Visible_model>               visible_model;
 std::shared_ptr<Physics::Physics_model>                physics_model;
 std::vector<std::shared_ptr<Renderer::Visible_object>> visible_objects;
 std::vector<std::shared_ptr<Physics::Physics_object>>  physics_objects;
-Renderer::Color                                        object_color = Renderer::Color::RED;
+Renderer::Color                                        object_color;
 
 int
 main(int argc, char** argv)
@@ -72,16 +78,27 @@ main(int argc, char** argv)
 
         Physics::Arena::Collision_solver_settings collision_solver_settings;
         collision_solver_settings.strategy =
-            Physics::Arena::Collision_solver_settings::Strategy::MULTI_THREADED;
+            Physics::Arena::Collision_solver_settings::Strategy::SINGLE_THREADED;
+        collision_solver_settings.manifold_persistent_threshold = 0.00004f;
         collision_solver_settings.mt_collisions_work_group_size = 500;
+
         Physics::Arena::Constraint_solver_settings constraint_solver_settings;
+        constraint_solver_settings.coefficient_of_restitution = 0.0025f;
+        constraint_solver_settings.beta                       = 0.05f;
+        constraint_solver_settings.slop                       = 0.0005f;
+        constraint_solver_settings.warm_start_scale           = 0.5f;
+
         arena = std::make_unique<Physics::Arena>(
             Physics::Arena::Settings(collision_solver_settings, constraint_solver_settings));
+
+        paused          = true;
+        single_step     = false;
         elapsed         = 0;
         frame_count     = 0;
-        auto floor_file = Utility::Ac3d_file_reader::test_cube(20.0f, 0.5f, 20.0f);
+        auto floor_file = Utility::Ac3d_file_reader::test_cube(3.0f, 0.5f, 3.0f);
         std::unique_ptr<const Utility::Ac3d_file> model_file;
-        model_file = Utility::Ac3d_file_reader::test_cube(0.5f, 0.5f, 1.5f);
+        model_file = Utility::Ac3d_file_reader::test_cube(OBJECT_WIDTH / 2.0f, OBJECT_HEIGHT / 2.0f,
+                                                          OBJECT_DEPTH / 2.0f);
 
         sdl.create_root_window("Physics Viewer", WIDTH, HEIGHT, false);
 
@@ -105,9 +122,17 @@ main(int argc, char** argv)
 
         visible_model = std::make_shared<Renderer::Visible_model>(*model_file, false);
         physics_model = std::make_shared<Physics::Physics_model>(*model_file);
-        float layer   = 0.5f;
+        float layer   = OBJECT_HEIGHT / 2.0f;
+        float angle   = 0.0f;
         for (int i = 0; i < NUM_LAYERS; ++i) {
-            layer = build_layer(layer);
+            build_layer(layer, angle);
+            layer += OBJECT_HEIGHT;
+            if (angle < 0.001f) {
+                angle = PI / 4.0f;
+            }
+            else {
+                angle = 0.0f;
+            }
         }
 
         scene->scene_light().position = Math::Point(20, 20, 0);
@@ -116,7 +141,8 @@ main(int argc, char** argv)
         scene->scene_light().specular = Renderer::Color(0.1f, 0.1f, 0.1f, 1.0f);
 
         camera                  = std::make_unique<Renderer::Camera>(0, 0, WIDTH, HEIGHT, 80.0f);
-        camera->z_axis_offset() = 20;
+        camera->z_axis_offset() = 2;
+        camera->coordinate_space().position() = Math::Point(0, 0.0f, 0);
 
         sdl.on_quit()             = on_quit;
         sdl.on_idle()             = on_idle;
@@ -143,8 +169,8 @@ main(int argc, char** argv)
     return -1;
 }
 
-float
-build_layer(float y)
+void
+build_layer(float y, float angle)
 {
     if (object_color == Renderer::Color::RED) {
         object_color = Renderer::Color::BLUE;
@@ -152,56 +178,25 @@ build_layer(float y)
     else {
         object_color = Renderer::Color::RED;
     }
-
-    visible_objects.push_back(
-        std::make_shared<Renderer::Visible_object>(visible_model, visible_model));
-    visible_objects.back()->base_color() = object_color;
-    visible_objects.back()->coordinate_space().translate(Math::Vector(-1, y + 0.001f, 0));
-    visible_objects.back()->renderer() = simple_renderer;
-    scene->add_object(visible_objects.back());
-    physics_objects.push_back(std::make_shared<Physics::Physics_object>(physics_model, 1.0f));
-    physics_objects.back()->coordinate_space().translate(Math::Vector(-1, y + 0.001f, 0));
-    arena->push_back(physics_objects.back());
-
-    visible_objects.push_back(
-        std::make_shared<Renderer::Visible_object>(visible_model, visible_model));
-    visible_objects.back()->base_color() = object_color;
-    visible_objects.back()->coordinate_space().translate(Math::Vector(1, y + 0.001f, 0));
-    visible_objects.back()->renderer() = simple_renderer;
-    scene->add_object(visible_objects.back());
-    physics_objects.push_back(std::make_shared<Physics::Physics_object>(physics_model, 1.0f));
-    physics_objects.back()->coordinate_space().translate(Math::Vector(1, y + 0.001f, 0));
-    arena->push_back(physics_objects.back());
-
-    visible_objects.push_back(
-        std::make_shared<Renderer::Visible_object>(visible_model, visible_model));
-    visible_objects.back()->base_color() = object_color;
-    visible_objects.back()->coordinate_space().translate(Math::Vector(0, y + 1.001f, -1));
-    visible_objects.back()->coordinate_space().rotate(
-        Math::Unit_quaternion(Math::Unit_vector(0, 1, 0), Math::to_radians(90.0f)));
-    visible_objects.back()->renderer() = simple_renderer;
-    scene->add_object(visible_objects.back());
-    physics_objects.push_back(std::make_shared<Physics::Physics_object>(physics_model, 1.0f));
-    physics_objects.back()->coordinate_space().translate(Math::Vector(0, y + 1.001f, -1));
-    physics_objects.back()->coordinate_space().rotate(
-        Math::Unit_quaternion(Math::Unit_vector(0, 1, 0), Math::to_radians(90.0f)));
-    arena->push_back(physics_objects.back());
-
-    visible_objects.push_back(
-        std::make_shared<Renderer::Visible_object>(visible_model, visible_model));
-    visible_objects.back()->base_color() = object_color;
-    visible_objects.back()->coordinate_space().translate(Math::Vector(0, y + 1.001f, 1));
-    visible_objects.back()->coordinate_space().rotate(
-        Math::Unit_quaternion(Math::Unit_vector(0, 1, 0), Math::to_radians(90.0f)));
-    visible_objects.back()->renderer() = simple_renderer;
-    scene->add_object(visible_objects.back());
-    physics_objects.push_back(std::make_shared<Physics::Physics_object>(physics_model, 1.0f));
-    physics_objects.back()->coordinate_space().translate(Math::Vector(0, y + 1.001f, 1));
-    physics_objects.back()->coordinate_space().rotate(
-        Math::Unit_quaternion(Math::Unit_vector(0, 1, 0), Math::to_radians(90.0f)));
-    arena->push_back(physics_objects.back());
-
-    return y + 2.002f;
+    const Math::Local_vector offset(0.1f, y, 0);
+    for (int i = 0; i < OBJECTS_PER_LAYER; ++i) {
+        float radians = angle + static_cast<float>(i) * PI / 2.0f;
+        //float radians = angle + 2.0f * PI / 2.0f;
+        visible_objects.push_back(
+            std::make_shared<Renderer::Visible_object>(visible_model, visible_model));
+        visible_objects.back()->base_color() = object_color;
+        visible_objects.back()->coordinate_space().rotate(
+            Math::Unit_quaternion(Math::Unit_vector(0, 1, 0), radians));
+        visible_objects.back()->coordinate_space().translate(offset);
+        visible_objects.back()->renderer() = simple_renderer;
+        scene->add_object(visible_objects.back());
+        physics_objects.push_back(
+            std::make_shared<Physics::Physics_object>(physics_model, OBJECT_MASS));
+        physics_objects.back()->coordinate_space().rotate(
+            Math::Unit_quaternion(Math::Unit_vector(0, 1, 0), radians));
+        physics_objects.back()->coordinate_space().translate(offset);
+        arena->push_back(physics_objects.back());
+    }
 }
 
 void
@@ -215,12 +210,18 @@ on_idle()
     elapsed += frame_timer.elapsed();
     ++frame_count;
     if (elapsed > 1000.0f) {
-        std::cout << frame_count << " fps\n";
+        //        std::cout << frame_count << " fps\n";
         frame_count = 0;
         elapsed     = 0;
     }
-    arena->run_physics(frame_timer.restart() / 1000.0f);
-
+    int64_t frame_time = frame_timer.restart();
+    if (!paused || single_step) {
+        if (single_step) {
+            frame_time = 17;
+        }
+        arena->run_physics(frame_time / 1000.0f);
+        single_step = false;
+    }
     for (int i = 1; i < NUM_LAYERS * OBJECTS_PER_LAYER + 1; ++i) {
         Math::Point           new_position    = physics_objects[i]->coordinate_space().position();
         Math::Unit_quaternion new_orientation = physics_objects[i]->coordinate_space().rotation();
@@ -233,43 +234,43 @@ on_idle()
         visible_objects[i]->coordinate_space().rotation() = new_orientation;
 
         // reset forces to default
-        physics_objects[i]->force() = Math::Vector(0, -10.0f, 0);
+        physics_objects[i]->force() = Math::Vector(0, -9.8f * OBJECT_MASS, 0);
         //        physics_objects[i]->force()  = Math::Vector( 0, 0, 0 );
         physics_objects[i]->torque() = Math::Vector();
     }
 
     scene->render(*camera);
 
-    /*
     // Draw the contact info on top
-    Renderer::Open_gl_attributes attribs( Renderer::Open_gl_attributes::ENABLE_BIT | Renderer::Open_gl_attributes::HINT_BIT | Renderer::Open_gl_attributes::POLYGON_BIT, false );
-    Renderer::Open_gl_commands::line_width( 2 );
-    Renderer::Open_gl_commands::polygon_mode( GL_BACK, GL_LINE );
-    Renderer::Open_gl_commands::cull_face( GL_FRONT );
-    attribs.depth_func( GL_ALWAYS );
+    Renderer::Open_gl_attributes attribs(Renderer::Open_gl_attributes::ENABLE_BIT |
+                                             Renderer::Open_gl_attributes::HINT_BIT |
+                                             Renderer::Open_gl_attributes::POLYGON_BIT,
+                                         false);
+    Renderer::Open_gl_commands::line_width(2);
+    Renderer::Open_gl_commands::polygon_mode(GL_BACK, GL_LINE);
+    Renderer::Open_gl_commands::cull_face(GL_FRONT);
+    attribs.depth_func(GL_ALWAYS);
 
-    glColor3f( 1.0f, 0, 0 );
-    glPointSize( 5.0f );
+    glColor3f(0, 1.0f, 0);
+    glPointSize(3.0f);
 
-    for (const auto& manifold : arena.manifolds()) {
+    for (const auto& manifold : arena->manifolds()) {
         for (const auto& c : manifold.second.contacts()) {
             {
-                Renderer::Open_gl_primitive prim( Renderer::Open_gl_primitive::POINTS );
-                prim.vertex( c.contact_point_a );
-                prim.vertex( c.contact_point_b );
+                Renderer::Open_gl_primitive prim(Renderer::Open_gl_primitive::POINTS);
+                prim.vertex(c.contact_point_a);
+                prim.vertex(c.contact_point_b);
             }
-            Renderer::Open_gl_primitive prim( Renderer::Open_gl_primitive::LINES );
-            prim.vertex( c.contact_point_a );
-            prim.vertex( c.contact_point_a + Math::Vector(c.normal)*c.penetration_depth );
+            //            Renderer::Open_gl_primitive prim(Renderer::Open_gl_primitive::LINES);
+            //          prim.vertex(c.contact_point_a);
+            //        prim.vertex(c.contact_point_a + Math::Vector(c.normal) * c.penetration_depth);
             // render tangents
-//            prim.vertex( c.contact_point_a );
-//            prim.vertex( c.contact_point_a + Math::Vector(c.tangent1) );
-//            prim.vertex( c.contact_point_a );
-//            prim.vertex( c.contact_point_a + Math::Vector(c.tangent2) );
+            //            prim.vertex( c.contact_point_a );
+            //            prim.vertex( c.contact_point_a + Math::Vector(c.tangent1) );
+            //            prim.vertex( c.contact_point_a );
+            //            prim.vertex( c.contact_point_a + Math::Vector(c.tangent2) );
         }
-
     }
-    */
     SDL_Delay(10);
 }
 
@@ -316,8 +317,6 @@ on_mouse_motion(const Utility::Sdl_manager::Mouse_point& p)
 void
 on_mouse_right_down(const Utility::Sdl_manager::Mouse_point& p)
 {
-    physics_objects[FIRST_OBJECT]->force() =
-        physics_objects[FIRST_OBJECT]->force() + Math::Vector(0, 5000, 0);
 }
 
 void
@@ -336,8 +335,8 @@ on_mouse_left_up(const Utility::Sdl_manager::Mouse_point&)
 void
 on_mouse_wheel(int y)
 {
-    int delta = y * -5;
-    if (camera->z_axis_offset() + delta < 5) {
+    float delta = y * -0.2f;
+    if (camera->z_axis_offset() + delta < 0.2) {
         return;
     }
     camera->z_axis_offset() += delta;
@@ -350,17 +349,11 @@ on_key_down(SDL_Keycode key, unsigned short mod)
     case SDLK_q:
         sdl.stop();
         break;
-    case SDLK_a:
-        physics_objects[FIRST_OBJECT]->torque() = Math::Vector(1, 0, 0);
-        break;
-    case SDLK_f:
-        physics_objects[FIRST_OBJECT]->force() =
-            physics_objects[FIRST_OBJECT]->force() + Math::Vector(100, 0, 50);
+    case SDLK_p:
+        paused = !paused;
         break;
     case SDLK_s:
-        physics_objects[FIRST_OBJECT]->torque() = Math::Vector(
-            static_cast<float>(rand()) / RAND_MAX, static_cast<float>(rand()) / RAND_MAX,
-            static_cast<float>(rand()) / RAND_MAX);
+        single_step = true;
         break;
     }
 }

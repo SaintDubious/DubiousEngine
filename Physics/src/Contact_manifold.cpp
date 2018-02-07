@@ -11,8 +11,11 @@ namespace Dubious {
 namespace Physics {
 
 Contact_manifold::Contact_manifold(const Physics_object& a, const Physics_object& b,
-                                   float persistent_threshold)
-    : m_object_a(a), m_object_b(b), m_persistent_threshold(persistent_threshold)
+                                   float persistent_threshold, float movement_threshold)
+    : m_object_a(a)
+    , m_object_b(b)
+    , m_persistent_threshold(persistent_threshold)
+    , m_movement_threshold(movement_threshold)
 {
 }
 
@@ -39,10 +42,10 @@ Contact_manifold::prune_old_contacts()
 
                 // if the point has moved too far from where it was originally recorded
                 // then we want to remove if from the manifold
-                if ((new_contact_a - c.contact_point_a).length_squared() > m_persistent_threshold) {
+                if ((new_contact_a - c.contact_point_a).length_squared() > m_movement_threshold) {
                     return true;
                 }
-                if ((new_contact_b - c.contact_point_b).length_squared() > m_persistent_threshold) {
+                if ((new_contact_b - c.contact_point_b).length_squared() > m_movement_threshold) {
                     return true;
                 }
                 return false;
@@ -224,6 +227,15 @@ Contact_manifold::insert(const std::vector<Contact>& contacts)
         }
     }
     cleanup_contacts(m_contacts);
+}
+
+std::ostream&
+operator<<(std::ostream& o, const Contact_manifold& c)
+{
+    for (const auto& contact : c.m_contacts) {
+        o << "{\n\t" << contact.local_point_a << "\n\t" << contact.local_point_b << "\n}\n";
+    }
+    return o;
 }
 
 }  // namespace Physics
