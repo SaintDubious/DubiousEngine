@@ -22,8 +22,10 @@ class Physics_object;
 /// http://stackoverflow.com/questions/31764305/im-implementing-the-expanding-polytope-algorithm-and-i-am-unsure-how-to-deduce
 class Collision_solver {
 public:
-    /// @brief Default constructor
-    Collision_solver() = default;
+    /// @brief Constructor
+    /// @param greedy_manifold - [in] sets whether this will try to find as many
+    ///                          contacts as possible when finding intersections
+    Collision_solver(bool greedy_manifold);
 
     Collision_solver(const Collision_solver&) = delete;
     Collision_solver& operator=(const Collision_solver&) = delete;
@@ -50,6 +52,9 @@ public:
     /// @param b - [in] the second object
     /// @returns true if they might collide
     bool broad_phase_intersection(const Physics_object& a, const Physics_object& b) const;
+
+private:
+    bool m_greedy_manifold;
 };
 
 }  // namespace Physics

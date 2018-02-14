@@ -24,7 +24,7 @@ public:
     {
         std::vector<std::shared_ptr<Physics_object>>                        objects;
         std::map<Collision_strategy::Physics_object_pair, Contact_manifold> manifolds;
-        Collision_strategy_simple                                           strategy(0.05f, 0.5f);
+        Collision_strategy_simple strategy(0.05f, 0.5f, false);
         setup_objects(objects);
         strategy.find_contacts(objects, manifolds);
         Assert::IsTrue(verify_result(objects, manifolds));
@@ -34,7 +34,7 @@ public:
     {
         std::vector<std::shared_ptr<Physics_object>>                        objects;
         std::map<Collision_strategy::Physics_object_pair, Contact_manifold> manifolds;
-        Collision_strategy_multi_threaded strategy(0.05f, 0.5f, 4);
+        Collision_strategy_multi_threaded strategy(0.05f, 0.5f, false, 4);
         setup_objects(objects);
         strategy.find_contacts(objects, manifolds);
         Assert::IsTrue(verify_result(objects, manifolds));
@@ -44,7 +44,7 @@ public:
     {
         std::vector<std::shared_ptr<Physics_object>>                        objects;
         std::map<Collision_strategy::Physics_object_pair, Contact_manifold> manifolds;
-        Collision_strategy_open_cl strategy(0.05f, 0.5f, 4, 8);
+        Collision_strategy_open_cl strategy(0.05f, 0.5f, false, 4, 8);
         setup_objects(objects);
         strategy.find_contacts(objects, manifolds);
         Assert::IsTrue(verify_result(objects, manifolds));

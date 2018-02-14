@@ -44,6 +44,13 @@ public:
         /// a contact has moved.
         float manifold_movement_threshold = 0.05f;
 
+        /// When the collision solver tries to find contact points it
+        /// can choose to just find one contact point per cycle (the
+        /// deepest penetration) or it can try to find all contact
+        /// points per cycle. Finding all results in a stabler simulation
+        /// but it costs more.
+        bool greedy_manifold = false;
+
         /// After broad phase collision detection we create a vector
         /// of potentially colliding pairs. If the number of these
         /// pairs exceeds this number, the collision detection will

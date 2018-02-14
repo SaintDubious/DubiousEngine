@@ -23,7 +23,7 @@ class Contact_manifold_test
 public:
     TEST_METHOD(contact_manifold_insert_test)
     {
-        Collision_solver solver;
+        Collision_solver solver(false);
 
         std::unique_ptr<const Ac3d_file> model_file = Ac3d_file_reader::test_cube(1.0f, 1.0f, 1.0f);
 
@@ -46,7 +46,7 @@ public:
 
     TEST_METHOD(contact_manifold_prune_test)
     {
-        Collision_solver solver;
+        Collision_solver solver(false);
 
         std::unique_ptr<const Ac3d_file> model_file = Ac3d_file_reader::test_cube(1.0f, 1.0f, 1.0f);
 

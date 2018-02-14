@@ -14,6 +14,10 @@
 namespace Dubious {
 namespace Physics {
 
+Collision_solver::Collision_solver(bool greedy_manifold) : m_greedy_manifold(greedy_manifold)
+{
+}
+
 namespace {
 
 Math::Local_vector
@@ -39,27 +43,24 @@ support(const Physics_model& model, const Math::Local_vector& direction)
 // Children of models a and b are tested in other functions
 bool
 model_intersection(const Physics_model& a, const Math::Coordinate_space& ca, const Physics_model& b,
-                   const Math::Coordinate_space& cb, Minkowski_simplex& simplex)
+                   const Math::Coordinate_space& cb, const Math::Vector& start_direction,
+                   Minkowski_simplex& simplex)
 {
     if (a.vectors().empty() || b.vectors().empty()) {
         return false;
     }
 
-    Math::Vector direction(1, 0, 0);
+    Math::Vector direction = start_direction;
     Math::Vector support_a =
         ca.transform(support(a, ca.transform(direction))) + (Math::to_vector(ca.position()));
     Math::Vector support_b =
         cb.transform(support(b, cb.transform(direction * -1))) + (Math::to_vector(cb.position()));
     Math::Vector support_point = support_a - support_b;
     if (support_point == Math::Vector()) {
-        // an empty simplex_point will result in an invalid direction, so try
-        // another one.
-        direction = Math::Vector(0, 1, 0);
-        support_a =
-            ca.transform(support(a, ca.transform(direction))) + (Math::to_vector(ca.position()));
-        support_b = cb.transform(support(b, cb.transform(direction * -1))) +
-                    (Math::to_vector(cb.position()));
-        support_point = support_a - support_b;
+        // If we go as far as possible in one direction and we are exactly at the origin,
+        // then there's no way to get a CONVEX tetrahedron that contains the origin.
+        // Said another way, touching contact is not a collision
+        return false;
     }
     simplex   = Minkowski_simplex(Minkowski_vector(support_point, support_a, support_b));
     direction = support_point * -1;
@@ -172,18 +173,30 @@ find_collision_point(const Physics_model& a, const Math::Coordinate_space& ca,
 bool
 intersection_recurse_b(const Physics_model& a, const Math::Coordinate_space& ca,
                        const Physics_model& b, const Math::Coordinate_space& cb,
-                       std::vector<Contact_manifold::Contact>& contacts)
+                       bool greedy_manifold, std::vector<Contact_manifold::Contact>& contacts)
 {
-    bool              ret_val = false;
-    Minkowski_simplex simplex;
-    if (model_intersection(a, ca, b, cb, simplex)) {
-        Contact_manifold::Contact contact;
-        find_collision_point(a, ca, b, cb, simplex, contact);
-        contacts.push_back(contact);
-        ret_val = true;
+    bool                ret_val       = false;
+    static Math::Vector directions[6] = {
+        Math::Vector(1, 0, 0),  Math::Vector(-1, 0, 0), Math::Vector(0, 1, 0),
+        Math::Vector(0, -1, 0), Math::Vector(0, 0, 1),  Math::Vector(0, 0, -1),
+    };
+
+    for (const auto& d : directions) {
+        Minkowski_simplex simplex;
+        bool              found = model_intersection(a, ca, b, cb, d, simplex);
+        if (found) {
+            Contact_manifold::Contact contact;
+            find_collision_point(a, ca, b, cb, simplex, contact);
+            contacts.push_back(contact);
+            ret_val = true;
+        }
+        if (!greedy_manifold) {
+            break;
+        }
     }
+
     for (const auto& kid : b.kids()) {
-        if (intersection_recurse_b(a, ca, *kid, cb, contacts)) {
+        if (intersection_recurse_b(a, ca, *kid, cb, greedy_manifold, contacts)) {
             ret_val = true;
         }
     }
@@ -194,14 +207,14 @@ intersection_recurse_b(const Physics_model& a, const Math::Coordinate_space& ca,
 bool
 intersection_recurse_a(const Physics_model& a, const Math::Coordinate_space& ca,
                        const Physics_model& b, const Math::Coordinate_space& cb,
-                       std::vector<Contact_manifold::Contact>& contacts)
+                       bool greedy_manifold, std::vector<Contact_manifold::Contact>& contacts)
 {
     bool ret_val = false;
-    if (intersection_recurse_b(a, ca, b, cb, contacts)) {
+    if (intersection_recurse_b(a, ca, b, cb, greedy_manifold, contacts)) {
         ret_val = true;
     }
     for (const auto& kid : a.kids()) {
-        if (intersection_recurse_a(*kid, ca, b, cb, contacts)) {
+        if (intersection_recurse_a(*kid, ca, b, cb, greedy_manifold, contacts)) {
             ret_val = true;
         }
     }
@@ -228,7 +241,7 @@ Collision_solver::intersection(const Physics_object& a, const Physics_object& b,
                                std::vector<Contact_manifold::Contact>& contacts) const
 {
     return intersection_recurse_a(a.model(), a.coordinate_space(), b.model(), b.coordinate_space(),
-                                  contacts);
+                                  m_greedy_manifold, contacts);
 }
 
 }  // namespace Physics

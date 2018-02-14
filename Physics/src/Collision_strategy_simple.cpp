@@ -8,8 +8,10 @@ namespace Dubious {
 namespace Physics {
 
 Collision_strategy_simple::Collision_strategy_simple(float manifold_persistent_threshold,
-                                                     float manifold_movement_threshold)
-    : m_manifold_persistent_threshold(manifold_persistent_threshold)
+                                                     float manifold_movement_threshold,
+                                                     bool  greedy_manifold)
+    : m_collision_solver(greedy_manifold)
+    , m_manifold_persistent_threshold(manifold_persistent_threshold)
     , m_manifold_movement_threshold(manifold_movement_threshold)
 {
 }

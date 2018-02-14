@@ -28,7 +28,7 @@ Camera::ready_for_photo() const
     Open_gl_matrix::load_identity();
     float aspect_ratio =
         static_cast<float>(m_viewport_width) / static_cast<float>(m_viewport_height);
-    Open_gl_commands::perspective(m_fovy, aspect_ratio, 1.0f, m_max_depth);
+    Open_gl_commands::perspective(m_fovy, aspect_ratio, m_min_depth, m_max_depth);
 
     // modelview
     Open_gl_matrix::matrix_mode(GL_MODELVIEW);

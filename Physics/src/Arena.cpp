@@ -23,18 +23,18 @@ Arena::Arena(const Settings& settings)
     case Collision_solver_settings::Strategy::SINGLE_THREADED:
         m_collision_strategy = std::make_unique<Collision_strategy_simple>(
             m_settings.collision.manifold_persistent_threshold,
-            m_settings.collision.manifold_movement_threshold);
+            m_settings.collision.manifold_movement_threshold, m_settings.collision.greedy_manifold);
         break;
     case Collision_solver_settings::Strategy::MULTI_THREADED:
         m_collision_strategy = std::make_unique<Collision_strategy_multi_threaded>(
             m_settings.collision.manifold_persistent_threshold,
-            m_settings.collision.manifold_movement_threshold,
+            m_settings.collision.manifold_movement_threshold, m_settings.collision.greedy_manifold,
             m_settings.collision.mt_collisions_work_group_size);
         break;
     case Collision_solver_settings::Strategy::OPENCL:
         m_collision_strategy = std::make_unique<Collision_strategy_open_cl>(
             m_settings.collision.manifold_persistent_threshold,
-            m_settings.collision.manifold_movement_threshold,
+            m_settings.collision.manifold_movement_threshold, m_settings.collision.greedy_manifold,
             m_settings.collision.cl_collisions_per_thread,
             m_settings.collision.cl_collisions_work_group_size);
         break;

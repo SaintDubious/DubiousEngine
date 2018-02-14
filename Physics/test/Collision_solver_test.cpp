@@ -20,7 +20,7 @@ class Collision_solver_test
 public:
     TEST_METHOD(collision_solver_intersection)
     {
-        Collision_solver                       solver;
+        Collision_solver                       solver(false);
         std::vector<Contact_manifold::Contact> contacts;
         std::unique_ptr<const Ac3d_file> model_file = Ac3d_file_reader::test_cube(1.0f, 1.0f, 1.0f);
 
@@ -30,9 +30,9 @@ public:
 
         b.coordinate_space().translate(Vector(3, 0, 0));
         Assert::IsTrue(solver.intersection(a, b, contacts) == false);
-        // Touching... should this be a collision?
+        // Touching... this is not a collision
         b.coordinate_space().translate(Vector(-1, 0, 0));
-        Assert::IsTrue(solver.intersection(a, b, contacts) == true);
+        Assert::IsTrue(solver.intersection(a, b, contacts) == false);
         // definite collision
         b.coordinate_space().translate(Vector(-1, 0, 0));
         Assert::IsTrue(solver.intersection(a, b, contacts) == true);
@@ -63,7 +63,7 @@ public:
 
     TEST_METHOD(collision_solver_touching_contacts)
     {
-        Collision_solver                       solver;
+        Collision_solver                       solver(false);
         std::vector<Contact_manifold::Contact> contacts;
         std::unique_ptr<const Ac3d_file> model_file = Ac3d_file_reader::test_cube(5.0f, 0.5f, 5.0f);
 

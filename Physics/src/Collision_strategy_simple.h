@@ -22,8 +22,9 @@ public:
     ///
     /// @param manifold_persistent_threshold - [in] see Arena::Settings
     /// @param manifold_movement_threshold - [in] see Arena::Settings
+    /// @param greedy_manifold - [in] see Arena::Settings
     Collision_strategy_simple(float manifold_persistent_threshold,
-                              float manifold_movement_threshold);
+                              float manifold_movement_threshold, bool greedy_manifold);
 
     /// @brief Destructor
     ~Collision_strategy_simple() = default;

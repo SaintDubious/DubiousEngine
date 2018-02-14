@@ -77,6 +77,7 @@ private:
     Math::Coordinate_space m_coordinate_space;
     float                  m_z_axis_offset = 10.0f;
     float                  m_max_depth     = 100.0f;
+    float                  m_min_depth     = 0.3f;
 };
 
 }  // namespace Renderer
