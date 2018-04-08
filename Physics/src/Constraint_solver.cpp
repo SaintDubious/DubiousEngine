@@ -96,9 +96,10 @@ lagrangian_multiplier_friction(const Math::Vector& t, const Math::Vector& r_a,
 }  // namespace
 
 void
-Constraint_solver::warm_start(Physics_object& a, Physics_object& b,
-                              const Contact_manifold& contact_manifold, float scale)
+Constraint_solver::warm_start(Contact_manifold& contact_manifold, float scale)
 {
+    Physics_object& a = contact_manifold.object_a();
+    Physics_object& b = contact_manifold.object_b();
     for (const auto& c : contact_manifold.contacts()) {
         Math::Vector r_a = c.contact_point_a - a.coordinate_space().position();
         Math::Vector r_b = c.contact_point_b - b.coordinate_space().position();
@@ -127,8 +128,10 @@ Constraint_solver::warm_start(Physics_object& a, Physics_object& b,
 }
 
 void
-Constraint_solver::solve(Physics_object& a, Physics_object& b, Contact_manifold& contact_manifold)
+Constraint_solver::solve(Contact_manifold& contact_manifold)
 {
+    Physics_object& a = contact_manifold.object_a();
+    Physics_object& b = contact_manifold.object_b();
     for (auto& c : contact_manifold.contacts()) {
         Math::Vector r_a = c.contact_point_a - a.coordinate_space().position();
         Math::Vector r_b = c.contact_point_b - b.coordinate_space().position();

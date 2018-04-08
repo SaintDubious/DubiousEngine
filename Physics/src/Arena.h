@@ -15,11 +15,9 @@ class Physics_object;
 
 /// @brief Container for all of the Physics things
 ///
-/// Much as the Scene describes everything that exists in the
-/// Renderer, the Arena describes everything in the Physics
-/// world. This is the container for all of the physical things
-/// that are going to be forced, collided, moved, etc. A game
-/// will have one of these.
+/// Much as the Scene describes everything that exists in the Renderer, the Arena describes
+/// everything in the Physics world. This is the container for all of the physical things that are
+/// going to be forced, collided, moved, etc. A game will have one of these.
 class Arena {
 public:
     /// @brief Collision solver settings
@@ -28,43 +26,38 @@ public:
     struct Collision_solver_settings {
         enum class Strategy { SINGLE_THREADED, MULTI_THREADED, OPENCL };
 
-        /// When a point is being added to the contact manifold it
-        /// needs to be tested against existing points to see if it
-        /// is new, or is already in the manifold. If the distance
+        /// When a point is being added to the contact manifold it needs to be tested against
+        /// existing points to see if it is new, or is already in the manifold. If the distance
         /// squared from an existing point to a new is less then this
         /// threshold then the new point will be considered the same
         /// as the old.
         float manifold_persistent_threshold = 0.05f;
 
-        /// When the manifold is pruned it will examine all existing
-        /// contact points. If any of them have moved too far since the
-        /// last update (for example if the object is moving too fast)
+        /// When the manifold is pruned it will examine all existing contact points. If any of them
+        /// have moved too far since the last update (for example if the object is moving too fast)
         /// they will be removed as they are probably no longer valid.
         /// The movemenet threshold is the distance squared above which
         /// a contact has moved.
         float manifold_movement_threshold = 0.05f;
 
-        /// When the collision solver tries to find contact points it
-        /// can choose to just find one contact point per cycle (the
-        /// deepest penetration) or it can try to find all contact
+        /// When the collision solver tries to find contact points it can choose to just find one
+        /// contact point per cycle (the deepest penetration) or it can try to find all contact
         /// points per cycle. Finding all results in a stabler simulation
         /// but it costs more.
         bool greedy_manifold = false;
 
-        /// After broad phase collision detection we create a vector
-        /// of potentially colliding pairs. If the number of these
-        /// pairs exceeds this number, the collision detection will
-        /// be shunted off to a new thread. One new thread for every
-        /// vector of pairs of the following size.
-        /// This is specific to Collision_strategy_open_cl
+        /// After broad phase collision detection we create a vector of potentially colliding pairs.
+        /// If the number of these pairs exceeds this number, the collision detection will be
+        /// shunted off to a new thread. One new thread for every vector of pairs of the following
+        /// size. This is specific to Collision_strategy_open_cl
         unsigned int cl_collisions_per_thread = 100000;
 
-        /// When using Collision_strategy_open_cl we need to know
-        /// how many objects per global work group
+        /// When using Collision_strategy_open_cl we need to know how many objects per global work
+        /// group
         unsigned int cl_collisions_work_group_size = 3200;
 
-        /// When using Collision_strategy_multi_threaded we need to know
-        /// how many objects per global work group
+        /// When using Collision_strategy_multi_threaded we need to know how many objects per global
+        /// work group
         unsigned int mt_collisions_work_group_size = 1000;
 
         /// Which collision strategy should be used:
@@ -78,45 +71,39 @@ public:
     ///
     /// Settings for the constraint solver
     struct Constraint_solver_settings {
-        /// How long, in seconds, for an individual time step. The
-        /// engine will always perform physics updates in discrete
-        /// units of this much time. 1/60th is a good number
+        /// How long, in seconds, for an individual time step. The engine will always perform
+        /// physics updates in discrete units of this much time. 1/60th is a good number
         float step_size = 0.0166666f;
 
-        /// How many iterations the constraint solver will take
-        /// per time step.
+        /// How many iterations the constraint solver will take per time step.
         int iterations = 20;
 
-        /// Beta affects how much force is applied when objects are
-        /// overlapping. The further the overlap, the more separating
-        /// force is applied. If this is set too low, objects can
+        /// Beta affects how much force is applied when objects are overlapping. The further the
+        /// overlap, the more separating force is applied. If this is set too low, objects can
         /// overlap and never push apart. Set it too high and
         /// resting objects will jitter.
         float beta = 0.03f;
 
-        /// This fake force is applied proportionally to how fast
-        /// objects are overlapping. This can help stop fast objects
-        /// from penetrating too far. However if it's turned up too
-        /// high it will cause bouncing.
+        /// This fake force is applied proportionally to how fast objects are overlapping. This can
+        /// help stop fast objects from penetrating too far. However if it's turned up too high it
+        /// will cause bouncing.
         float coefficient_of_restitution = 0.5f;
 
-        /// This affects both beta and the coefficient of restitution.
-        /// If objects are overlapping less then this, then neither
-        /// of those forces will be applied. A little bit of slop
-        /// will allow some penetration, but a stabler system. Not
-        /// enough slop and things will become unstable.
+        /// This affects both beta and the coefficient of restitution. If objects are overlapping
+        /// less then this, then neither of those forces will be applied. A little bit of slop will
+        /// allow some penetration, but a stabler system. Not enough slop and things will become
+        /// unstable.
         float slop = 0.05f;
 
-        /// Warm starting is when we apply some percentage of the previous
-        /// physics run's force as a first guess to the current run.
-        /// This amount is the scaling factor, 1.0 = 100%
+        /// Warm starting is when we apply some percentage of the previous physics run's force as a
+        /// first guess to the current run. This amount is the scaling factor, 1.0 = 100%
         float warm_start_scale = 0.5f;
     };
 
     /// @brief Physics settings
     ///
-    /// I read somewhere that a physics engine is an endless selection
-    /// of knobs to turn. This struct holds the knobs.
+    /// I read somewhere that a physics engine is an endless selection of knobs to turn. This struct
+    /// holds the knobs.
     struct Settings {
         Settings() {}
 
@@ -141,8 +128,8 @@ public:
 
     /// @brief Run the main physics loop
     ///
-    /// This is the entry point to all of the physics. This will
-    /// apply forces, move, collide, resolve, and blow up
+    /// This is the entry point to all of the physics. This will apply forces, move, collide,
+    /// resolve, and blow up
     /// @param elapsed - [in] how much time has elapsed since the last run
     void run_physics(float elapsed);
 
@@ -152,10 +139,9 @@ public:
 
     /// @brief Manifold accessor
     ///
-    /// Not sure if this is useful in any situation EXCEPT the one
-    /// in which I'm trying to debug by drawing the contacts
-    const std::map<std::tuple<Physics_object*, Physics_object*>, Contact_manifold>& manifolds()
-        const
+    /// Not sure if this is useful in any situation EXCEPT the one in which I'm trying to debug by
+    /// drawing the contacts
+    const std::map<std::tuple<int, int>, Contact_manifold>& manifolds() const
     {
         return m_manifolds;
     }
@@ -165,14 +151,17 @@ private:
     Constraint_solver                   m_constraint_solver;
     float                               m_elapsed = 0.0f;
     const Settings                      m_settings;
+    int                                 m_next_object_id = 1;
 
-    // m_objects holds everything. The manifolds hold only pointers
-    // and references to the m_objects. This is an optimization that got
-    // me a 10% speedup. However it means if you ever remove anything from
-    // m_objects, you will have to make sure to pull it out of m_manifolds
-    // as well.
-    std::vector<std::shared_ptr<Physics_object>>                             m_objects;
-    std::map<std::tuple<Physics_object*, Physics_object*>, Contact_manifold> m_manifolds;
+    // m_objects holds everything. The manifolds hold only pointers and references to the m_objects.
+    // This is an optimization that got me a 10% speedup. However it means if you ever remove
+    // anything from m_objects, you will have to make sure to pull it out of m_manifolds as well.
+    //
+    // The Physics_object::id() is used as a key into the manifolds. I was using the objects'
+    // pointer, but that meant that the order of the manifolds would change for each run, meaning I
+    // couldn't get reproducible test cases.
+    std::vector<std::shared_ptr<Physics_object>>     m_objects;
+    std::map<std::tuple<int, int>, Contact_manifold> m_manifolds;
 };
 
 }  // namespace Physics

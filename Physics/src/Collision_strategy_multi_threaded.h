@@ -38,7 +38,7 @@ public:
 
     /// @brief See Collision_strategy::find_contacts
     void find_contacts(const std::vector<std::shared_ptr<Physics_object>>& objects,
-                       std::map<Physics_object_pair, Contact_manifold>&    manifolds) final;
+                       std::map<Physics_object_ids, Contact_manifold>&     manifolds) final;
 
 private:
     Collision_solver   m_collision_solver;
@@ -47,14 +47,14 @@ private:
     const unsigned int m_workgroup_size;
     std::mutex         m_manifolds_mutex;
 
-    std::set<Physics_object_pair> solve_inner(
+    std::set<Physics_object_ids> solve_inner(
         size_t start, size_t length, const std::vector<std::shared_ptr<Physics_object>>& objects,
-        std::map<Physics_object_pair, Contact_manifold>& manifolds);
+        std::map<Physics_object_ids, Contact_manifold>& manifolds);
 
-    std::set<Physics_object_pair> solve_outer(
+    std::set<Physics_object_ids> solve_outer(
         size_t a_start, size_t a_length, size_t b_start, size_t b_length,
         const std::vector<std::shared_ptr<Physics_object>>& objects,
-        std::map<Physics_object_pair, Contact_manifold>&    manifolds);
+        std::map<Physics_object_ids, Contact_manifold>&     manifolds);
 };
 
 }  // namespace Physics

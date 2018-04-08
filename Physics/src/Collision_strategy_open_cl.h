@@ -41,7 +41,7 @@ public:
 
     /// @brief See Collision_strategy::find_contacts
     void find_contacts(const std::vector<std::shared_ptr<Physics_object>>& objects,
-                       std::map<Physics_object_pair, Contact_manifold>&    manifolds) final;
+                       std::map<Physics_object_ids, Contact_manifold>&     manifolds) final;
 
 private:
     Collision_solver   m_collision_solver;
@@ -64,9 +64,9 @@ private:
     cl_float*        m_broad_phase_objects = nullptr;
     cl_char*         m_broad_phase_results = nullptr;
 
-    std::set<Physics_object_pair> solve_collisions(
-        std::vector<Physics_object_pair>&&               inputs,
-        std::map<Physics_object_pair, Contact_manifold>& manifolds);
+    std::set<Physics_object_ids> solve_collisions(
+        std::vector<std::tuple<Physics_object*, Physics_object*>>&& inputs,
+        std::map<Physics_object_ids, Contact_manifold>&             manifolds);
     std::vector<std::tuple<size_t, size_t>> openCL_broad_phase_inner(
         const std::vector<std::shared_ptr<Physics_object>>& objects, size_t offset, size_t length);
     std::vector<std::tuple<size_t, size_t>> openCL_broad_phase_outer(

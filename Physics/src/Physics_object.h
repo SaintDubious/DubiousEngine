@@ -41,6 +41,16 @@ public:
     Math::Coordinate_space&       coordinate_space() { return m_coordinate_space; }
     const Math::Coordinate_space& coordinate_space() const { return m_coordinate_space; }
 
+    /// @brief Unique object id
+    ///
+    /// In the Arena object we need the manifolds to be be indexed on the pair of objects that
+    /// created the manifold. I was using the object pointer, but this meant that the order of the
+    /// manifolds would vary between runs (depending on pointer location). This meant each time I
+    /// ran it I would get different behaviors. So in order to make each run of a scene stable (with
+    /// specific time inputs) for debugging, I need stable ids. So I use this. Doesn't matter what
+    /// the id is, as long as it's unique and assigned the same between runs.
+    int& id() { return m_id; }
+
     // linear
     float               inverse_mass() const { return m_inverse_mass; }
     const Math::Vector& velocity() const { return m_velocity; }
@@ -58,6 +68,7 @@ public:
 private:
     std::shared_ptr<Physics_model> m_model;
     Math::Coordinate_space         m_coordinate_space;
+    int                            m_id;
 
     // Linear Physics
     float        m_inverse_mass;

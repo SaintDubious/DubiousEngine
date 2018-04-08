@@ -34,7 +34,7 @@ public:
 
     /// @brief See Collision_strategy::find_contacts
     void find_contacts(const std::vector<std::shared_ptr<Physics_object>>& m_objects,
-                       std::map<Physics_object_pair, Contact_manifold>&    manifolds) final;
+                       std::map<Physics_object_ids, Contact_manifold>&     manifolds) final;
 
 private:
     Collision_solver m_collision_solver;

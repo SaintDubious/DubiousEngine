@@ -28,7 +28,7 @@ public:
 
     // I try to avoid typedefs, but this one is so long and used
     // so often that it becomes unruly
-    typedef std::tuple<Physics_object*, Physics_object*> Physics_object_pair;
+    typedef std::tuple<int, int> Physics_object_ids;
 
     /// @brief Find contacts between objects
     ///
@@ -38,7 +38,7 @@ public:
     /// @param objects - [in] All of the objects to compare
     /// @param manifolds - [in,out] contact information between each pair
     virtual void find_contacts(const std::vector<std::shared_ptr<Physics_object>>& objects,
-                               std::map<Physics_object_pair, Contact_manifold>&    manifolds) = 0;
+                               std::map<Physics_object_ids, Contact_manifold>&     manifolds) = 0;
 
 protected:
     Collision_strategy() = default;

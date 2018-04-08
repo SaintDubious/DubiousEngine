@@ -57,9 +57,9 @@ model_intersection(const Physics_model& a, const Math::Coordinate_space& ca, con
         cb.transform(support(b, cb.transform(direction * -1))) + (Math::to_vector(cb.position()));
     Math::Vector support_point = support_a - support_b;
     if (support_point == Math::Vector()) {
-        // If we go as far as possible in one direction and we are exactly at the origin,
-        // then there's no way to get a CONVEX tetrahedron that contains the origin.
-        // Said another way, touching contact is not a collision
+        // If we go as far as possible in one direction and we are exactly at the origin, then
+        // there's no way to get a CONVEX tetrahedron that contains the origin. Said another way,
+        // touching contact is not a collision
         return false;
     }
     simplex   = Minkowski_simplex(Minkowski_vector(support_point, support_a, support_b));
@@ -75,14 +75,22 @@ model_intersection(const Physics_model& a, const Math::Coordinate_space& ca, con
         support_b = cb.transform(support(b, cb.transform(direction * -1))) +
                     (Math::to_vector(cb.position()));
         support_point = support_a - support_b;
-        // If this next check is < 0 then touching will be considered
-        // a collision. If it's <= 0 then touching will not be a collision.
-        // For EPA to work, our GJK must exit with a CONVEX tetrahedron. Therefore
-        // if a contact point is directly on a line or triangle simplex (ie
-        // a touching collision) then the resulting tetrahedron would end up
-        // being flat (essentially 2D). This would cause some normal generation
-        // to blow up. So we need for touching to not be considered a collision
-        if (Math::dot_product(support_point, direction) <= 0) {
+        // If this next check is < 0 then touching will be considered a collision. If it's
+        // <= 0 then touching will not be a collision. For EPA to work, our GJK must exit with a
+        // CONVEX tetrahedron. Therefore if a contact point is directly on a line or triangle
+        // simplex (ie a touching collision) then the resulting tetrahedron would end up being flat
+        // (essentially 2D). This would cause some normal generation to blow up. So we need for
+        // touching to not be considered a collision
+        //
+        // Continued...
+        // Further testing (see Collision_solver_test) shows that just testing for <= 0 is not good
+        // enough as you can still have an "almost" flat tetrahedron that will cause issues when
+        // trying to construct normal vectors. Be careful, testing also showed incredibly small
+        // direction vectors that I wasn't expecting.
+        // I picked the smallest number that made the test pass, this may need to be loosened later.
+        // We might also consider another check for length of direction or whether a newly added
+        // point is too close to all existing points.
+        if (Math::dot_product(support_point, direction) <= 0.0000001) {
             return false;
         }
         simplex.push_back(Minkowski_vector(support_point, support_a, support_b));

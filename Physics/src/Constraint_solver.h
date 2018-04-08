@@ -38,26 +38,18 @@ public:
     /// step. For exmaple a bunch of blocks at rest all have the same gravity every
     /// time step. So this just re-applies the same force. This force is scaled by the
     /// 'scale' argument, where 1.0 = 100%
-    /// @param a - [in,out] The first object in the colliding pair. Its velocities
-    ///        will be updated.
-    /// @param b - [in,out] The second object in the colliding pair. Its velocities
-    ///        will be updated.
-    /// @param contact_manifold - [in] Up to 4 points that define the collision
+    /// @param contact_manifold - [in] Up to 4 points that define the collision between the 2
+    ///        objects stored in the manifold
     /// @param scale - [in] amount to scale the previous force
-    void warm_start(Physics_object& a, Physics_object& b, const Contact_manifold& contact_manifold,
-                    float scale);
+    void warm_start(Contact_manifold& contact_manifold, float scale);
 
     /// @brief The heart of constraint solving
     ///
     /// Given two objects that are known to be colliding, and up to 4 points that are
     /// in the contact manifold. Figures out all of the forces at each point.
-    /// @param a - [in,out] The first object in the colliding pair. Its velocities
-    ///        will be updated.
-    /// @param b - [in,out] The second object in the colliding pair. Its velocities
-    ///        will be updated.
     /// @param contact_manifold - [in,out] Up to 4 points that define the collision.  Its
     ///        forces will be updated
-    void solve(Physics_object& a, Physics_object& b, Contact_manifold& contact_manifold);
+    void solve(Contact_manifold& contact_manifold);
 
 private:
     const float m_time_step;

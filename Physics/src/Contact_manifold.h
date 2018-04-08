@@ -28,7 +28,7 @@ class Physics_object;
 /// http://allenchou.net/2014/01/game-physics-stability-warm-starting/
 class Contact_manifold {
 public:
-    Contact_manifold(const Physics_object& a, const Physics_object& b, float persistent_threshold,
+    Contact_manifold(Physics_object& a, Physics_object& b, float persistent_threshold,
                      float movement_threshold);
 
     /// @brief Contact information
@@ -66,15 +66,18 @@ public:
     std::vector<Contact>&       contacts() { return m_contacts; }
     const std::vector<Contact>& contacts() const { return m_contacts; }
 
+    Physics_object& object_a() { return m_object_a; }
+    Physics_object& object_b() { return m_object_b; }
+
 private:
     friend class Physics_test::Contact_manifold_test;
     friend std::ostream& operator<<(std::ostream& o, const Contact_manifold&);
 
-    const Physics_object& m_object_a;
-    const Physics_object& m_object_b;
-    std::vector<Contact>  m_contacts;
-    const float           m_movement_threshold   = 0.05f;
-    const float           m_persistent_threshold = 0.05f;
+    Physics_object&      m_object_a;
+    Physics_object&      m_object_b;
+    std::vector<Contact> m_contacts;
+    const float          m_movement_threshold   = 0.05f;
+    const float          m_persistent_threshold = 0.05f;
 
     void  cleanup_contacts(std::vector<Contact>& contacts);
     float distance_squared_to_line_segment(const Math::Point& a, const Math::Point& b,

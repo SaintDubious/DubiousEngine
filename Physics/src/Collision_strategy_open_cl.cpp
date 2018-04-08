@@ -91,11 +91,11 @@ Collision_strategy_open_cl::~Collision_strategy_open_cl()
 void
 Collision_strategy_open_cl::find_contacts(
     const std::vector<std::shared_ptr<Physics_object>>& objects,
-    std::map<Physics_object_pair, Contact_manifold>&    manifolds)
+    std::map<Physics_object_ids, Contact_manifold>&     manifolds)
 {
-    size_t                                                  objects_size = objects.size();
-    std::vector<Physics_object_pair>                        object_pairs;
-    std::vector<std::future<std::set<Physics_object_pair>>> results;
+    size_t                                                    objects_size = objects.size();
+    std::vector<std::tuple<Physics_object*, Physics_object*>> object_pairs;
+    std::vector<std::future<std::set<Physics_object_ids>>>    results;
 
     // inner comparisons
     for (size_t i = 0; i < objects_size; i += m_cl_broadphase_work_group_size) {
@@ -147,7 +147,7 @@ Collision_strategy_open_cl::find_contacts(
     }
 
     // collect results from threads
-    std::set<Physics_object_pair> colliding_pairs;
+    std::set<Physics_object_ids> colliding_pairs;
     for (auto& result : results) {
         const auto& result_set = result.get();
         colliding_pairs.insert(result_set.begin(), result_set.end());
@@ -180,7 +180,7 @@ Collision_strategy_open_cl::openCL_broad_phase_inner(
     }
     size_t comparison_count = static_cast<int>(length * (length - 1) / 2.0f);
 
-    cl_int num_elements = length;
+    cl_int num_elements = static_cast<cl_int>(length);
     Utility::Open_cl::set_kernel_arg(m_broad_phase_inner_kernel, 0, sizeof(cl_mem),
                                      &m_broad_phase_buffer_obj_a);
     Utility::Open_cl::set_kernel_arg(m_broad_phase_inner_kernel, 1, sizeof(cl_int), &num_elements);
@@ -232,7 +232,7 @@ Collision_strategy_open_cl::openCL_broad_phase_outer(
     }
     size_t comparison_count = length * length_b;
 
-    cl_int num_elements = length;
+    cl_int num_elements = static_cast<cl_int>(length);
     Utility::Open_cl::set_kernel_arg(m_broad_phase_outer_kernel, 0, sizeof(cl_mem),
                                      &m_broad_phase_buffer_obj_a);
     Utility::Open_cl::set_kernel_arg(m_broad_phase_outer_kernel, 1, sizeof(cl_mem),
@@ -265,23 +265,25 @@ Collision_strategy_open_cl::openCL_broad_phase_outer(
     return result_vector;
 }
 
-std::set<Collision_strategy::Physics_object_pair>
+std::set<Collision_strategy::Physics_object_ids>
 Collision_strategy_open_cl::solve_collisions(
-    std::vector<Physics_object_pair>&&               inputs,
-    std::map<Physics_object_pair, Contact_manifold>& manifolds)
+    std::vector<std::tuple<Physics_object*, Physics_object*>>&& inputs,
+    std::map<Physics_object_ids, Contact_manifold>&             manifolds)
 {
-    std::set<Physics_object_pair> new_pairs;
+    std::set<Physics_object_ids> new_pairs;
     for (const auto& object_tuple : inputs) {
         std::vector<Contact_manifold::Contact> contacts;
         if (m_collision_solver.intersection(*std::get<0>(object_tuple), *std::get<1>(object_tuple),
                                             contacts)) {
-            auto contact_manifold = manifolds.find(object_tuple);
+            auto id_pair =
+                std::make_tuple(std::get<0>(object_tuple)->id(), std::get<1>(object_tuple)->id());
+            auto contact_manifold = manifolds.find(id_pair);
             if (contact_manifold == manifolds.end()) {
                 std::unique_lock<std::mutex> lock(m_manifolds_mutex);
                 contact_manifold =
                     manifolds
                         .insert(std::make_pair(
-                            object_tuple,
+                            id_pair,
                             Contact_manifold(*std::get<0>(object_tuple), *std::get<1>(object_tuple),
                                              m_manifold_persistent_threshold,
                                              m_manifold_movement_threshold)))
@@ -289,7 +291,7 @@ Collision_strategy_open_cl::solve_collisions(
             }
             contact_manifold->second.prune_old_contacts();
             contact_manifold->second.insert(contacts);
-            new_pairs.insert(object_tuple);
+            new_pairs.insert(id_pair);
         }
     }
     return new_pairs;

@@ -80,6 +80,7 @@ main(int argc, char** argv)
         collision_solver_settings.strategy =
             Physics::Arena::Collision_solver_settings::Strategy::SINGLE_THREADED;
         collision_solver_settings.manifold_persistent_threshold = 0.00004f;
+        collision_solver_settings.greedy_manifold               = true;
         collision_solver_settings.mt_collisions_work_group_size = 500;
 
         Physics::Arena::Constraint_solver_settings constraint_solver_settings;
@@ -181,7 +182,7 @@ build_layer(float y, float angle)
     const Math::Local_vector offset(0.1f, y, 0);
     for (int i = 0; i < OBJECTS_PER_LAYER; ++i) {
         float radians = angle + static_cast<float>(i) * PI / 2.0f;
-        //float radians = angle + 2.0f * PI / 2.0f;
+        // float radians = angle + 2.0f * PI / 2.0f;
         visible_objects.push_back(
             std::make_shared<Renderer::Visible_object>(visible_model, visible_model));
         visible_objects.back()->base_color() = object_color;
@@ -219,6 +220,7 @@ on_idle()
         if (single_step) {
             frame_time = 17;
         }
+        //       frame_time = 17;
         arena->run_physics(frame_time / 1000.0f);
         single_step = false;
     }

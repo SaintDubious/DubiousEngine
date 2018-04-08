@@ -22,8 +22,8 @@ class Collision_strategy_test
 public:
     TEST_METHOD(collision_strategy_simple)
     {
-        std::vector<std::shared_ptr<Physics_object>>                        objects;
-        std::map<Collision_strategy::Physics_object_pair, Contact_manifold> manifolds;
+        std::vector<std::shared_ptr<Physics_object>>                       objects;
+        std::map<Collision_strategy::Physics_object_ids, Contact_manifold> manifolds;
         Collision_strategy_simple strategy(0.05f, 0.5f, false);
         setup_objects(objects);
         strategy.find_contacts(objects, manifolds);
@@ -32,8 +32,8 @@ public:
 
     TEST_METHOD(collision_strategy_multi_threaded)
     {
-        std::vector<std::shared_ptr<Physics_object>>                        objects;
-        std::map<Collision_strategy::Physics_object_pair, Contact_manifold> manifolds;
+        std::vector<std::shared_ptr<Physics_object>>                       objects;
+        std::map<Collision_strategy::Physics_object_ids, Contact_manifold> manifolds;
         Collision_strategy_multi_threaded strategy(0.05f, 0.5f, false, 4);
         setup_objects(objects);
         strategy.find_contacts(objects, manifolds);
@@ -42,8 +42,8 @@ public:
 
     TEST_METHOD(collision_strategy_open_cl)
     {
-        std::vector<std::shared_ptr<Physics_object>>                        objects;
-        std::map<Collision_strategy::Physics_object_pair, Contact_manifold> manifolds;
+        std::vector<std::shared_ptr<Physics_object>>                       objects;
+        std::map<Collision_strategy::Physics_object_ids, Contact_manifold> manifolds;
         Collision_strategy_open_cl strategy(0.05f, 0.5f, false, 4, 8);
         setup_objects(objects);
         strategy.find_contacts(objects, manifolds);
@@ -70,9 +70,10 @@ private:
         std::shared_ptr<Physics_model>   model      = std::make_shared<Physics_model>(*model_file);
 
         objects.resize(16);
-        std::for_each(objects.begin(), objects.end(), [model](std::shared_ptr<Physics_object>& o) {
-            o.reset(new Physics_object(model, 1));
-        });
+        for (size_t i = 0; i < 16; ++i) {
+            objects[i].reset(new Physics_object(model, 1));
+            objects[i]->id() = i;
+        }
 
         // The first index of every sub-sub-vector collides
         objects[0]->coordinate_space().position()  = Point(10, 10, 10);
@@ -98,8 +99,8 @@ private:
     }
 
     bool verify_result(
-        const std::vector<std::shared_ptr<Physics_object>>&                        objects,
-        const std::map<Collision_strategy::Physics_object_pair, Contact_manifold>& manifolds)
+        const std::vector<std::shared_ptr<Physics_object>>&                       objects,
+        const std::map<Collision_strategy::Physics_object_ids, Contact_manifold>& manifolds)
     {
         return manifolds.size() == 10 &&
                // The first index of every sub-sub-vector collides
@@ -113,13 +114,13 @@ private:
 
     bool verify_pair(
         size_t a, size_t b, const std::vector<std::shared_ptr<Physics_object>>& objects,
-        const std::map<Collision_strategy::Physics_object_pair, Contact_manifold>& manifolds)
+        const std::map<Collision_strategy::Physics_object_ids, Contact_manifold>& manifolds)
     {
         for (const auto& result : manifolds) {
-            if ((std::get<0>(result.first) == objects[a].get() &&
-                 std::get<1>(result.first) == objects[b].get()) ||
-                (std::get<1>(result.first) == objects[a].get() &&
-                 std::get<0>(result.first) == objects[b].get())) {
+            if ((std::get<0>(result.first) == objects[a]->id() &&
+                 std::get<1>(result.first) == objects[b]->id()) ||
+                (std::get<1>(result.first) == objects[a]->id() &&
+                 std::get<0>(result.first) == objects[b]->id())) {
                 return true;
             }
         }

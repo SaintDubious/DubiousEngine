@@ -50,7 +50,7 @@ bool                                              left_button_down;
 std::shared_ptr<Renderer::Simple_object_renderer> simple_renderer;
 std::vector<Physics::Contact_manifold::Contact>   contact_manifold;
 
-Physics::Collision_solver                 solver;
+Physics::Collision_solver                 solver(false);
 std::shared_ptr<Renderer::Visible_object> visible_object_1;
 std::shared_ptr<Physics::Physics_object>  physics_object_1;
 std::shared_ptr<Renderer::Visible_object> visible_object_2;

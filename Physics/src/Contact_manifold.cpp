@@ -10,8 +10,8 @@
 namespace Dubious {
 namespace Physics {
 
-Contact_manifold::Contact_manifold(const Physics_object& a, const Physics_object& b,
-                                   float persistent_threshold, float movement_threshold)
+Contact_manifold::Contact_manifold(Physics_object& a, Physics_object& b, float persistent_threshold,
+                                   float movement_threshold)
     : m_object_a(a)
     , m_object_b(b)
     , m_persistent_threshold(persistent_threshold)
