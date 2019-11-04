@@ -132,11 +132,49 @@ Constraint_solver::solve(Contact_manifold& contact_manifold)
 {
     Physics_object& a = contact_manifold.object_a();
     Physics_object& b = contact_manifold.object_b();
+
+    contact_manifold.a_delta_velocity()         = Math::Vector();
+    contact_manifold.a_delta_angular_velocity() = Math::Vector();
+    contact_manifold.b_delta_velocity()         = Math::Vector();
+    contact_manifold.b_delta_angular_velocity() = Math::Vector();
+
     for (auto& c : contact_manifold.contacts()) {
         Math::Vector r_a = c.contact_point_a - a.coordinate_space().position();
         Math::Vector r_b = c.contact_point_b - b.coordinate_space().position();
 
-        const float FRICTION     = 0.3f;
+        float lambda = lagrangian_multiplier(m_time_step, m_beta, m_coefficient_of_restitution,
+                                             m_slop, c.normal, c.penetration_depth, r_a, r_b, a, b);
+        // normal impulse clamping
+        float new_impulse = std::max(0.0f, c.normal_impulse + lambda);
+        lambda            = new_impulse - c.normal_impulse;
+        c.normal_impulse  = new_impulse;
+
+        Math::Vector P = lambda * c.normal;
+
+        contact_manifold.a_delta_velocity() -= P * a.inverse_mass();
+        contact_manifold.a_delta_angular_velocity() -=
+            a.inverse_moment_of_inertia() * Math::cross_product(r_a, P);
+
+        contact_manifold.b_delta_velocity() += P * b.inverse_mass();
+        contact_manifold.b_delta_angular_velocity() +=
+            b.inverse_moment_of_inertia() * Math::cross_product(r_b, P);
+        /*
+                contact_manifold.a_delta_velocity() += lambda * a.inverse_mass() * -c.normal;
+                contact_manifold.a_delta_angular_velocity() +=
+                    lambda * a.inverse_moment_of_inertia() *
+                    (Math::cross_product(-r_a, Math::Vector(c.normal)));
+                contact_manifold.b_delta_velocity() += lambda * b.inverse_mass() * c.normal;
+                contact_manifold.b_delta_angular_velocity() +=
+                    lambda * b.inverse_moment_of_inertia() *
+                    (Math::cross_product(r_b, Math::Vector(c.normal)));
+                    */
+    }
+
+    for (auto& c : contact_manifold.contacts()) {
+        Math::Vector r_a = c.contact_point_a - a.coordinate_space().position();
+        Math::Vector r_b = c.contact_point_b - b.coordinate_space().position();
+
+        const float FRICTION     = 0.02f;
         float       max_friction = FRICTION * c.normal_impulse;
 
         float lambda1 = lagrangian_multiplier_friction(c.tangent1, r_a, r_b, a, b);
@@ -150,37 +188,32 @@ Constraint_solver::solve(Contact_manifold& contact_manifold)
         lambda2     = new_impulse - c.tangent2_impulse;
         c.tangent2_impulse = new_impulse;
 
-        a.velocity() +=
-            lambda1 * a.inverse_mass() * -c.tangent1 + lambda2 * a.inverse_mass() * -c.tangent2;
-        a.angular_velocity() += lambda1 * a.inverse_moment_of_inertia() *
-                                    (Math::cross_product(-r_a, Math::Vector(c.tangent1))) +
-                                lambda2 * a.inverse_moment_of_inertia() *
-                                    (Math::cross_product(-r_a, Math::Vector(c.tangent2)));
-        b.velocity() +=
-            lambda1 * b.inverse_mass() * c.tangent1 + lambda2 * b.inverse_mass() * c.tangent2;
-        b.angular_velocity() += lambda1 * b.inverse_moment_of_inertia() *
-                                    (Math::cross_product(r_b, Math::Vector(c.tangent1))) +
-                                lambda2 * b.inverse_moment_of_inertia() *
-                                    (Math::cross_product(r_b, Math::Vector(c.tangent2)));
-    }
+        Math::Vector P1 = lambda1 * c.tangent1;
+        Math::Vector P2 = lambda2 * c.tangent2;
 
-    for (auto& c : contact_manifold.contacts()) {
-        Math::Vector r_a = c.contact_point_a - a.coordinate_space().position();
-        Math::Vector r_b = c.contact_point_b - b.coordinate_space().position();
+        contact_manifold.a_delta_velocity() -= P1 * a.inverse_mass() + P2 * a.inverse_mass();
+        contact_manifold.a_delta_angular_velocity() -=
+            a.inverse_moment_of_inertia() * Math::cross_product(r_a, P1) +
+            a.inverse_moment_of_inertia() * Math::cross_product(r_a, P2);
 
-        float lambda = lagrangian_multiplier(m_time_step, m_beta, m_coefficient_of_restitution,
-                                             m_slop, c.normal, c.penetration_depth, r_a, r_b, a, b);
-        // normal impulse clamping
-        float new_impulse = std::max(0.0f, c.normal_impulse + lambda);
-        lambda            = new_impulse - c.normal_impulse;
-        c.normal_impulse  = new_impulse;
-
-        a.velocity() += lambda * a.inverse_mass() * -c.normal;
-        a.angular_velocity() += lambda * a.inverse_moment_of_inertia() *
-                                (Math::cross_product(-r_a, Math::Vector(c.normal)));
-        b.velocity() += lambda * b.inverse_mass() * c.normal;
-        b.angular_velocity() += lambda * b.inverse_moment_of_inertia() *
-                                (Math::cross_product(r_b, Math::Vector(c.normal)));
+        contact_manifold.b_delta_velocity() += P1 * b.inverse_mass() + P2 * b.inverse_mass();
+        contact_manifold.b_delta_angular_velocity() +=
+            b.inverse_moment_of_inertia() * Math::cross_product(r_b, P1) +
+            b.inverse_moment_of_inertia() * Math::cross_product(r_b, P2);
+        /*
+                contact_manifold.a_delta_velocity() +=
+                    lambda1 * a.inverse_mass() * -c.tangent1 + lambda2 * a.inverse_mass() *
+           -c.tangent2; contact_manifold.a_delta_angular_velocity() += lambda1 *
+           a.inverse_moment_of_inertia() * (Math::cross_product(-r_a, Math::Vector(c.tangent1))) +
+                    lambda2 * a.inverse_moment_of_inertia() *
+                        (Math::cross_product(-r_a, Math::Vector(c.tangent2)));
+                contact_manifold.b_delta_velocity() +=
+                    lambda1 * b.inverse_mass() * c.tangent1 + lambda2 * b.inverse_mass() *
+           c.tangent2; contact_manifold.b_delta_angular_velocity() += lambda1 *
+           b.inverse_moment_of_inertia() * (Math::cross_product(r_b, Math::Vector(c.tangent1))) +
+                    lambda2 * b.inverse_moment_of_inertia() *
+                        (Math::cross_product(r_b, Math::Vector(c.tangent2)));
+                        */
     }
 }
 

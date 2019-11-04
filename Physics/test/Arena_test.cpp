@@ -53,5 +53,28 @@ public:
         Assert::IsTrue(equals(a->angular_velocity().length(), 1.57078958f));
         Assert::IsTrue(equals(a->angular_velocity().y(), 1.57078958f));
     }
+
+    TEST_METHOD(stack_one_cube)
+    {
+        auto model_file = Ac3d_file_reader::test_cube(0.5f, 0.5f, 0.5f);
+        auto model      = std::make_shared<Physics_model>(*model_file);
+        auto floor      = std::make_shared<Physics_object>(model, Physics_object::STATIONARY);
+        auto a          = std::make_shared<Physics_object>(model, 10.0f);
+
+        floor->coordinate_space().translate(Vector(0, -0.5f, 0));
+        a->coordinate_space().translate(Vector(0, 0.49f, 0));
+        a->coordinate_space().rotate(Unit_quaternion(Unit_vector(0, 1.0f, 0), to_radians(90.0f)));
+
+        Arena::Collision_solver_settings  collision;
+        Arena::Constraint_solver_settings constraint;
+
+        Arena arena((Arena::Settings(collision, constraint)));
+
+        arena.push_back(floor);
+        arena.push_back(a);
+        a->force() = Vector(0, -9.8, 0);
+
+        arena.run_physics(constraint.step_size + 0.000001f);
+    }
 };
 }  // namespace Physics_test
