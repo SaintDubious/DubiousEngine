@@ -3,7 +3,6 @@
 #include "Contact_manifold.h"
 
 #include <set>
-#include <iostream>
 
 namespace Dubious {
 namespace Physics {
@@ -32,10 +31,6 @@ Collision_strategy_simple::find_contacts(
             }
             std::vector<Contact_manifold::Contact> contacts;
             if (m_collision_solver.intersection(*a, *b, contacts)) {
-                //        std::cout << contacts[0].local_point_b << "\n";
-                if (contacts[0].local_point_b.x() < -0.2f) {
-                    //     std::cout << "pause\n";
-                }
                 auto id_pair          = std::make_tuple(a->id(), b->id());
                 auto contact_manifold = manifolds.find(id_pair);
                 if (contact_manifold == manifolds.end()) {

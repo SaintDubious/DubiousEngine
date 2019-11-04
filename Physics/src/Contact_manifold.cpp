@@ -36,7 +36,6 @@ Contact_manifold::prune_old_contacts()
                     Math::dot_product(Math::Vector(c.normal), Math::to_vector(new_contact_b) -
                                                                   Math::to_vector(new_contact_a));
                 if (dot_penetrator > 0.0f) {
-                    //        std::cout << "dot_penetrator > 0.0f\n";
                     return true;
                 }
                 c.penetration_depth = dot_penetrator;
@@ -44,11 +43,9 @@ Contact_manifold::prune_old_contacts()
                 // if the point has moved too far from where it was originally recorded
                 // then we want to remove if from the manifold
                 if ((new_contact_a - c.contact_point_a).length_squared() > m_movement_threshold) {
-                    //         std::cout << "a moved too far\n";
                     return true;
                 }
                 if ((new_contact_b - c.contact_point_b).length_squared() > m_movement_threshold) {
-                    //        std::cout << "b moved too far\n";
                     return true;
                 }
                 return false;
