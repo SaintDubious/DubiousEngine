@@ -73,12 +73,6 @@ private:
     friend class Physics_test::Contact_manifold_test;
     friend std::ostream& operator<<(std::ostream& o, const Contact_manifold&);
 
-    Physics_object&      m_object_a;
-    Physics_object&      m_object_b;
-    std::vector<Contact> m_contacts;
-    const float          m_movement_threshold   = 0.05f;
-    const float          m_persistent_threshold = 0.05f;
-
     void  cleanup_contacts(std::vector<Contact>& contacts);
     float distance_squared_to_line_segment(const Math::Point& a, const Math::Point& b,
                                            const Math::Point& p) const;
@@ -89,6 +83,12 @@ private:
                                                                const Math::Point& b,
                                                                const Math::Point& c,
                                                                const Math::Point& p) const;
+
+    Physics_object&      m_object_a;
+    Physics_object&      m_object_b;
+    std::vector<Contact> m_contacts;
+    const float          m_movement_threshold   = 0.05f;
+    const float          m_persistent_threshold = 0.05f;
 };
 
 std::ostream& operator<<(std::ostream& o, const Contact_manifold& c);

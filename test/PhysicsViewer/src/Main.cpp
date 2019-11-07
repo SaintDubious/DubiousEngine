@@ -27,12 +27,14 @@
 
 using namespace Dubious;
 
-const float LIGHT_HEIGHT = 50.0f;
-const float PI           = 3.1415926535f;
-const int   WIDTH        = 800;
-const int   HEIGHT       = 600;
-const int   NUM_OBJECTS  = 250;
-const int   FIRST_OBJECT = 1;  // the floor is item 0
+const float LIGHT_HEIGHT             = 50.0f;
+const float PI                       = 3.1415926535f;
+const int   WIDTH                    = 800;
+const int   HEIGHT                   = 600;
+const int   NUM_OBJECTS              = 1;
+const int   FIRST_OBJECT             = 1;  // the floor is item 0
+const bool  CONSISTENT_FRAME_ELAPSED = true;
+const int   ON_IDLE_DELAY_MS         = 10;
 
 // Events
 void on_quit();
@@ -67,9 +69,15 @@ main(int argc, char** argv)
 
         Physics::Arena::Collision_solver_settings collision_solver_settings;
         collision_solver_settings.strategy =
-            Physics::Arena::Collision_solver_settings::Strategy::MULTI_THREADED;
+            Physics::Arena::Collision_solver_settings::Strategy::SINGLE_THREADED;
         collision_solver_settings.mt_collisions_work_group_size = 500;
+        collision_solver_settings.greedy_manifold               = false;
         Physics::Arena::Constraint_solver_settings constraint_solver_settings;
+        constraint_solver_settings.beta                       = 0.0f;
+        constraint_solver_settings.coefficient_of_restitution = 0.0f;
+        constraint_solver_settings.iterations                 = 1;
+        constraint_solver_settings.warm_start_scale           = 0.0f;
+
         arena = std::make_unique<Physics::Arena>(
             Physics::Arena::Settings(collision_solver_settings, constraint_solver_settings));
         elapsed         = 0;
@@ -118,7 +126,8 @@ main(int argc, char** argv)
             }
             visible_objects.back()->coordinate_space().translate(
                 Math::Vector(0, i * 1.1f + 0.55f, 0));
-            //            visible_objects.back()->coordinate_space().rotate( Math::Quaternion( Math::Unit_vector(0,1,0), Math::to_radians(i*45.0f) ) );
+            visible_objects.back()->coordinate_space().rotate(
+                Math::Unit_quaternion(Math::Unit_vector(0, 1, 0), Math::to_radians(5.0f)));
             visible_objects.back()->renderer() = simple_renderer;
             scene->add_object(visible_objects.back());
 
@@ -126,7 +135,8 @@ main(int argc, char** argv)
                 std::make_shared<Physics::Physics_object>(physics_model, 1.0f));
             physics_objects.back()->coordinate_space().translate(
                 Math::Vector(0, i * 1.1f + 0.55f, 0));
-            //            physics_objects.back()->coordinate_space().rotate( Math::Quaternion( Math::Unit_vector(0,1,0), Math::to_radians(i*45.0f) ) );
+            physics_objects.back()->coordinate_space().rotate(
+                Math::Unit_quaternion(Math::Unit_vector(0, 1, 0), Math::to_radians(5.0f)));
             arena->push_back(physics_objects.back());
         }
 
@@ -171,14 +181,19 @@ on_quit()
 void
 on_idle()
 {
-    elapsed += frame_timer.elapsed();
-    ++frame_count;
-    if (elapsed > 1000.0f) {
-        std::cout << frame_count << " fps\n";
-        frame_count = 0;
-        elapsed     = 0;
+    if (CONSISTENT_FRAME_ELAPSED) {
+        arena->run_physics(0.0166666f);
     }
-    arena->run_physics(frame_timer.restart() / 1000.0f);
+    else {
+        elapsed += frame_timer.elapsed();
+        ++frame_count;
+        if (elapsed > 1000.0f) {
+            std::cout << frame_count << " fps\n";
+            frame_count = 0;
+            elapsed     = 0;
+        }
+        arena->run_physics(frame_timer.restart() / 1000.0f);
+    }
 
     for (int i = 1; i < NUM_OBJECTS + 1; ++i) {
         Math::Point           new_position    = physics_objects[i]->coordinate_space().position();
@@ -199,37 +214,38 @@ on_idle()
 
     scene->render(*camera);
 
-    /*
     // Draw the contact info on top
-    Renderer::Open_gl_attributes attribs( Renderer::Open_gl_attributes::ENABLE_BIT | Renderer::Open_gl_attributes::HINT_BIT | Renderer::Open_gl_attributes::POLYGON_BIT, false );
-    Renderer::Open_gl_commands::line_width( 2 );
-    Renderer::Open_gl_commands::polygon_mode( GL_BACK, GL_LINE );
-    Renderer::Open_gl_commands::cull_face( GL_FRONT );
-    attribs.depth_func( GL_ALWAYS );
+    Renderer::Open_gl_attributes attribs(Renderer::Open_gl_attributes::ENABLE_BIT |
+                                             Renderer::Open_gl_attributes::HINT_BIT |
+                                             Renderer::Open_gl_attributes::POLYGON_BIT,
+                                         false);
+    Renderer::Open_gl_commands::line_width(2);
+    Renderer::Open_gl_commands::polygon_mode(GL_BACK, GL_LINE);
+    Renderer::Open_gl_commands::cull_face(GL_FRONT);
+    attribs.depth_func(GL_ALWAYS);
 
-    glColor3f( 1.0f, 0, 0 );
-    glPointSize( 5.0f );
+    glColor3f(1.0f, 0, 0);
+    glPointSize(5.0f);
 
-    for (const auto& manifold : arena.manifolds()) {
+    for (const auto& manifold : arena->manifolds()) {
         for (const auto& c : manifold.second.contacts()) {
             {
-                Renderer::Open_gl_primitive prim( Renderer::Open_gl_primitive::POINTS );
-                prim.vertex( c.contact_point_a );
-                prim.vertex( c.contact_point_b );
+                Renderer::Open_gl_primitive prim(Renderer::Open_gl_primitive::POINTS);
+                prim.vertex(c.contact_point_a);
+                prim.vertex(c.contact_point_b);
             }
-            Renderer::Open_gl_primitive prim( Renderer::Open_gl_primitive::LINES );
-            prim.vertex( c.contact_point_a );
-            prim.vertex( c.contact_point_a + Math::Vector(c.normal)*c.penetration_depth );
+            // Renderer::Open_gl_primitive prim(Renderer::Open_gl_primitive::LINES);
+            // prim.vertex(c.contact_point_a);
+            // prim.vertex(c.contact_point_a + Math::Vector(c.normal) * c.penetration_depth);
             // render tangents
-//            prim.vertex( c.contact_point_a );
-//            prim.vertex( c.contact_point_a + Math::Vector(c.tangent1) );
-//            prim.vertex( c.contact_point_a );
-//            prim.vertex( c.contact_point_a + Math::Vector(c.tangent2) );
+            //            prim.vertex( c.contact_point_a );
+            //            prim.vertex( c.contact_point_a + Math::Vector(c.tangent1) );
+            //            prim.vertex( c.contact_point_a );
+            //            prim.vertex( c.contact_point_a + Math::Vector(c.tangent2) );
         }
-
     }
-    */
-    SDL_Delay(10);
+
+    SDL_Delay(ON_IDLE_DELAY_MS);
 }
 
 void
@@ -276,7 +292,7 @@ void
 on_mouse_right_down(const Utility::Sdl_manager::Mouse_point& p)
 {
     physics_objects[FIRST_OBJECT]->force() =
-        physics_objects[FIRST_OBJECT]->force() + Math::Vector(0, 5000, 0);
+        physics_objects[FIRST_OBJECT]->force() + Math::Vector(0, 500, 0);
 }
 
 void
@@ -310,11 +326,11 @@ on_key_down(SDL_Keycode key, unsigned short mod)
         sdl.stop();
         break;
     case SDLK_a:
-        physics_objects[FIRST_OBJECT]->torque() = Math::Vector(1, 0, 0);
+        physics_objects[FIRST_OBJECT]->torque() = Math::Vector(0, 10, 0);
         break;
     case SDLK_f:
         physics_objects[FIRST_OBJECT]->force() =
-            physics_objects[FIRST_OBJECT]->force() + Math::Vector(100, 0, 50);
+            physics_objects[FIRST_OBJECT]->force() + Math::Vector(100, 100, 50);
         break;
     case SDLK_s:
         physics_objects[FIRST_OBJECT]->torque() = Math::Vector(
