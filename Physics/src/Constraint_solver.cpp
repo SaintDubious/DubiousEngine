@@ -71,28 +71,6 @@ lagrangian_multiplier(float dt, float beta, float cor, float slop, const Math::V
 
     return lambda;
 }
-
-// Similar to the lagrangian multiplier for collision normal. However for the friction
-// component, there is no baumgarte, slop, or restitution
-float
-lagrangian_multiplier_friction(const Math::Vector& t, const Math::Vector& r_a,
-                               const Math::Vector& r_b, const Physics_object& a,
-                               const Physics_object& b)
-{
-    const auto& ra_x_t = Math::cross_product(r_a, t);
-    const auto& rb_x_t = Math::cross_product(r_b, t);
-
-    float j_dot_v =
-        Math::dot_product(-t, a.velocity()) + Math::dot_product(-ra_x_t, a.angular_velocity()) +
-        Math::dot_product(t, b.velocity()) + Math::dot_product(rb_x_t, b.angular_velocity());
-
-    float denom = Math::dot_product(-t * a.inverse_mass(), -t) +
-                  Math::dot_product(-ra_x_t * a.inverse_moment_of_inertia(), -ra_x_t) +
-                  Math::dot_product(t * b.inverse_mass(), t) +
-                  Math::dot_product(rb_x_t * b.inverse_moment_of_inertia(), rb_x_t);
-
-    return -(j_dot_v) / denom;
-}
 }  // namespace
 
 void
@@ -130,6 +108,10 @@ Constraint_solver::warm_start(Contact_manifold& contact_manifold, float scale)
 void
 Constraint_solver::solve(Contact_manifold& contact_manifold)
 {
+    if (contact_manifold.contacts().empty()) {
+        return;
+    }
+
     Physics_object& a = contact_manifold.object_a();
     Physics_object& b = contact_manifold.object_b();
 
@@ -158,62 +140,32 @@ Constraint_solver::solve(Contact_manifold& contact_manifold)
         contact_manifold.b_delta_velocity() += P * b.inverse_mass();
         contact_manifold.b_delta_angular_velocity() +=
             b.inverse_moment_of_inertia() * Math::cross_product(r_b, P);
-        /*
-                contact_manifold.a_delta_velocity() += lambda * a.inverse_mass() * -c.normal;
-                contact_manifold.a_delta_angular_velocity() +=
-                    lambda * a.inverse_moment_of_inertia() *
-                    (Math::cross_product(-r_a, Math::Vector(c.normal)));
-                contact_manifold.b_delta_velocity() += lambda * b.inverse_mass() * c.normal;
-                contact_manifold.b_delta_angular_velocity() +=
-                    lambda * b.inverse_moment_of_inertia() *
-                    (Math::cross_product(r_b, Math::Vector(c.normal)));
-                    */
     }
 
+    const float FRICTION     = 0.01f;
+    const float max_friction = FRICTION / contact_manifold.contacts().size();
     for (auto& c : contact_manifold.contacts()) {
-        Math::Vector r_a = c.contact_point_a - a.coordinate_space().position();
-        Math::Vector r_b = c.contact_point_b - b.coordinate_space().position();
+        Math::Vector velocity = a.velocity() + contact_manifold.a_delta_velocity();
+        float        speed1   = Math::dot_product(velocity, Math::Vector(c.tangent1));
+        float        speed2   = Math::dot_product(velocity, Math::Vector(c.tangent2));
+        contact_manifold.a_delta_velocity() -=
+            (speed1 * max_friction * c.tangent1) + (speed2 * max_friction * c.tangent2);
 
-        const float FRICTION     = 0.02f;
-        float       max_friction = FRICTION * c.normal_impulse;
-
-        float lambda1 = lagrangian_multiplier_friction(c.tangent1, r_a, r_b, a, b);
-        float new_impulse =
-            std::max(-max_friction, std::min(max_friction, c.tangent1_impulse + lambda1));
-        lambda1            = new_impulse - c.tangent1_impulse;
-        c.tangent1_impulse = new_impulse;
-
-        float lambda2 = lagrangian_multiplier_friction(c.tangent2, r_a, r_b, a, b);
-        new_impulse = std::max(-max_friction, std::min(max_friction, c.tangent2_impulse + lambda2));
-        lambda2     = new_impulse - c.tangent2_impulse;
-        c.tangent2_impulse = new_impulse;
-
-        Math::Vector P1 = lambda1 * c.tangent1;
-        Math::Vector P2 = lambda2 * c.tangent2;
-
-        contact_manifold.a_delta_velocity() -= P1 * a.inverse_mass() + P2 * a.inverse_mass();
+        velocity = a.angular_velocity() + contact_manifold.a_delta_angular_velocity();
+        speed1   = Math::dot_product(velocity, Math::Vector(c.normal));
         contact_manifold.a_delta_angular_velocity() -=
-            a.inverse_moment_of_inertia() * Math::cross_product(r_a, P1) +
-            a.inverse_moment_of_inertia() * Math::cross_product(r_a, P2);
+            (speed1 * max_friction * Math::Vector(c.normal));
 
-        contact_manifold.b_delta_velocity() += P1 * b.inverse_mass() + P2 * b.inverse_mass();
-        contact_manifold.b_delta_angular_velocity() +=
-            b.inverse_moment_of_inertia() * Math::cross_product(r_b, P1) +
-            b.inverse_moment_of_inertia() * Math::cross_product(r_b, P2);
-        /*
-                contact_manifold.a_delta_velocity() +=
-                    lambda1 * a.inverse_mass() * -c.tangent1 + lambda2 * a.inverse_mass() *
-           -c.tangent2; contact_manifold.a_delta_angular_velocity() += lambda1 *
-           a.inverse_moment_of_inertia() * (Math::cross_product(-r_a, Math::Vector(c.tangent1))) +
-                    lambda2 * a.inverse_moment_of_inertia() *
-                        (Math::cross_product(-r_a, Math::Vector(c.tangent2)));
-                contact_manifold.b_delta_velocity() +=
-                    lambda1 * b.inverse_mass() * c.tangent1 + lambda2 * b.inverse_mass() *
-           c.tangent2; contact_manifold.b_delta_angular_velocity() += lambda1 *
-           b.inverse_moment_of_inertia() * (Math::cross_product(r_b, Math::Vector(c.tangent1))) +
-                    lambda2 * b.inverse_moment_of_inertia() *
-                        (Math::cross_product(r_b, Math::Vector(c.tangent2)));
-                        */
+        velocity = b.velocity() + contact_manifold.b_delta_velocity();
+        speed1   = Math::dot_product(velocity, Math::Vector(c.tangent1));
+        speed2   = Math::dot_product(velocity, Math::Vector(c.tangent2));
+        contact_manifold.b_delta_velocity() -=
+            (speed1 * max_friction * c.tangent1) + (speed2 * max_friction * c.tangent2);
+
+        velocity = b.angular_velocity() + contact_manifold.b_delta_angular_velocity();
+        speed1   = Math::dot_product(velocity, Math::Vector(c.normal));
+        contact_manifold.b_delta_angular_velocity() -=
+            (speed1 * max_friction * Math::Vector(c.normal));
     }
 }
 

@@ -27,12 +27,14 @@
 
 using namespace Dubious;
 
-const float LIGHT_HEIGHT = 50.0f;
-const float PI           = 3.1415926535f;
-const int   WIDTH        = 800;
-const int   HEIGHT       = 600;
-const int   NUM_OBJECTS  = 1;
-const int   FIRST_OBJECT = 1;  // the floor is item 0
+const float LIGHT_HEIGHT             = 50.0f;
+const float PI                       = 3.1415926535f;
+const int   WIDTH                    = 800;
+const int   HEIGHT                   = 600;
+const int   NUM_OBJECTS              = 1;
+const int   FIRST_OBJECT             = 1;  // the floor is item 0
+const bool  CONSISTENT_FRAME_ELAPSED = true;
+const int   ON_IDLE_DELAY_MS         = 10;
 
 // Events
 void on_quit();
@@ -74,6 +76,7 @@ main(int argc, char** argv)
         constraint_solver_settings.beta                       = 0.0f;
         constraint_solver_settings.coefficient_of_restitution = 0.0f;
         constraint_solver_settings.iterations                 = 1;
+        constraint_solver_settings.warm_start_scale           = 0.0f;
 
         arena = std::make_unique<Physics::Arena>(
             Physics::Arena::Settings(collision_solver_settings, constraint_solver_settings));
@@ -178,17 +181,19 @@ on_quit()
 void
 on_idle()
 {
-    elapsed += frame_timer.elapsed();
-    ++frame_count;
-    if (elapsed > 1000.0f) {
-        //     std::cout << frame_count << " fps\n";
-        frame_count = 0;
-        elapsed     = 0;
+    if (CONSISTENT_FRAME_ELAPSED) {
+        arena->run_physics(0.0166666f);
     }
-    // 1 update per frame
-    elapsed += 0.0166666f;
-    arena->run_physics(0.0166666f);
-    //    arena->run_physics(frame_timer.restart() / 1000.0f);
+    else {
+        elapsed += frame_timer.elapsed();
+        ++frame_count;
+        if (elapsed > 1000.0f) {
+            std::cout << frame_count << " fps\n";
+            frame_count = 0;
+            elapsed     = 0;
+        }
+        arena->run_physics(frame_timer.restart() / 1000.0f);
+    }
 
     for (int i = 1; i < NUM_OBJECTS + 1; ++i) {
         Math::Point           new_position    = physics_objects[i]->coordinate_space().position();
@@ -239,7 +244,7 @@ on_idle()
             //            prim.vertex( c.contact_point_a + Math::Vector(c.tangent2) );
         }
     }
-    SDL_Delay(10);
+    SDL_Delay(ON_IDLE_DELAY_MS);
 }
 
 void
@@ -286,7 +291,7 @@ void
 on_mouse_right_down(const Utility::Sdl_manager::Mouse_point& p)
 {
     physics_objects[FIRST_OBJECT]->force() =
-        physics_objects[FIRST_OBJECT]->force() + Math::Vector(0, 5000, 0);
+        physics_objects[FIRST_OBJECT]->force() + Math::Vector(0, 500, 0);
 }
 
 void
@@ -320,11 +325,11 @@ on_key_down(SDL_Keycode key, unsigned short mod)
         sdl.stop();
         break;
     case SDLK_a:
-        physics_objects[FIRST_OBJECT]->torque() = Math::Vector(1, 0, 0);
+        physics_objects[FIRST_OBJECT]->torque() = Math::Vector(0, 10, 0);
         break;
     case SDLK_f:
         physics_objects[FIRST_OBJECT]->force() =
-            physics_objects[FIRST_OBJECT]->force() + Math::Vector(100, 0, 50);
+            physics_objects[FIRST_OBJECT]->force() + Math::Vector(100, 100, 50);
         break;
     case SDLK_s:
         physics_objects[FIRST_OBJECT]->torque() = Math::Vector(

@@ -65,22 +65,18 @@ Arena::run_physics(float elapsed)
 
         m_collision_strategy->find_contacts(m_objects, m_manifolds);
 
-        //        for (auto& manifold : m_manifolds) {
-        //            m_constraint_solver.warm_start(manifold.second,
-        //            m_settings.constraint.warm_start_scale);
-        //       }
+        if (m_settings.constraint.warm_start_scale > 0) {
+            for (auto& manifold : m_manifolds) {
+                m_constraint_solver.warm_start(manifold.second,
+                                               m_settings.constraint.warm_start_scale);
+            }
+        }
 
         for (int i = 0; i < m_settings.constraint.iterations; ++i) {
             for (auto& manifold : m_manifolds) {
                 m_constraint_solver.solve(manifold.second);
             }
             for (auto& manifold : m_manifolds) {
-                //                std::cout << "manifold a " << manifold.second.a_delta_velocity()
-                //                << " "
-                //                        << manifold.second.a_delta_angular_velocity() << "\n";
-                //                std::cout << i << ": manifold b " <<
-                //                manifold.second.b_delta_velocity() << " "
-                //                        << manifold.second.b_delta_angular_velocity() << "\n";
                 manifold.second.object_a().velocity() += manifold.second.a_delta_velocity();
                 manifold.second.object_a().angular_velocity() +=
                     manifold.second.a_delta_angular_velocity();
