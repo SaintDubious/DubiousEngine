@@ -213,11 +213,9 @@ Contact_manifold::insert(const std::vector<Contact>& contacts)
                     m_persistent_threshold) {
                 add = false;
 
-                auto old                  = existing;
-                existing                  = c;
-                existing.normal_impulse   = old.normal_impulse;
-                existing.tangent1_impulse = old.tangent1_impulse;
-                existing.tangent2_impulse = old.tangent2_impulse;
+                auto old                = existing;
+                existing                = c;
+                existing.normal_impulse = old.normal_impulse;
 
                 break;
             }

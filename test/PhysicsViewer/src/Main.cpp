@@ -76,7 +76,7 @@ main(int argc, char** argv)
         constraint_solver_settings.beta                       = 0.0f;
         constraint_solver_settings.coefficient_of_restitution = 0.0f;
         constraint_solver_settings.iterations                 = 1;
-        constraint_solver_settings.warm_start_scale           = 0.0f;
+        constraint_solver_settings.warm_start_scale           = 0.5f;
 
         arena = std::make_unique<Physics::Arena>(
             Physics::Arena::Settings(collision_solver_settings, constraint_solver_settings));
@@ -244,6 +244,7 @@ on_idle()
             //            prim.vertex( c.contact_point_a + Math::Vector(c.tangent2) );
         }
     }
+
     SDL_Delay(ON_IDLE_DELAY_MS);
 }
 
