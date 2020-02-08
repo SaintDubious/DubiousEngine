@@ -35,6 +35,7 @@ const int   NUM_OBJECTS              = 1;
 const int   FIRST_OBJECT             = 1;  // the floor is item 0
 const bool  CONSISTENT_FRAME_ELAPSED = true;
 const int   ON_IDLE_DELAY_MS         = 10;
+const bool  PAUSE_MODE               = false;
 
 // Events
 void on_quit();
@@ -56,6 +57,7 @@ std::shared_ptr<Renderer::Simple_object_renderer> simple_renderer;
 Utility::Timer                                    frame_timer;
 float                                             elapsed;
 int                                               frame_count;
+bool                                              step_physics;
 
 std::unique_ptr<Physics::Arena>                        arena;
 std::vector<std::shared_ptr<Renderer::Visible_object>> visible_objects;
@@ -157,6 +159,8 @@ main(int argc, char** argv)
         sdl.on_mouse_wheel()      = on_mouse_wheel;
         sdl.on_key_down()         = on_key_down;
 
+        step_physics = !PAUSE_MODE;
+
         frame_timer.start();
 
         sdl.run();
@@ -181,18 +185,23 @@ on_quit()
 void
 on_idle()
 {
-    if (CONSISTENT_FRAME_ELAPSED) {
-        arena->run_physics(0.0166666f);
-    }
-    else {
-        elapsed += frame_timer.elapsed();
-        ++frame_count;
-        if (elapsed > 1000.0f) {
-            std::cout << frame_count << " fps\n";
-            frame_count = 0;
-            elapsed     = 0;
+    if (step_physics) {
+        if (CONSISTENT_FRAME_ELAPSED) {
+            arena->run_physics(0.0166666f);
         }
-        arena->run_physics(frame_timer.restart() / 1000.0f);
+        else {
+            elapsed += frame_timer.elapsed();
+            ++frame_count;
+            if (elapsed > 1000.0f) {
+                std::cout << frame_count << " fps\n";
+                frame_count = 0;
+                elapsed     = 0;
+            }
+            arena->run_physics(frame_timer.restart() / 1000.0f);
+        }
+    }
+    if (PAUSE_MODE) {
+        step_physics = false;
     }
 
     for (int i = 1; i < NUM_OBJECTS + 1; ++i) {
@@ -336,6 +345,9 @@ on_key_down(SDL_Keycode key, unsigned short mod)
         physics_objects[FIRST_OBJECT]->torque() = Math::Vector(
             static_cast<float>(rand()) / RAND_MAX, static_cast<float>(rand()) / RAND_MAX,
             static_cast<float>(rand()) / RAND_MAX);
+        break;
+    case SDLK_n:
+        step_physics = true;
         break;
     }
 }
