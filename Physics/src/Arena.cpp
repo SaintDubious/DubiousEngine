@@ -65,14 +65,18 @@ Arena::run_physics(float elapsed)
 
         m_collision_strategy->find_contacts(m_objects, m_manifolds);
 
+        for (auto& manifold : m_manifolds) {
+            manifold.second.scale_contact_impulses(m_settings.constraint.warm_start_scale);
+        }
         if (m_settings.constraint.warm_start_scale > 0) {
             for (auto& manifold : m_manifolds) {
-                m_constraint_solver.warm_start(manifold.second,
-                                               m_settings.constraint.warm_start_scale);
+                m_constraint_solver.warm_start(manifold.second);
             }
         }
-
         for (int i = 0; i < m_settings.constraint.iterations; ++i) {
+            for (auto& manifold : m_manifolds) {
+                manifold.second.scale_contact_impulses(0);
+            }
             for (auto& manifold : m_manifolds) {
                 m_constraint_solver.solve(manifold.second);
             }

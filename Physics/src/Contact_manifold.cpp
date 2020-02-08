@@ -227,6 +227,14 @@ Contact_manifold::insert(const std::vector<Contact>& contacts)
     cleanup_contacts(m_contacts);
 }
 
+void
+Contact_manifold::scale_contact_impulses(float scale)
+{
+    for (Contact& c : m_contacts) {
+        c.normal_impulse *= scale;
+    }
+}
+
 std::ostream&
 operator<<(std::ostream& o, const Contact_manifold& c)
 {

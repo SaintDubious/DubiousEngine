@@ -60,6 +60,14 @@ public:
     /// and if so, maybe use the older ones? Or newer ones?
     void insert(const std::vector<Contact>& contacts);
 
+    /// @brief Scale the contact impulses
+    ///
+    /// Basically iterate through the Contacts and scale the normal_impulse by this supplied factor.
+    /// This is used primarily by the main loop to scale the impulse for warm starting (or reset to
+    /// 0 if warm starting is disabled).
+    /// @param scale - [in] the amount to scale by
+    void scale_contact_impulses(float scale);
+
     /// @brief contacts accessors
     std::vector<Contact>&       contacts() { return m_contacts; }
     const std::vector<Contact>& contacts() const { return m_contacts; }

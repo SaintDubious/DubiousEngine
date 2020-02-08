@@ -71,10 +71,37 @@ lagrangian_multiplier(float dt, float beta, float cor, float slop, const Math::V
 
     return lambda;
 }
+
+// This seems to be a pretty vanilla formula for impulse I found at
+// https://www.euclideanspace.com/physics/dynamics/collision/threed/index.htm
+// I'm dropping this in for testing purposes for now. Not sure if it will stay.
+// Interesting to note that it's very similar to the lagrangian_multiplier above
+float
+impulse(float restitution, const Math::Vector& n, const Math::Vector& r_a, const Math::Vector& r_b,
+        const Physics_object& a, const Physics_object& b)
+{
+    const float         e          = restitution;
+    const Math::Vector& va         = a.velocity();
+    const Math::Vector& wa         = a.angular_velocity();
+    const Math::Vector& vb         = b.velocity();
+    const Math::Vector& wb         = b.angular_velocity();
+    const Math::Vector& ra_x_n     = Math::cross_product(r_a, n);
+    const Math::Vector& rb_x_n     = Math::cross_product(r_b, n);
+    const float         inverse_ma = a.inverse_mass();
+    const float         inverse_mb = b.inverse_mass();
+    const float         inverse_ia = a.inverse_moment_of_inertia();
+    const float         inverse_ib = b.inverse_moment_of_inertia();
+
+    return -(1 + e) *
+           (Math::dot_product((vb - va), n) + Math::dot_product(rb_x_n, wb) -
+            Math::dot_product(ra_x_n, wa)) /
+           (inverse_ma + inverse_mb + Math::dot_product(ra_x_n, inverse_ia * ra_x_n) +
+            Math::dot_product(rb_x_n, inverse_ib * rb_x_n));
+}
 }  // namespace
 
 void
-Constraint_solver::warm_start(Contact_manifold& contact_manifold, float scale)
+Constraint_solver::warm_start(Contact_manifold& contact_manifold)
 {
     Physics_object& a = contact_manifold.object_a();
     Physics_object& b = contact_manifold.object_b();
@@ -82,11 +109,11 @@ Constraint_solver::warm_start(Contact_manifold& contact_manifold, float scale)
         Math::Vector r_a = c.contact_point_a - a.coordinate_space().position();
         Math::Vector r_b = c.contact_point_b - b.coordinate_space().position();
 
-        a.velocity() += c.normal_impulse * scale * a.inverse_mass() * -c.normal;
-        a.angular_velocity() += c.normal_impulse * scale * a.inverse_moment_of_inertia() *
+        a.velocity() += c.normal_impulse * a.inverse_mass() * -c.normal;
+        a.angular_velocity() += c.normal_impulse * a.inverse_moment_of_inertia() *
                                 (Math::cross_product(-r_a, Math::Vector(c.normal)));
-        b.velocity() += c.normal_impulse * scale * b.inverse_mass() * c.normal;
-        b.angular_velocity() += c.normal_impulse * scale * b.inverse_moment_of_inertia() *
+        b.velocity() += c.normal_impulse * b.inverse_mass() * c.normal;
+        b.angular_velocity() += c.normal_impulse * b.inverse_moment_of_inertia() *
                                 (Math::cross_product(r_b, Math::Vector(c.normal)));
     }
 }
@@ -112,12 +139,27 @@ Constraint_solver::solve(Contact_manifold& contact_manifold)
 
         float lambda = lagrangian_multiplier(m_time_step, m_beta, m_coefficient_of_restitution,
                                              m_slop, c.normal, c.penetration_depth, r_a, r_b, a, b);
+        float test   = impulse(m_coefficient_of_restitution, c.normal, r_a, r_b, a, b);
+        // lambda       = test;
+        // std::cout << test << " == " << lambda << "\n";
+
+        //        if (a.inverse_mass() != 0 && b.inverse_mass() != 0) {
+        //            std::cout << lambda << "\n";
+        //            if (lambda < 0) {
+        //                std::cout << "negative\n";
+        //            }
+        //        }
+
         // normal impulse clamping
         float new_impulse = std::max(0.0f, c.normal_impulse + lambda);
         lambda            = new_impulse - c.normal_impulse;
         c.normal_impulse  = new_impulse;
 
         Math::Vector P = lambda * c.normal;
+
+        if (a.inverse_mass() != 0 && b.inverse_mass() != 0) {
+            //            std::cout << "N = " << c.normal << "\n";
+        }
 
         contact_manifold.a_delta_velocity() -= P * a.inverse_mass();
         contact_manifold.a_delta_angular_velocity() -=
@@ -127,6 +169,9 @@ Constraint_solver::solve(Contact_manifold& contact_manifold)
         contact_manifold.b_delta_angular_velocity() +=
             b.inverse_moment_of_inertia() * Math::cross_product(r_b, P);
     }
+    //    if (a.inverse_mass() != 0 && b.inverse_mass() != 0) {
+    //      std::cout << contact_manifold.b_delta_velocity() << "\n";
+    //}
 
     const float FRICTION     = 0.01f;
     const float max_friction = FRICTION / contact_manifold.contacts().size();
