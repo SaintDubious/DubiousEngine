@@ -124,7 +124,7 @@ public:
         // Two cubes are placed with a 0.1 overlap on the Y axis. The
         // contact point is found to be offset in the cubes (0.5, 0.5, 0).
         // The expectation is that the cubes both get the same repulsive
-        // velocity and no spin
+        // velocity and spin of equal magnitude in opposite directions
         //
         auto model_file    = Ac3d_file_reader::test_cube(0.5f, 0.5f, 0.5f);
         auto physics_model = std::make_shared<Physics_model>(*model_file);
@@ -240,5 +240,65 @@ public:
         Assert::IsTrue(cube2->angular_velocity() == Vector());
         Assert::IsTrue(cube3->angular_velocity() == Vector());
     }
+
+    TEST_METHOD(constraint_solver_rectangle_angular_velocity)
+    {
+        // TODO:
+        // This is a WIP in progress.
+        // See the note in PhysicsJenga for info on what it's trying to test
+
+        // I noticed that rectangles end up with a fair amount of rocking side to side on their
+        // short end. I'm not sure if this is explainable or not, so I'm writing a test. A cube
+        // touching on one side shouldn't rotate less then a rectangle touching on the long side.
+        const float LONG_HALF     = 50.0f;
+        auto        model_file    = Ac3d_file_reader::test_cube(LONG_HALF, 0.5f, 0.5f);
+        auto        physics_model = std::make_shared<Physics_model>(*model_file);
+        auto        floor_file    = Ac3d_file_reader::test_cube(100.0f, 0.5f, 100.0f);
+        auto        floor_model   = std::make_shared<Physics_model>(*floor_file);
+
+        // at (0,0,0)
+        auto floor = std::make_shared<Physics_object>(physics_model, Physics_object::STATIONARY);
+
+        // at (0, 0.9, 0)
+        auto cube1 = std::make_shared<Physics_object>(physics_model, 1.0f);
+        cube1->coordinate_space().translate(Vector(0, 0.9f, 0));
+
+        std::vector<Contact_manifold::Contact> contacts;
+        Contact_manifold::Contact              c;
+        c.contact_point_a   = Point(LONG_HALF, 0.5f, 0.5f);
+        c.local_point_a     = Local_point(LONG_HALF, 0.5f, 0.5f);
+        c.contact_point_b   = Point(LONG_HALF, 0.4f, 0.5f);
+        c.local_point_b     = Local_point(LONG_HALF, -0.5f, 0.5f);
+        c.normal            = Unit_vector(0, 1, 0);
+        c.tangent1          = Unit_vector(0, 0, -1);
+        c.tangent2          = Unit_vector(-1, 0, 0);
+        c.penetration_depth = 0.1f;
+        c.normal_impulse    = 0;
+        contacts.push_back(c);
+        c.contact_point_a   = Point(-LONG_HALF, 0.5f, 0.5f);
+        c.local_point_a     = Local_point(-LONG_HALF, 0.5f, 0.5f);
+        c.contact_point_b   = Point(-LONG_HALF, 0.4f, 0.5f);
+        c.local_point_b     = Local_point(-LONG_HALF, -0.5f, 0.5f);
+        c.normal            = Unit_vector(0, 1, 0);
+        c.tangent1          = Unit_vector(0, 0, -1);
+        c.tangent2          = Unit_vector(-1, 0, 0);
+        c.penetration_depth = 0.1f;
+        c.normal_impulse    = 0;
+        contacts.push_back(c);
+
+        Contact_manifold manifold(*floor, *cube1, 0.05f, 0.05f);
+        manifold.insert(contacts);
+        //        Constraint_solver constraint_solver(0.016f, 0.03f, 0.5f, 0.05f);
+        Constraint_solver constraint_solver(0.016f, 0.03f, 0.0f, 0.05f);
+        constraint_solver.solve(manifold);
+
+        manifold.object_a().velocity() += manifold.a_delta_velocity();
+        manifold.object_a().angular_velocity() += manifold.a_delta_angular_velocity();
+        manifold.object_b().velocity() += manifold.b_delta_velocity();
+        manifold.object_b().angular_velocity() += manifold.b_delta_angular_velocity();
+
+        //        Assert::IsTrue(cube1->angular_velocity() == Vector());
+    }
 };
+
 }  // namespace Physics_test

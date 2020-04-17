@@ -40,64 +40,67 @@ restitution_term(const Math::Vector& n, float coefficient_of_restitution, const 
     return Math::dot_product((a_part + b_part) * coefficient_of_restitution, n);
 }
 
-// The lagrangian multiplier (denoted by lambda) is a scalar derived from a heck of a
-// lot of really big matrices. I'm trying my hardest to not have to create a matrix
-// class for this thing, so I went ahead and unwrapped it all into a bunch of vector
-// dot products.
+// We take a local copy of an object's velocity so that we can update it without writing back to the
+// underlying object. This allows us to resolve collision in parallel
+struct Object {
+    Object(const Physics_object& p)
+        : v(p.velocity())
+        , w(p.angular_velocity())
+        , inverse_mass(p.inverse_mass())
+        , inverse_moment_of_inertia(p.inverse_moment_of_inertia())
+    {
+    }
+    Math::Vector v;
+    Math::Vector w;
+    float        inverse_mass;
+    float        inverse_moment_of_inertia;
+};
+
+// This seems to be a pretty vanilla formula for impulse I found at
+// https://www.euclideanspace.com/physics/dynamics/collision/threed/index.htm
+//
+// It's been augmented by the baumgarte and restitution ideas I've picked up from Erin Cotto's work.
+// These are both fake forces to respond when normal simulation breaks down
 float
-lagrangian_multiplier(float dt, float beta, float cor, float slop, const Math::Vector& n,
-                      float penetration_depth, const Math::Vector& r_a, const Math::Vector& r_b,
-                      const Physics_object& a, const Physics_object& b)
+impulse(const Math::Vector& n, const Math::Vector& r_a, const Math::Vector& r_b, const Object& a,
+        const Object& b, float penetration_depth, float slop, float dt, float beta, float cor)
 {
-    const auto& ra_x_n = Math::cross_product(r_a, n);
-    const auto& rb_x_n = Math::cross_product(r_b, n);
-    float       j_dot_v =
-        Math::dot_product(-n, a.velocity()) + Math::dot_product(-ra_x_n, a.angular_velocity()) +
-        Math::dot_product(n, b.velocity()) + Math::dot_product(rb_x_n, b.angular_velocity());
+    const Math::Vector& va         = a.v;
+    const Math::Vector& wa         = a.w;
+    const Math::Vector& vb         = b.v;
+    const Math::Vector& wb         = b.w;
+    const Math::Vector& ra_x_n     = Math::cross_product(r_a, n);
+    const Math::Vector& rb_x_n     = Math::cross_product(r_b, n);
+    const float         inverse_ma = a.inverse_mass;
+    const float         inverse_mb = b.inverse_mass;
+    const float         inverse_ia = a.inverse_moment_of_inertia;
+    const float         inverse_ib = b.inverse_moment_of_inertia;
 
-    float denom = Math::dot_product(-n * a.inverse_mass(), -n) +
-                  Math::dot_product(-ra_x_n * a.inverse_moment_of_inertia(), -ra_x_n) +
-                  Math::dot_product(n * b.inverse_mass(), n) +
-                  Math::dot_product(rb_x_n * b.inverse_moment_of_inertia(), rb_x_n);
-
+    // baumgarte and restitution are fake forces.
+    //  - baumgarte   : greater then penetration depth is deeper
+    //  - restitution : creater when incident collision velocity is greater
     float baumgarte   = 0;
     float restitution = 0;
     if (penetration_depth > slop) {
         baumgarte   = baumgarte_term(dt, beta, penetration_depth);
-        restitution = restitution_term(n, cor, r_a, r_b, a.velocity(), a.angular_velocity(),
-                                       b.velocity(), b.angular_velocity());
+        restitution = restitution_term(n, cor, r_a, r_b, va, wa, vb, wb);
     }
-    float lambda = -(j_dot_v + baumgarte + restitution) / denom;
 
-    return lambda;
-}
-
-// This seems to be a pretty vanilla formula for impulse I found at
-// https://www.euclideanspace.com/physics/dynamics/collision/threed/index.htm
-// I'm dropping this in for testing purposes for now. Not sure if it will stay.
-// Interesting to note that it's very similar to the lagrangian_multiplier above
-float
-impulse(float restitution, const Math::Vector& n, const Math::Vector& r_a, const Math::Vector& r_b,
-        const Physics_object& a, const Physics_object& b)
-{
-    const float         e          = restitution;
-    const Math::Vector& va         = a.velocity();
-    const Math::Vector& wa         = a.angular_velocity();
-    const Math::Vector& vb         = b.velocity();
-    const Math::Vector& wb         = b.angular_velocity();
-    const Math::Vector& ra_x_n     = Math::cross_product(r_a, n);
-    const Math::Vector& rb_x_n     = Math::cross_product(r_b, n);
-    const float         inverse_ma = a.inverse_mass();
-    const float         inverse_mb = b.inverse_mass();
-    const float         inverse_ia = a.inverse_moment_of_inertia();
-    const float         inverse_ib = b.inverse_moment_of_inertia();
-
-    return -(1 + e) *
-           (Math::dot_product((vb - va), n) + Math::dot_product(rb_x_n, wb) -
-            Math::dot_product(ra_x_n, wa)) /
+    return -1 *
+           (baumgarte + restitution +
+            (Math::dot_product((vb - va), n) + Math::dot_product(rb_x_n, wb) -
+             Math::dot_product(ra_x_n, wa))) /
            (inverse_ma + inverse_mb + Math::dot_product(ra_x_n, inverse_ia * ra_x_n) +
             Math::dot_product(rb_x_n, inverse_ib * rb_x_n));
 }
+
+float
+friction_impulse(const Math::Vector& t, const Math::Vector& r_a, const Math::Vector& r_b,
+                 const Object& a, const Object& b)
+{
+    return impulse(t, r_a, r_b, a, b, 0, 0, 0, 0, 0);
+}
+
 }  // namespace
 
 void
@@ -125,30 +128,17 @@ Constraint_solver::solve(Contact_manifold& contact_manifold)
         return;
     }
 
-    Physics_object& a = contact_manifold.object_a();
-    Physics_object& b = contact_manifold.object_b();
-
-    contact_manifold.a_delta_velocity()         = Math::Vector();
-    contact_manifold.a_delta_angular_velocity() = Math::Vector();
-    contact_manifold.b_delta_velocity()         = Math::Vector();
-    contact_manifold.b_delta_angular_velocity() = Math::Vector();
+    const Physics_object& a = contact_manifold.object_a();
+    Object                obj_a(a);
+    const Physics_object& b = contact_manifold.object_b();
+    Object                obj_b(b);
 
     for (auto& c : contact_manifold.contacts()) {
         Math::Vector r_a = c.contact_point_a - a.coordinate_space().position();
         Math::Vector r_b = c.contact_point_b - b.coordinate_space().position();
 
-        float lambda = lagrangian_multiplier(m_time_step, m_beta, m_coefficient_of_restitution,
-                                             m_slop, c.normal, c.penetration_depth, r_a, r_b, a, b);
-        float test   = impulse(m_coefficient_of_restitution, c.normal, r_a, r_b, a, b);
-        // lambda       = test;
-        // std::cout << test << " == " << lambda << "\n";
-
-        //        if (a.inverse_mass() != 0 && b.inverse_mass() != 0) {
-        //            std::cout << lambda << "\n";
-        //            if (lambda < 0) {
-        //                std::cout << "negative\n";
-        //            }
-        //        }
+        float lambda = impulse(c.normal, r_a, r_b, obj_a, obj_b, c.penetration_depth, m_slop,
+                               m_time_step, m_beta, m_coefficient_of_restitution);
 
         // normal impulse clamping
         float new_impulse = std::max(0.0f, c.normal_impulse + lambda);
@@ -157,47 +147,47 @@ Constraint_solver::solve(Contact_manifold& contact_manifold)
 
         Math::Vector P = lambda * c.normal;
 
-        if (a.inverse_mass() != 0 && b.inverse_mass() != 0) {
-            //            std::cout << "N = " << c.normal << "\n";
-        }
+        obj_a.v -= P * a.inverse_mass();
+        obj_a.w -= a.inverse_moment_of_inertia() * Math::cross_product(r_a, P);
 
-        contact_manifold.a_delta_velocity() -= P * a.inverse_mass();
-        contact_manifold.a_delta_angular_velocity() -=
-            a.inverse_moment_of_inertia() * Math::cross_product(r_a, P);
-
-        contact_manifold.b_delta_velocity() += P * b.inverse_mass();
-        contact_manifold.b_delta_angular_velocity() +=
-            b.inverse_moment_of_inertia() * Math::cross_product(r_b, P);
+        obj_b.v += P * b.inverse_mass();
+        obj_b.w += b.inverse_moment_of_inertia() * Math::cross_product(r_b, P);
     }
-    //    if (a.inverse_mass() != 0 && b.inverse_mass() != 0) {
-    //      std::cout << contact_manifold.b_delta_velocity() << "\n";
-    //}
 
-    const float FRICTION     = 0.01f;
-    const float max_friction = FRICTION / contact_manifold.contacts().size();
     for (auto& c : contact_manifold.contacts()) {
-        Math::Vector velocity = a.velocity() + contact_manifold.a_delta_velocity();
-        float        speed1   = Math::dot_product(velocity, Math::Vector(c.tangent1));
-        float        speed2   = Math::dot_product(velocity, Math::Vector(c.tangent2));
-        contact_manifold.a_delta_velocity() -=
-            (speed1 * max_friction * c.tangent1) + (speed2 * max_friction * c.tangent2);
+        Math::Vector r_a = c.contact_point_a - a.coordinate_space().position();
+        Math::Vector r_b = c.contact_point_b - b.coordinate_space().position();
 
-        velocity = a.angular_velocity() + contact_manifold.a_delta_angular_velocity();
-        speed1   = Math::dot_product(velocity, Math::Vector(c.normal));
-        contact_manifold.a_delta_angular_velocity() -=
-            (speed1 * max_friction * Math::Vector(c.normal));
+        const float FRICTION = 0.3f;
+        //  const float FRICTION     = 0.0f;
+        float max_friction = FRICTION * c.normal_impulse;
 
-        velocity = b.velocity() + contact_manifold.b_delta_velocity();
-        speed1   = Math::dot_product(velocity, Math::Vector(c.tangent1));
-        speed2   = Math::dot_product(velocity, Math::Vector(c.tangent2));
-        contact_manifold.b_delta_velocity() -=
-            (speed1 * max_friction * c.tangent1) + (speed2 * max_friction * c.tangent2);
+        float lambda1 = friction_impulse(c.tangent1, r_a, r_b, obj_a, obj_b);
+        float new_impulse =
+            std::max(-max_friction, std::min(max_friction, c.tangent1_impulse + lambda1));
+        lambda1            = new_impulse - c.tangent1_impulse;
+        c.tangent1_impulse = new_impulse;
 
-        velocity = b.angular_velocity() + contact_manifold.b_delta_angular_velocity();
-        speed1   = Math::dot_product(velocity, Math::Vector(c.normal));
-        contact_manifold.b_delta_angular_velocity() -=
-            (speed1 * max_friction * Math::Vector(c.normal));
+        float lambda2 = friction_impulse(c.tangent2, r_a, r_b, obj_a, obj_b);
+        new_impulse = std::max(-max_friction, std::min(max_friction, c.tangent2_impulse + lambda2));
+        lambda2     = new_impulse - c.tangent2_impulse;
+        c.tangent2_impulse = new_impulse;
+
+        Math::Vector P1 = lambda1 * c.tangent1;
+        Math::Vector P2 = lambda2 * c.tangent2;
+
+        obj_a.v -= P1 * a.inverse_mass() + P2 * a.inverse_mass();
+        obj_a.w -= a.inverse_moment_of_inertia() * (Math::cross_product(r_a, P1)) +
+                   a.inverse_moment_of_inertia() * (Math::cross_product(r_a, P2));
+
+        obj_b.v += P1 * b.inverse_mass() + P2 * b.inverse_mass();
+        obj_b.w += b.inverse_moment_of_inertia() * (Math::cross_product(r_b, P1)) +
+                   b.inverse_moment_of_inertia() * (Math::cross_product(r_b, P2));
     }
+    contact_manifold.a_delta_velocity()         = obj_a.v - a.velocity();
+    contact_manifold.a_delta_angular_velocity() = obj_a.w - a.angular_velocity();
+    contact_manifold.b_delta_velocity()         = obj_b.v - b.velocity();
+    contact_manifold.b_delta_angular_velocity() = obj_b.w - b.angular_velocity();
 }
 
 }  // namespace Physics
