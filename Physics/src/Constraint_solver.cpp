@@ -128,31 +128,10 @@ Constraint_solver::solve(Contact_manifold& contact_manifold)
         return;
     }
 
-    const Physics_object& a = contact_manifold.object_a();
-    Object                obj_a(a);
-    const Physics_object& b = contact_manifold.object_b();
-    Object                obj_b(b);
-
-    for (auto& c : contact_manifold.contacts()) {
-        Math::Vector r_a = c.contact_point_a - a.coordinate_space().position();
-        Math::Vector r_b = c.contact_point_b - b.coordinate_space().position();
-
-        float lambda = impulse(c.normal, r_a, r_b, obj_a, obj_b, c.penetration_depth, m_slop,
-                               m_time_step, m_beta, m_coefficient_of_restitution);
-
-        // normal impulse clamping
-        float new_impulse = std::max(0.0f, c.normal_impulse + lambda);
-        lambda            = new_impulse - c.normal_impulse;
-        c.normal_impulse  = new_impulse;
-
-        Math::Vector P = lambda * c.normal;
-
-        obj_a.v -= P * a.inverse_mass();
-        obj_a.w -= a.inverse_moment_of_inertia() * Math::cross_product(r_a, P);
-
-        obj_b.v += P * b.inverse_mass();
-        obj_b.w += b.inverse_moment_of_inertia() * Math::cross_product(r_b, P);
-    }
+    Physics_object& a = contact_manifold.object_a();
+    Object          obj_a(a);
+    Physics_object& b = contact_manifold.object_b();
+    Object          obj_b(b);
 
     for (auto& c : contact_manifold.contacts()) {
         Math::Vector r_a = c.contact_point_a - a.coordinate_space().position();
@@ -184,6 +163,28 @@ Constraint_solver::solve(Contact_manifold& contact_manifold)
         obj_b.w += b.inverse_moment_of_inertia() * (Math::cross_product(r_b, P1)) +
                    b.inverse_moment_of_inertia() * (Math::cross_product(r_b, P2));
     }
+
+    for (auto& c : contact_manifold.contacts()) {
+        Math::Vector r_a = c.contact_point_a - a.coordinate_space().position();
+        Math::Vector r_b = c.contact_point_b - b.coordinate_space().position();
+
+        float lambda = impulse(c.normal, r_a, r_b, obj_a, obj_b, c.penetration_depth, m_slop,
+                               m_time_step, m_beta, m_coefficient_of_restitution);
+
+        // normal impulse clamping
+        float new_impulse = std::max(0.0f, c.normal_impulse + lambda);
+        lambda            = new_impulse - c.normal_impulse;
+        c.normal_impulse  = new_impulse;
+
+        Math::Vector P = lambda * c.normal;
+
+        obj_a.v -= P * a.inverse_mass();
+        obj_a.w -= a.inverse_moment_of_inertia() * Math::cross_product(r_a, P);
+
+        obj_b.v += P * b.inverse_mass();
+        obj_b.w += b.inverse_moment_of_inertia() * Math::cross_product(r_b, P);
+    }
+
     contact_manifold.a_delta_velocity()         = obj_a.v - a.velocity();
     contact_manifold.a_delta_angular_velocity() = obj_a.w - a.angular_velocity();
     contact_manifold.b_delta_velocity()         = obj_b.v - b.velocity();
