@@ -80,6 +80,11 @@ Arena::run_physics(float elapsed)
             for (auto& manifold : m_manifolds) {
                 m_constraint_solver.solve(manifold.second);
 
+                // There's a pretty important thing happening right here. I'm applying the velocity
+                // back to objects while I'm in the middle of solving constraints. This makes for a
+                // much more stable simulation, but you can't parallelize it. If I instead collect
+                // all of the delta velocity and then loop through and apply them later it can be
+                // multi-threaded.
                 manifold.second.object_a().velocity() += manifold.second.a_delta_velocity();
                 manifold.second.object_a().angular_velocity() +=
                     manifold.second.a_delta_angular_velocity();

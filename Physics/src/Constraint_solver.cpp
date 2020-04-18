@@ -112,12 +112,13 @@ Constraint_solver::warm_start(Contact_manifold& contact_manifold)
         Math::Vector r_a = c.contact_point_a - a.coordinate_space().position();
         Math::Vector r_b = c.contact_point_b - b.coordinate_space().position();
 
-        a.velocity() += c.normal_impulse * a.inverse_mass() * -c.normal;
-        a.angular_velocity() += c.normal_impulse * a.inverse_moment_of_inertia() *
-                                (Math::cross_product(-r_a, Math::Vector(c.normal)));
-        b.velocity() += c.normal_impulse * b.inverse_mass() * c.normal;
-        b.angular_velocity() += c.normal_impulse * b.inverse_moment_of_inertia() *
-                                (Math::cross_product(r_b, Math::Vector(c.normal)));
+        Math::Vector P = c.normal_impulse * c.normal;
+
+        a.velocity() -= P * a.inverse_mass();
+        a.angular_velocity() -= a.inverse_moment_of_inertia() * Math::cross_product(r_a, P);
+
+        b.velocity() += P * b.inverse_mass();
+        b.angular_velocity() += b.inverse_moment_of_inertia() * Math::cross_product(r_b, P);
     }
 }
 
@@ -137,9 +138,8 @@ Constraint_solver::solve(Contact_manifold& contact_manifold)
         Math::Vector r_a = c.contact_point_a - a.coordinate_space().position();
         Math::Vector r_b = c.contact_point_b - b.coordinate_space().position();
 
-        const float FRICTION = 0.3f;
-        //  const float FRICTION     = 0.0f;
-        float max_friction = FRICTION * c.normal_impulse;
+        const float FRICTION     = 0.3f;
+        float       max_friction = FRICTION * c.normal_impulse;
 
         float lambda1 = friction_impulse(c.tangent1, r_a, r_b, obj_a, obj_b);
         float new_impulse =
