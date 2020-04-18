@@ -62,12 +62,25 @@ public:
     /// and if so, maybe use the older ones? Or newer ones?
     void insert(const std::vector<Contact>& contacts);
 
+    /// @brief Scale the contact impulses
+    ///
+    /// Basically iterate through the Contacts and scale the normal_impulse by this supplied factor.
+    /// This is used primarily by the main loop to scale the impulse for warm starting (or reset to
+    /// 0 if warm starting is disabled).
+    /// @param scale - [in] the amount to scale by
+    void scale_contact_impulses(float scale);
+
     /// @brief contacts accessors
     std::vector<Contact>&       contacts() { return m_contacts; }
     const std::vector<Contact>& contacts() const { return m_contacts; }
 
     Physics_object& object_a() { return m_object_a; }
     Physics_object& object_b() { return m_object_b; }
+
+    Math::Vector& a_delta_velocity() { return m_a_delta_velocity; }
+    Math::Vector& a_delta_angular_velocity() { return m_a_delta_angular_velocity; }
+    Math::Vector& b_delta_velocity() { return m_b_delta_velocity; }
+    Math::Vector& b_delta_angular_velocity() { return m_b_delta_angular_velocity; }
 
 private:
     friend class Physics_test::Contact_manifold_test;
@@ -89,6 +102,11 @@ private:
     std::vector<Contact> m_contacts;
     const float          m_movement_threshold   = 0.05f;
     const float          m_persistent_threshold = 0.05f;
+
+    Math::Vector m_a_delta_velocity;
+    Math::Vector m_a_delta_angular_velocity;
+    Math::Vector m_b_delta_velocity;
+    Math::Vector m_b_delta_angular_velocity;
 };
 
 std::ostream& operator<<(std::ostream& o, const Contact_manifold& c);

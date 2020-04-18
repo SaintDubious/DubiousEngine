@@ -38,7 +38,7 @@ Contact_manifold::prune_old_contacts()
                 if (dot_penetrator > 0.0f) {
                     return true;
                 }
-                c.penetration_depth = dot_penetrator;
+                c.penetration_depth = -dot_penetrator;
 
                 // if the point has moved too far from where it was originally recorded
                 // then we want to remove if from the manifold
@@ -218,7 +218,6 @@ Contact_manifold::insert(const std::vector<Contact>& contacts)
                 existing.normal_impulse   = old.normal_impulse;
                 existing.tangent1_impulse = old.tangent1_impulse;
                 existing.tangent2_impulse = old.tangent2_impulse;
-
                 break;
             }
         }
@@ -227,6 +226,16 @@ Contact_manifold::insert(const std::vector<Contact>& contacts)
         }
     }
     cleanup_contacts(m_contacts);
+}
+
+void
+Contact_manifold::scale_contact_impulses(float scale)
+{
+    for (Contact& c : m_contacts) {
+        c.normal_impulse *= scale;
+        c.tangent1_impulse *= scale;
+        c.tangent2_impulse *= scale;
+    }
 }
 
 std::ostream&

@@ -22,6 +22,8 @@ template <int T>
 VectorT<T> operator+(const Unit_vectorT<T>& a, const Unit_vectorT<T>& b);
 template <int T>
 VectorT<T> operator-(const Unit_vectorT<T>& a, const Unit_vectorT<T>& b);
+template <int T>
+std::ostream& operator<<(std::ostream& o, const Unit_vectorT<T>& a);
 
 /// @brief A 3D Unit Vector
 ///
@@ -69,12 +71,13 @@ public:
     /// @returns Z coordinate
     float z() const { return m_coords.m_z; }
 
-    friend bool       operator==<>(const Unit_vectorT<T>& a, const Unit_vectorT<T>& b);
-    friend bool       operator!=<>(const Unit_vectorT<T>& a, const Unit_vectorT<T>& b);
-    friend VectorT<T> operator*<>(const Unit_vectorT<T>& a, float b);
-    friend VectorT<T> operator*<>(float a, const Unit_vectorT<T>& b);
-    friend VectorT<T> operator+<>(const Unit_vectorT<T>& a, const Unit_vectorT<T>& b);
-    friend VectorT<T> operator-<>(const Unit_vectorT<T>& a, const Unit_vectorT<T>& b);
+    friend bool          operator==<>(const Unit_vectorT<T>& a, const Unit_vectorT<T>& b);
+    friend bool          operator!=<>(const Unit_vectorT<T>& a, const Unit_vectorT<T>& b);
+    friend VectorT<T>    operator*<>(const Unit_vectorT<T>& a, float b);
+    friend VectorT<T>    operator*<>(float a, const Unit_vectorT<T>& b);
+    friend VectorT<T>    operator+<>(const Unit_vectorT<T>& a, const Unit_vectorT<T>& b);
+    friend VectorT<T>    operator-<>(const Unit_vectorT<T>& a, const Unit_vectorT<T>& b);
+    friend std::ostream& operator<<<>(std::ostream& o, const Unit_vectorT<T>& a);
 
     Unit_vectorT<T> operator-() const { return Unit_vectorT<T>(-m_coords); }
 
@@ -124,6 +127,14 @@ operator-(const Unit_vectorT<T>& a, const Unit_vectorT<T>& b)
 {
     Triple coords = a.m_coords - b.m_coords;
     return VectorT<T>(coords.m_x, coords.m_y, coords.m_z);
+}
+
+template <int T>
+std::ostream&
+operator<<(std::ostream& o, const Unit_vectorT<T>& a)
+{
+    o << a.m_coords;
+    return o;
 }
 
 typedef Unit_vectorT<0> Unit_vector;

@@ -36,12 +36,11 @@ public:
     /// See the discussion by Allen Chou on his web page. The general idea is that
     /// often the previous time step's forces are mostly pertinent to the current time
     /// step. For exmaple a bunch of blocks at rest all have the same gravity every
-    /// time step. So this just re-applies the same force. This force is scaled by the
-    /// 'scale' argument, where 1.0 = 100%
+    /// time step. So this just re-applies the same force. It's assumed that you've already scaled
+    /// the impulses by using the Contact_manifold::scale_contact_impulses
     /// @param contact_manifold - [in] Up to 4 points that define the collision between the 2
     ///        objects stored in the manifold
-    /// @param scale - [in] amount to scale the previous force
-    void warm_start(Contact_manifold& contact_manifold, float scale);
+    void warm_start(Contact_manifold& contact_manifold);
 
     /// @brief The heart of constraint solving
     ///

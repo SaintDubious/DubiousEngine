@@ -27,17 +27,31 @@
 
 using namespace Dubious;
 
+// Note to me:
+// This test turned up an interesting quirk. Cubes tend to lie flat, but if one side is very long
+// then they end up rocking. I think this is because the inertia tensor is for a sphere, which is
+// kind of like a cube, but not at all like a rectangle. Will need to figure out more proper inertia
+// tensors at some point, but for now I'm getting back to the usual stack problem.
+
 const float LIGHT_HEIGHT      = 50.0f;
 const float PI                = 3.1415926535f;
 const int   WIDTH             = 800;
 const int   HEIGHT            = 600;
 const int   NUM_LAYERS        = 1;
-const int   OBJECTS_PER_LAYER = 4;
-const float OBJECT_WIDTH      = 0.008f;
-const float OBJECT_HEIGHT     = 0.024f;
-const float OBJECT_DEPTH      = 0.12f;
-const float OBJECT_MASS       = 0.1f;
-const int   FIRST_OBJECT      = 1;  // the floor is item 0
+const int   OBJECTS_PER_LAYER = 1;
+// const float OBJECT_WIDTH             = 0.008f;
+// const float OBJECT_HEIGHT            = 0.024f;
+// const float OBJECT_DEPTH             = 0.12f;
+// const float OBJECT_MASS              = 0.1f;
+const float OBJECT_WIDTH             = 8.0f;
+const float OBJECT_HEIGHT            = 1.0f;
+const float OBJECT_DEPTH             = 1.0f;
+const float OBJECT_MASS              = 1.0f;
+const int   FIRST_OBJECT             = 1;  // the floor is item 0
+const bool  CONSISTENT_FRAME_ELAPSED = true;
+const int   ON_IDLE_DELAY_MS         = 100;
+const bool  PAUSE_MODE               = false;
+const bool  DRAW_CONTACTS            = true;
 
 // Events
 void on_quit();
@@ -60,8 +74,7 @@ std::shared_ptr<Renderer::Simple_object_renderer> simple_renderer;
 Utility::Timer                                    frame_timer;
 float                                             elapsed;
 int                                               frame_count;
-bool                                              paused;
-bool                                              single_step;
+bool                                              step_physics;
 
 std::unique_ptr<Physics::Arena>                        arena;
 std::shared_ptr<Renderer::Visible_model>               visible_model;
@@ -79,24 +92,21 @@ main(int argc, char** argv)
         Physics::Arena::Collision_solver_settings collision_solver_settings;
         collision_solver_settings.strategy =
             Physics::Arena::Collision_solver_settings::Strategy::SINGLE_THREADED;
-        collision_solver_settings.manifold_persistent_threshold = 0.00004f;
-        collision_solver_settings.greedy_manifold               = true;
+        //        collision_solver_settings.manifold_persistent_threshold = 0.00004f;
         collision_solver_settings.mt_collisions_work_group_size = 500;
-
+        collision_solver_settings.greedy_manifold               = false;
         Physics::Arena::Constraint_solver_settings constraint_solver_settings;
-        constraint_solver_settings.coefficient_of_restitution = 0.0025f;
-        constraint_solver_settings.beta                       = 0.05f;
-        constraint_solver_settings.slop                       = 0.0005f;
-        constraint_solver_settings.warm_start_scale           = 0.5f;
+        constraint_solver_settings.beta                       = 0.0f;
+        constraint_solver_settings.coefficient_of_restitution = 0.0f;
+        constraint_solver_settings.iterations                 = 10;
+        constraint_solver_settings.warm_start_scale           = 0.0f;
 
         arena = std::make_unique<Physics::Arena>(
             Physics::Arena::Settings(collision_solver_settings, constraint_solver_settings));
 
-        paused          = true;
-        single_step     = false;
         elapsed         = 0;
         frame_count     = 0;
-        auto floor_file = Utility::Ac3d_file_reader::test_cube(3.0f, 0.5f, 3.0f);
+        auto floor_file = Utility::Ac3d_file_reader::test_cube(8.0f, 0.5f, 8.0f);
         std::unique_ptr<const Utility::Ac3d_file> model_file;
         model_file = Utility::Ac3d_file_reader::test_cube(OBJECT_WIDTH / 2.0f, OBJECT_HEIGHT / 2.0f,
                                                           OBJECT_DEPTH / 2.0f);
@@ -154,6 +164,8 @@ main(int argc, char** argv)
         sdl.on_mouse_wheel()      = on_mouse_wheel;
         sdl.on_key_down()         = on_key_down;
 
+        step_physics = !PAUSE_MODE;
+
         frame_timer.start();
 
         sdl.run();
@@ -186,15 +198,15 @@ build_layer(float y, float angle)
         visible_objects.push_back(
             std::make_shared<Renderer::Visible_object>(visible_model, visible_model));
         visible_objects.back()->base_color() = object_color;
-        visible_objects.back()->coordinate_space().rotate(
-            Math::Unit_quaternion(Math::Unit_vector(0, 1, 0), radians));
+        //        visible_objects.back()->coordinate_space().rotate(
+        //          Math::Unit_quaternion(Math::Unit_vector(0, 1, 0), radians));
         visible_objects.back()->coordinate_space().translate(offset);
         visible_objects.back()->renderer() = simple_renderer;
         scene->add_object(visible_objects.back());
         physics_objects.push_back(
             std::make_shared<Physics::Physics_object>(physics_model, OBJECT_MASS));
-        physics_objects.back()->coordinate_space().rotate(
-            Math::Unit_quaternion(Math::Unit_vector(0, 1, 0), radians));
+        //    physics_objects.back()->coordinate_space().rotate(
+        //      Math::Unit_quaternion(Math::Unit_vector(0, 1, 0), radians));
         physics_objects.back()->coordinate_space().translate(offset);
         arena->push_back(physics_objects.back());
     }
@@ -208,22 +220,25 @@ on_quit()
 void
 on_idle()
 {
-    elapsed += frame_timer.elapsed();
-    ++frame_count;
-    if (elapsed > 1000.0f) {
-        //        std::cout << frame_count << " fps\n";
-        frame_count = 0;
-        elapsed     = 0;
-    }
-    int64_t frame_time = frame_timer.restart();
-    if (!paused || single_step) {
-        if (single_step) {
-            frame_time = 17;
+    if (step_physics) {
+        if (CONSISTENT_FRAME_ELAPSED) {
+            arena->run_physics(0.0166666f);
         }
-        //       frame_time = 17;
-        arena->run_physics(frame_time / 1000.0f);
-        single_step = false;
+        else {
+            elapsed += frame_timer.elapsed();
+            ++frame_count;
+            if (elapsed > 1000.0f) {
+                std::cout << frame_count << " fps\n";
+                frame_count = 0;
+                elapsed     = 0;
+            }
+            arena->run_physics(frame_timer.restart() / 1000.0f);
+        }
     }
+    if (PAUSE_MODE) {
+        step_physics = false;
+    }
+
     for (int i = 1; i < NUM_LAYERS * OBJECTS_PER_LAYER + 1; ++i) {
         Math::Point           new_position    = physics_objects[i]->coordinate_space().position();
         Math::Unit_quaternion new_orientation = physics_objects[i]->coordinate_space().rotation();
@@ -243,37 +258,40 @@ on_idle()
 
     scene->render(*camera);
 
-    // Draw the contact info on top
-    Renderer::Open_gl_attributes attribs(Renderer::Open_gl_attributes::ENABLE_BIT |
-                                             Renderer::Open_gl_attributes::HINT_BIT |
-                                             Renderer::Open_gl_attributes::POLYGON_BIT,
-                                         false);
-    Renderer::Open_gl_commands::line_width(2);
-    Renderer::Open_gl_commands::polygon_mode(GL_BACK, GL_LINE);
-    Renderer::Open_gl_commands::cull_face(GL_FRONT);
-    attribs.depth_func(GL_ALWAYS);
+    if (DRAW_CONTACTS) {
+        // Draw the contact info on top
+        Renderer::Open_gl_attributes attribs(Renderer::Open_gl_attributes::ENABLE_BIT |
+                                                 Renderer::Open_gl_attributes::HINT_BIT |
+                                                 Renderer::Open_gl_attributes::POLYGON_BIT,
+                                             false);
+        Renderer::Open_gl_commands::line_width(2);
+        Renderer::Open_gl_commands::polygon_mode(GL_BACK, GL_LINE);
+        Renderer::Open_gl_commands::cull_face(GL_FRONT);
+        attribs.depth_func(GL_ALWAYS);
 
-    glColor3f(0, 1.0f, 0);
-    glPointSize(3.0f);
+        glColor3f(0, 1.0f, 0);
+        glPointSize(3.0f);
 
-    for (const auto& manifold : arena->manifolds()) {
-        for (const auto& c : manifold.second.contacts()) {
-            {
-                Renderer::Open_gl_primitive prim(Renderer::Open_gl_primitive::POINTS);
-                prim.vertex(c.contact_point_a);
-                prim.vertex(c.contact_point_b);
+        for (const auto& manifold : arena->manifolds()) {
+            for (const auto& c : manifold.second.contacts()) {
+                {
+                    Renderer::Open_gl_primitive prim(Renderer::Open_gl_primitive::LINES);
+                    prim.vertex(c.contact_point_a);
+                    prim.vertex(c.contact_point_b);
+                }
+                //            Renderer::Open_gl_primitive prim(Renderer::Open_gl_primitive::LINES);
+                //          prim.vertex(c.contact_point_a);
+                //        prim.vertex(c.contact_point_a + Math::Vector(c.normal) *
+                //        c.penetration_depth);
+                // render tangents
+                //            prim.vertex( c.contact_point_a );
+                //            prim.vertex( c.contact_point_a + Math::Vector(c.tangent1) );
+                //            prim.vertex( c.contact_point_a );
+                //            prim.vertex( c.contact_point_a + Math::Vector(c.tangent2) );
             }
-            //            Renderer::Open_gl_primitive prim(Renderer::Open_gl_primitive::LINES);
-            //          prim.vertex(c.contact_point_a);
-            //        prim.vertex(c.contact_point_a + Math::Vector(c.normal) * c.penetration_depth);
-            // render tangents
-            //            prim.vertex( c.contact_point_a );
-            //            prim.vertex( c.contact_point_a + Math::Vector(c.tangent1) );
-            //            prim.vertex( c.contact_point_a );
-            //            prim.vertex( c.contact_point_a + Math::Vector(c.tangent2) );
         }
     }
-    SDL_Delay(10);
+    SDL_Delay(ON_IDLE_DELAY_MS);
 }
 
 void
@@ -351,11 +369,8 @@ on_key_down(SDL_Keycode key, unsigned short mod)
     case SDLK_q:
         sdl.stop();
         break;
-    case SDLK_p:
-        paused = !paused;
-        break;
-    case SDLK_s:
-        single_step = true;
+    case SDLK_n:
+        step_physics = true;
         break;
     }
 }

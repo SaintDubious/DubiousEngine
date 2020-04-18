@@ -18,34 +18,287 @@ namespace Physics_test {
 class Constraint_solver_test
     : public ::Microsoft::VisualStudio::CppUnitTestFramework::TestClass<Constraint_solver_test> {
 public:
-    TEST_METHOD(constraint_solver_solve)
+    TEST_METHOD(constraint_solver_two_cubes_one_point)
     {
-        Collision_solver                       collision_solver(false);
-        Constraint_solver                      solver(1.0f / 60.0f, 0.1f, 0.1f, 0.1f);
+        // Two cubes are placed with a 0.1 overlap on the Y axis. The
+        // contact point is found to be right in the middle of the
+        // cubes (0, 0.5, 0).
+        // The expectation is that the cubes both get the same repulsive
+        // velocity and no spin
+        //
+        auto model_file    = Ac3d_file_reader::test_cube(0.5f, 0.5f, 0.5f);
+        auto physics_model = std::make_shared<Physics_model>(*model_file);
+
+        // at (0,0,0)
+        auto cube1 = std::make_shared<Physics_object>(physics_model, 1.0f);
+
+        // at (0, 0.9, 0)
+        auto cube2 = std::make_shared<Physics_object>(physics_model, 1.0f);
+        cube2->coordinate_space().translate(Vector(0, 0.9f, 0));
+
         std::vector<Contact_manifold::Contact> contacts;
-        std::unique_ptr<const Ac3d_file> model_file = Ac3d_file_reader::test_cube(1.0f, 1.0f, 1.0f);
+        Contact_manifold::Contact              c;
+        c.contact_point_a   = Point(0, 0.5f, 0);
+        c.local_point_a     = Local_point(0, 0.5f, 0);
+        c.contact_point_b   = Point(0, 0.4f, 0);
+        c.local_point_b     = Local_point(0, -0.5f, 0);
+        c.normal            = Unit_vector(0, 1, 0);
+        c.tangent1          = Unit_vector(0, 0, -1);
+        c.tangent2          = Unit_vector(-1, 0, 0);
+        c.penetration_depth = 0.1f;
+        c.normal_impulse    = 0.0937500149f;
+        contacts.push_back(c);
 
-        std::shared_ptr<Physics_model>  model = std::make_shared<Physics_model>(*model_file);
-        std::shared_ptr<Physics_object> a(new Physics_object(model, 1));
-        std::shared_ptr<Physics_object> b(new Physics_object(model, 1));
+        Contact_manifold manifold(*cube1, *cube2, 0.05f, 0.05f);
+        manifold.insert(contacts);
+        Constraint_solver constraint_solver(0.016f, 0.03f, 0.5f, 0.05f);
+        constraint_solver.solve(manifold);
 
-        b->coordinate_space().translate(Vector(2, 0, 0));
-        b->velocity() = Vector(-10, 0, 0);
-        // The 2 cubes are touching, which is NOT an intersection
-        Assert::IsTrue(collision_solver.intersection(*a, *b, contacts) == false);
-        Contact_manifold contact_manifold(*a, *b, 0.05f, 0.05f);
-        /*
-        Constraint_solver::Velocity_matrix velocities = solver.solve( *a, *b, contact_manifold );
-        // This test is in flux as I play with Baumgarte terms and coefficient of
-        // restitution
-//        Assert::IsTrue( velocities.a_linear == Vector( -5, 0, 0 ) );
-//        Assert::IsTrue( velocities.b_linear == Vector( -5, 0, 0 ) );
+        manifold.object_a().velocity() += manifold.a_delta_velocity();
+        manifold.object_a().angular_velocity() += manifold.a_delta_angular_velocity();
+        manifold.object_b().velocity() += manifold.b_delta_velocity();
+        manifold.object_b().angular_velocity() += manifold.b_delta_angular_velocity();
 
-        contacts.clear();
-        b->coordinate_space().translate( Vector( 0, 1, 0 ) );
-        Assert::IsTrue( collision_solver.intersection( *a, *b, contacts ) == true );
-        velocities = solver.solve( *a, *b, contact_manifold );
-        */
+        Assert::IsTrue(cube1->velocity() == -cube2->velocity());
+        Assert::IsTrue(cube1->angular_velocity() == Vector());
+        Assert::IsTrue(cube2->angular_velocity() == Vector());
+    }
+
+    TEST_METHOD(constraint_solver_two_cubes_two_points)
+    {
+        // Two cubes are placed with a 0.1 overlap on the Y axis. The
+        // contact points are found to be on 2 corners of each cube.
+        // The expectation is that the cubes both get the same repulsive
+        // velocity and no spin
+        //
+        auto model_file    = Ac3d_file_reader::test_cube(0.5f, 0.5f, 0.5f);
+        auto physics_model = std::make_shared<Physics_model>(*model_file);
+
+        // at (0,0,0)
+        auto cube1 = std::make_shared<Physics_object>(physics_model, 1.0f);
+
+        // at (0, 0.9, 0)
+        auto cube2 = std::make_shared<Physics_object>(physics_model, 1.0f);
+        cube2->coordinate_space().translate(Vector(0, 0.9f, 0));
+
+        std::vector<Contact_manifold::Contact> contacts;
+        Contact_manifold::Contact              c;
+        c.contact_point_a   = Point(0.5f, 0.5f, 0.5f);
+        c.local_point_a     = Local_point(0.5f, 0.5f, 0.5f);
+        c.contact_point_b   = Point(0.5f, 0.4f, 0.5f);
+        c.local_point_b     = Local_point(0.5f, -0.5f, 0.5f);
+        c.normal            = Unit_vector(0, 1, 0);
+        c.tangent1          = Unit_vector(0, 0, -1);
+        c.tangent2          = Unit_vector(-1, 0, 0);
+        c.penetration_depth = 0.1f;
+        c.normal_impulse    = 0.0937500149f;
+        contacts.push_back(c);
+        c.contact_point_a   = Point(-0.5f, 0.5f, -0.5f);
+        c.local_point_a     = Local_point(-0.5f, 0.5f, -0.5f);
+        c.contact_point_b   = Point(-0.5f, 0.4f, -0.5f);
+        c.local_point_b     = Local_point(-0.5f, -0.5f, -0.5f);
+        c.normal            = Unit_vector(0, 1, 0);
+        c.tangent1          = Unit_vector(0, 0, -1);
+        c.tangent2          = Unit_vector(-1, 0, 0);
+        c.penetration_depth = 0.1f;
+        c.normal_impulse    = 0.0937500149f;
+        contacts.push_back(c);
+
+        Contact_manifold manifold(*cube1, *cube2, 0.05f, 0.05f);
+        manifold.insert(contacts);
+        Constraint_solver constraint_solver(0.016f, 0.03f, 0.5f, 0.05f);
+        constraint_solver.solve(manifold);
+
+        manifold.object_a().velocity() += manifold.a_delta_velocity();
+        manifold.object_a().angular_velocity() += manifold.a_delta_angular_velocity();
+        manifold.object_b().velocity() += manifold.b_delta_velocity();
+        manifold.object_b().angular_velocity() += manifold.b_delta_angular_velocity();
+
+        Assert::IsTrue(cube1->velocity() == -cube2->velocity());
+        Assert::IsTrue(cube1->angular_velocity() == Vector());
+        Assert::IsTrue(cube2->angular_velocity() == Vector());
+    }
+
+    TEST_METHOD(constraint_solver_two_cubes_one_offset_point)
+    {
+        // Two cubes are placed with a 0.1 overlap on the Y axis. The
+        // contact point is found to be offset in the cubes (0.5, 0.5, 0).
+        // The expectation is that the cubes both get the same repulsive
+        // velocity and spin of equal magnitude in opposite directions
+        //
+        auto model_file    = Ac3d_file_reader::test_cube(0.5f, 0.5f, 0.5f);
+        auto physics_model = std::make_shared<Physics_model>(*model_file);
+
+        // at (0,0,0)
+        auto cube1 = std::make_shared<Physics_object>(physics_model, 1.0f);
+
+        // at (0, 0.9, 0)
+        auto cube2 = std::make_shared<Physics_object>(physics_model, 1.0f);
+        cube2->coordinate_space().translate(Vector(0, 0.9f, 0));
+
+        std::vector<Contact_manifold::Contact> contacts;
+        Contact_manifold::Contact              c;
+        c.contact_point_a   = Point(0.5f, 0.5f, 0);
+        c.local_point_a     = Local_point(0.5f, 0.5f, 0);
+        c.contact_point_b   = Point(0.5f, 0.4f, 0);
+        c.local_point_b     = Local_point(0.5f, -0.5f, 0);
+        c.normal            = Unit_vector(0, 1, 0);
+        c.tangent1          = Unit_vector(0, 0, -1);
+        c.tangent2          = Unit_vector(-1, 0, 0);
+        c.penetration_depth = 0.1f;
+        c.normal_impulse    = 0.0937500149f;
+        contacts.push_back(c);
+
+        Contact_manifold manifold(*cube1, *cube2, 0.05f, 0.05f);
+        manifold.insert(contacts);
+        Constraint_solver constraint_solver(0.016f, 0.03f, 0.5f, 0.05f);
+        constraint_solver.solve(manifold);
+
+        manifold.object_a().velocity() += manifold.a_delta_velocity();
+        manifold.object_a().angular_velocity() += manifold.a_delta_angular_velocity();
+        manifold.object_b().velocity() += manifold.b_delta_velocity();
+        manifold.object_b().angular_velocity() += manifold.b_delta_angular_velocity();
+
+        Assert::IsTrue(cube1->velocity() == -cube2->velocity());
+        Assert::IsTrue(cube1->angular_velocity() == -cube2->angular_velocity());
+    }
+
+    TEST_METHOD(constraint_solver_three_cubes_one_point)
+    {
+        // This test has three cubes with the ones on top and bottom both
+        // overlapping the one in the middle by an equal amount. There's
+        // one contact point in each pair, right in the middle.
+        // The expectation is that the middle cube doesn't move at all
+        // and that the top and bottom cube both move with an equal
+        // velocity. None of the cubes should have any spin
+        //
+        auto model_file    = Ac3d_file_reader::test_cube(0.5f, 0.5f, 0.5f);
+        auto physics_model = std::make_shared<Physics_model>(*model_file);
+
+        // at (0,0,0)
+        auto cube1 = std::make_shared<Physics_object>(physics_model, 1.0f);
+
+        // at (0, 0.9, 0)
+        auto cube2 = std::make_shared<Physics_object>(physics_model, 1.0f);
+        cube2->coordinate_space().translate(Vector(0, 0.9f, 0));
+
+        // at (0, -0.9, 0)
+        auto cube3 = std::make_shared<Physics_object>(physics_model, 1.0f);
+        cube3->coordinate_space().translate(Vector(0, -0.9f, 0));
+
+        std::vector<Contact_manifold::Contact> contacts_1;
+        {
+            Contact_manifold::Contact c;
+            c.contact_point_a   = Point(0, 0.5f, 0);
+            c.local_point_a     = Local_point(0, 0.5f, 0);
+            c.contact_point_b   = Point(0, 0.4f, 0);
+            c.local_point_b     = Local_point(0, -0.5f, 0);
+            c.normal            = Unit_vector(0, 1, 0);
+            c.tangent1          = Unit_vector(0, 0, -1);
+            c.tangent2          = Unit_vector(-1, 0, 0);
+            c.penetration_depth = 0.1f;
+            c.normal_impulse    = 0.0937500149f;
+            contacts_1.push_back(c);
+        }
+        Contact_manifold manifold_1(*cube1, *cube2, 0.05f, 0.05f);
+        manifold_1.insert(contacts_1);
+
+        std::vector<Contact_manifold::Contact> contacts_2;
+        {
+            Contact_manifold::Contact c;
+            c.contact_point_a   = Point(0, -0.5f, 0);
+            c.local_point_a     = Local_point(0, -0.5f, 0);
+            c.contact_point_b   = Point(0, -0.4f, 0);
+            c.local_point_b     = Local_point(0, 0.5f, 0);
+            c.normal            = Unit_vector(0, -1, 0);
+            c.tangent1          = Unit_vector(0, 0, -1);
+            c.tangent2          = Unit_vector(-1, 0, 0);
+            c.penetration_depth = 0.1f;
+            c.normal_impulse    = 0.0937500149f;
+            contacts_2.push_back(c);
+        }
+        Contact_manifold manifold_2(*cube1, *cube3, 0.05f, 0.05f);
+        manifold_2.insert(contacts_2);
+
+        Constraint_solver constraint_solver(0.016f, 0.03f, 0.5f, 0.05f);
+        constraint_solver.solve(manifold_1);
+        constraint_solver.solve(manifold_2);
+
+        manifold_1.object_a().velocity() += manifold_1.a_delta_velocity();
+        manifold_1.object_a().angular_velocity() += manifold_1.a_delta_angular_velocity();
+        manifold_1.object_b().velocity() += manifold_1.b_delta_velocity();
+        manifold_1.object_b().angular_velocity() += manifold_1.b_delta_angular_velocity();
+
+        manifold_2.object_a().velocity() += manifold_2.a_delta_velocity();
+        manifold_2.object_a().angular_velocity() += manifold_2.a_delta_angular_velocity();
+        manifold_2.object_b().velocity() += manifold_2.b_delta_velocity();
+        manifold_2.object_b().angular_velocity() += manifold_2.b_delta_angular_velocity();
+
+        Assert::IsTrue(cube1->velocity() == Vector());
+        Assert::IsTrue(cube2->velocity() == -cube3->velocity());
+        Assert::IsTrue(cube1->angular_velocity() == Vector());
+        Assert::IsTrue(cube2->angular_velocity() == Vector());
+        Assert::IsTrue(cube3->angular_velocity() == Vector());
+    }
+
+    TEST_METHOD(constraint_solver_rectangle_angular_velocity)
+    {
+        // TODO:
+        // This is a WIP in progress.
+        // See the note in PhysicsJenga for info on what it's trying to test
+
+        // I noticed that rectangles end up with a fair amount of rocking side to side on their
+        // short end. I'm not sure if this is explainable or not, so I'm writing a test. A cube
+        // touching on one side shouldn't rotate less then a rectangle touching on the long side.
+        const float LONG_HALF     = 50.0f;
+        auto        model_file    = Ac3d_file_reader::test_cube(LONG_HALF, 0.5f, 0.5f);
+        auto        physics_model = std::make_shared<Physics_model>(*model_file);
+        auto        floor_file    = Ac3d_file_reader::test_cube(100.0f, 0.5f, 100.0f);
+        auto        floor_model   = std::make_shared<Physics_model>(*floor_file);
+
+        // at (0,0,0)
+        auto floor = std::make_shared<Physics_object>(physics_model, Physics_object::STATIONARY);
+
+        // at (0, 0.9, 0)
+        auto cube1 = std::make_shared<Physics_object>(physics_model, 1.0f);
+        cube1->coordinate_space().translate(Vector(0, 0.9f, 0));
+
+        std::vector<Contact_manifold::Contact> contacts;
+        Contact_manifold::Contact              c;
+        c.contact_point_a   = Point(LONG_HALF, 0.5f, 0.5f);
+        c.local_point_a     = Local_point(LONG_HALF, 0.5f, 0.5f);
+        c.contact_point_b   = Point(LONG_HALF, 0.4f, 0.5f);
+        c.local_point_b     = Local_point(LONG_HALF, -0.5f, 0.5f);
+        c.normal            = Unit_vector(0, 1, 0);
+        c.tangent1          = Unit_vector(0, 0, -1);
+        c.tangent2          = Unit_vector(-1, 0, 0);
+        c.penetration_depth = 0.1f;
+        c.normal_impulse    = 0;
+        contacts.push_back(c);
+        c.contact_point_a   = Point(-LONG_HALF, 0.5f, 0.5f);
+        c.local_point_a     = Local_point(-LONG_HALF, 0.5f, 0.5f);
+        c.contact_point_b   = Point(-LONG_HALF, 0.4f, 0.5f);
+        c.local_point_b     = Local_point(-LONG_HALF, -0.5f, 0.5f);
+        c.normal            = Unit_vector(0, 1, 0);
+        c.tangent1          = Unit_vector(0, 0, -1);
+        c.tangent2          = Unit_vector(-1, 0, 0);
+        c.penetration_depth = 0.1f;
+        c.normal_impulse    = 0;
+        contacts.push_back(c);
+
+        Contact_manifold manifold(*floor, *cube1, 0.05f, 0.05f);
+        manifold.insert(contacts);
+        //        Constraint_solver constraint_solver(0.016f, 0.03f, 0.5f, 0.05f);
+        Constraint_solver constraint_solver(0.016f, 0.03f, 0.0f, 0.05f);
+        constraint_solver.solve(manifold);
+
+        manifold.object_a().velocity() += manifold.a_delta_velocity();
+        manifold.object_a().angular_velocity() += manifold.a_delta_angular_velocity();
+        manifold.object_b().velocity() += manifold.b_delta_velocity();
+        manifold.object_b().angular_velocity() += manifold.b_delta_angular_velocity();
+
+        //        Assert::IsTrue(cube1->angular_velocity() == Vector());
     }
 };
+
 }  // namespace Physics_test
